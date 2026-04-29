@@ -1,0 +1,650 @@
+waypoint_server:
+  scale: 1
+  position:
+    x: 1
+    y: 2
+    z: 3
+  euler_angles:
+    x: 0
+    y: 0
+    z: 1.57
+  waypoints:
+    - id: registed_0_1773123066323967072
+      position:
+        x: 135.1839
+        y: 100.9093
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773123057924566048
+      position:
+        x: 130.9818
+        y: 104.8852
+        z: -2.999998
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122853368447808
+      position:
+        x: 97.74866
+        y: 147.2688
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120069953213728
+      position:
+        x: 82.00796
+        y: 46.34491
+        z: -3
+      euler_angles:
+        x: 8.163988e-08
+        y: 2.037697e-07
+        z: 0.8497225
+    - id: registed_0_1773120031909802656
+      position:
+        x: 67.85486
+        y: 34.2887
+        z: -3
+      euler_angles:
+        x: 9.154684e-08
+        y: 1.860029e-07
+        z: 0.7443982
+    - id: registed_0_1773122666087789120
+      position:
+        x: 31.92337
+        y: 154.3245
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122836914679968
+      position:
+        x: 101.8191
+        y: 152.6078
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773119930764950080
+      position:
+        x: 45.27613
+        y: 32.10757
+        z: -2.999999
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8277927
+    - id: registed_0_1773120322140390144
+      position:
+        x: 9.047535
+        y: 71.34599
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.5106905
+    - id: registed_0_1773119866979233728
+      position:
+        x: 25.3648
+        y: 1.395088
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8079934
+    - id: registed_0_1773122674805135264
+      position:
+        x: 30.68568
+        y: 157.4286
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122902191634496
+      position:
+        x: 83.79262
+        y: 138.9128
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122756710348576
+      position:
+        x: 111.2443
+        y: 166.9733
+        z: -2.999998
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122648970325216
+      position:
+        x: 44.78206
+        y: 141.6831
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1744525877836597312
+      position:
+        x: -14.04846
+        y: -52.74969
+        z: -2.999982
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.978887
+    - id: registed_0_1773122624900813120
+      position:
+        x: 72.56916
+        y: 125.8083
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122687062915136
+      position:
+        x: 45.32742
+        y: 175.3664
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122922615624256
+      position:
+        x: 73.06735
+        y: 124.8936
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120396480327072
+      position:
+        x: 49.40808
+        y: 46.23162
+        z: -2.999998
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.6738706
+    - id: registed_0_1773119826843123936
+      position:
+        x: -11.57115
+        y: 23.60382
+        z: -3
+      euler_angles:
+        x: 9.295343e-08
+        y: 3.592298e-08
+        z: -0.7498128
+    - id: registed_0_1773123239435192928
+      position:
+        x: 58.56712
+        y: 1.779461
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773123304441441248
+      position:
+        x: 19.53315
+        y: -8.240923
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.038475
+      properties:
+        - key: stop
+          value: true
+    - id: registed_0_1773123128749617664
+      position:
+        x: 133.5599
+        y: 73.64375
+        z: -2.999995
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120219362552064
+      position:
+        x: 67.99074
+        y: 93.19534
+        z: -3
+      euler_angles:
+        x: 8.742231e-08
+        y: 1.509968e-07
+        z: 2.705678
+    - id: 1
+      position:
+        x: -81.93576
+        y: 64.9894
+        z: -2.999998
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.0891088
+      properties:
+        - key: goal_radius
+          value: 1.000000
+        - key: stop
+          value: true
+      connections:
+        - 2
+    - id: registed_0_1773120521476025472
+      position:
+        x: 91.13645
+        y: 28.76124
+        z: -3.000003
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.3642699
+    - id: registed_0_1773122696168458208
+      position:
+        x: 52.97946
+        y: 189.6277
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122637091871360
+      position:
+        x: 53.77839
+        y: 136.1534
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773123278376200960
+      position:
+        x: 22.92716
+        y: -2.92347
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120925266394560
+      position:
+        x: 124.0091
+        y: 146.8857
+        z: -3
+      euler_angles:
+        x: 8.742283e-08
+        y: 1.509959e-07
+        z: -2.876567
+    - id: registed_0_1773122728675583904
+      position:
+        x: 76.80026
+        y: 203.1138
+        z: -3.000003
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773123199769723200
+      position:
+        x: 83.45206
+        y: -11.71953
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773123183352744096
+      position:
+        x: 126.7762
+        y: 62.98176
+        z: -2.999998
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122654980125728
+      position:
+        x: 35.81636
+        y: 146.5275
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773119765824896096
+      position:
+        x: -1.628418
+        y: 84.34656
+        z: -2.999997
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120253246365152
+      position:
+        x: 34.12479
+        y: 112.3372
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.431072
+    - id: registed_0_1773123098740324480
+      position:
+        x: 40.81778
+        y: 136.127
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1744525850871571040
+      position:
+        x: -22.79967
+        y: -72.81401
+        z: -3.000011
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8401481
+    - id: registed_0_1773123072548282560
+      position:
+        x: 145.4119
+        y: 101.9985
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773123080166791936
+      position:
+        x: 127.6058
+        y: 80.40147
+        z: -3.000004
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122573132024512
+      position:
+        x: 101.893
+        y: 152.0738
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120604426749120
+      position:
+        x: 69.40474
+        y: 70.31615
+        z: -2.999992
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.268106
+    - id: registed_0_1773122719016209824
+      position:
+        x: 65.21136
+        y: 203.4377
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120559935455584
+      position:
+        x: 52.07536
+        y: 52.16349
+        z: -3.000003
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.20336
+    - id: registed_0_1773123030866639488
+      position:
+        x: 109.7234
+        y: 101.5594
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773119812945760256
+      position:
+        x: -26.83464
+        y: 31.25439
+        z: -3
+      euler_angles:
+        x: 9.722482e-08
+        y: 5.783724e-08
+        z: -0.5416917
+    - id: registed_0_1650547724366622816
+      position:
+        x: 34.79688
+        y: 137.0093
+        z: -3.000003
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.959235
+    - id: registed_0_1773120868399327104
+      position:
+        x: 146.5444
+        y: 111.4629
+        z: -3
+      euler_angles:
+        x: 8.742269e-08
+        y: 1.509962e-07
+        z: 2.135669
+    - id: registed_0_1773120968637913728
+      position:
+        x: 118.0774
+        y: 143.7318
+        z: -3
+      euler_angles:
+        x: 8.74224e-08
+        y: -1.509964e-07
+        z: -3.055333
+    - id: registed_0_1773120685200785536
+      position:
+        x: 145.8762
+        y: 100.4945
+        z: -2.999999
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.654886
+    - id: registed_0_1773123122068873664
+      position:
+        x: 38.05067
+        y: 132.8405
+        z: -2.999998
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122708530134016
+      position:
+        x: 58.99666
+        y: 193.9058
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773121002950530624
+      position:
+        x: 113.7322
+        y: 143.6333
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773119978920830944
+      position:
+        x: 52.53681
+        y: 44.05036
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.3890997
+    - id: registed_0_1773122826616437120
+      position:
+        x: 104.3394
+        y: 161.8479
+        z: -3.000002
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773120126407938464
+      position:
+        x: 96.21925
+        y: 75.21348
+        z: -3
+      euler_angles:
+        x: 3.258412e-07
+        y: 3.258414e-07
+        z: 2.663315
+    - id: registed_0_1773119732612223424
+      position:
+        x: 15.69997
+        y: 118.5902
+        z: -3.000002
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1773122616921878656
+      position:
+        x: 83.15688
+        y: 138.2657
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1744525932584876896
+      position:
+        x: -81.83351
+        y: 46.44578
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.115836
+    - id: registed_0_1744525890795992768
+      position:
+        x: -25.85016
+        y: 47.09218
+        z: -2.999992
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.171629
+    - id: 3
+      position:
+        x: -136.3563
+        y: -73.82652
+        z: -3.000002
+      euler_angles:
+        x: -0
+        y: 0
+        z: -0
+      connections:
+        - 1
+    - id: registed_0_1744525943053061792
+      position:
+        x: -81.79842
+        y: 66.99978
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.545788
+      properties:
+        - key: stop
+          value: true
+    - id: registed_0_1650547541236943008
+      position:
+        x: 109.6576
+        y: 91.1919
+        z: -3
+      euler_angles:
+        x: 8.742263e-08
+        y: 1.509961e-07
+        z: 2.493849
+    - id: registed_0_1773120473710804768
+      position:
+        x: 85.99493
+        y: 22.1643
+        z: -3
+      euler_angles:
+        x: 7.451317e-08
+        y: 2.09863e-07
+        z: 0.939207
+    - id: registed_0_1773122678327395136
+      position:
+        x: 40.93855
+        y: 174.5887
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: 2
+      position:
+        x: -136.5868
+        y: 46.9673
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.886294
+      properties:
+        - key: goal_radius
+          value: 1.0
+    - id: registed_0_1773119796295600960
+      position:
+        x: -19.60914
+        y: 46.74213
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+    - id: registed_0_1650547676243328160
+      position:
+        x: -82.59657
+        y: 48.01924
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8038393
+    - id: registed_0_1773122589122318624
+      position:
+        x: 97.83445
+        y: 147.0744
+        z: -3.000001
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57

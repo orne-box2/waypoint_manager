@@ -3,14 +3,30 @@ waypoint_reconfigure_config:
   name: "description"
   default_local_inflation: 0.55 
   default_global_inflation: 0.55 
-  default_trajectory_limit_vel: 0.5
-  default_trajectory_limit_theta: 1.0 
+  default_trajectory_limit_vel: 1.0
+  default_trajectory_limit_theta: 2.0 
   areas:
-#    - name: "test"
-#      start_id: registed_0_1654677617925209392 
-#      end_id: registed_0_1654677629207839171
-#      properties:
-#        - key: trajectory_limit_theta
-#          value: 0.01 
-#        - key: local_inflation
-#          value: 1.0
+   - name: "2to6_saka"
+     start_id: registed_0_1773749190996855168
+     end_id: registed_0_1650549739750079712
+     properties:
+       - key: local_cost_cloud
+         value: false
+   - name: "hosoitoko1"
+     start_id: registed_0_1650548559313191360
+     end_id: registed_0_1773122637091871360
+     properties:
+       - key: trajectory_limit_vel
+         value: 0.8
+   - name: "hosoitoko2"
+     start_id: registed_0_1773122674805135264
+     end_id: registed_0_1773123030866639488
+     properties:
+        - key: trajectory_limit_vel
+          value: 0.8
+   - name: "pairon"
+      start_id: registed_0_1773123030866639488
+      end_id: registed_0_1650549932013220192
+      properties:
+        - key: trajectory_limit_vel
+          value: 0.7

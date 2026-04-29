@@ -11,14 +11,19 @@ default_goal_radius: 1.8 # 1.0
 set_goal_radius: 1.0
 #waypoints_file: $(find waypoint_server)/config/waypoints/test.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/20240625_tsuda_ch.yaml
-waypoints_file: $(find waypoint_server)/config/waypoints/20250607_tsuda_ch.yaml
+#waypoints_file: $(find waypoint_server)/config/waypoints/20250607_tsuda_ch.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/25_open.yaml
+#waypoints_file: $(find waypoint_server)/config/waypoints/3F0303.yaml
+waypoints_file: $(find waypoint_server)/config/waypoints/20260310_tsudanuma.yaml
+
 
 
 #route_file: $(find waypoint_server)/config/routes/test.yaml
 #route_file: $(find waypoint_server)/config/routes/20240625_tsuda_ch.yaml
-route_file: $(find waypoint_server)/config/routes/20250607_tsuda_ch.yaml
+#route_file: $(find waypoint_server)/config/routes/20250607_tsuda_ch.yaml
 # route_file: $(find waypoint_server)/config/routes/25_open.yaml
+#route_file: $(find waypoint_server)/config/routes/3F0303.yaml
+route_file: $(find waypoint_server)/config/routes/20260310_tsudanuma.yaml
 
 
 enable_loop: true
