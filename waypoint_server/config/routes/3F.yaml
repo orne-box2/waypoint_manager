@@ -2,14 +2,10 @@ waypoint_server:
   route:
     ids:
       - 1
-      - 2
       - 3
       - registed_0_1650547097143051616
       - registed_0_1744525850871571040
       - registed_0_1744525877836597312
-      - registed_0_1744525890795992768
-      - registed_0_1744525932584876896
-      - registed_0_1744525943053061792
       - registed_0_1744525956331915328
       - registed_0_1744524951190301728
     count_of_skip_ids: 1
