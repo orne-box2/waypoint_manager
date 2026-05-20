@@ -15,8 +15,8 @@ set_goal_radius: 1.0
 #waypoints_file: $(find waypoint_server)/config/waypoints/25_open.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/3F0303.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/20260310_tsudanuma.yaml
-waypoints_file: $(find waypoint_server)/config/waypoints/3F.yaml
-
+#waypoints_file: $(find waypoint_server)/config/waypoints/3F.yaml
+waypoints_file: $(find waypoint_server)/config/waypoints/tsudanuma_test.yaml
 
 
 #route_file: $(find waypoint_server)/config/routes/test.yaml
@@ -25,8 +25,8 @@ waypoints_file: $(find waypoint_server)/config/waypoints/3F.yaml
 # route_file: $(find waypoint_server)/config/routes/25_open.yaml
 #route_file: $(find waypoint_server)/config/routes/3F0303.yaml
 #route_file: $(find waypoint_server)/config/routes/20260310_tsudanuma.yaml
-route_file: $(find waypoint_server)/config/routes/3F.yaml
-
+#route_file: $(find waypoint_server)/config/routes/3F.yaml
+route_file: $(find waypoint_server)/config/routes/tsudanuma_test.yaml
 
 enable_loop: true
 debug: false
