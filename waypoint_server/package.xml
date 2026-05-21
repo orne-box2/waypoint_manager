@@ -58,6 +58,14 @@
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>waypoint_manager_msgs</exec_depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>tf</depend>
+  <depend>tf2_ros</depend>
+
+
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

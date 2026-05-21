@@ -15,6 +15,9 @@ find_package(catkin REQUIRED COMPONENTS
     std_srvs
     tf
     waypoint_manager_msgs
+    rospy
+    sensor_msgs
+    tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -213,10 +216,10 @@ target_compile_features(waypoint_to_posestamped_node
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# catkin_install_python(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+  catkin_install_python(PROGRAMS
+    scripts/joy_waypoint_recorder.py
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
@@ -252,7 +255,7 @@ install(DIRECTORY
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_waypoint_server.cpp)
+#catkin_add_gtest(${PROJECT_NAME}-test test/test_waypoint_server.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

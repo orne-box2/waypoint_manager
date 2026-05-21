@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- 必要に応じてまとめ起動するか切り替える -->
+  <arg name="launch_nav" default="true"/>
+  <arg name="launch_waypoint_server" default="true"/>
+  <arg name="launch_teleop" default="true"/>
+
+  <!-- teleop_joy 側の設定 -->
+  <arg name="joy_config" default="elecom_joy"/>
+  <arg name="joy_dev" default="/dev/input/js0"/>
+
+  <!-- joy waypoint recorder 側の設定 -->
+  <arg name="joy_topic" default="/joy"/>
+
+  <arg name="map_frame" default="map"/>
+  <arg name="robot_frame" default="base_link"/>
+
+  <!-- joyボタン番号 -->
+  <arg name="register_button" default="0"/>
+  <arg name="save_button" default="1"/>
+  <arg name="start_button" default="2"/>
+  <arg name="pause_button" default="3"/>
+
+  <!-- trueなら waypoint登録ごとに waypoint と route を保存 -->
+  <arg name="auto_save" default="false"/>
+
+  <!-- joystick teleop を必要なら起動 -->
+  <include if="$(arg launch_teleop)"
+           file="$(find icart_mini_driver)/launch/teleop_joy.launch">
+    <arg name="joy_config" value="$(arg joy_config)"/>
+    <arg name="joy_dev" value="$(arg joy_dev)"/>
+  </include>
+
+  <!-- waypoint_server_options.launch を必要なら起動 -->
+  <include if="$(arg launch_waypoint_server)"
+           file="$(find waypoint_server)/launch/waypoint_server_options.launch"/>
+
+  <!-- waypoint走行ナビを必要なら起動 -->
+  <include if="$(arg launch_nav)"
+           file="$(find orne_box_navigation_executor)/launch/play_waypoints_nav_box.launch"/>
+
+  <!-- joyボタンでwaypoint登録・route追加・保存・開始・一時停止 -->
+  <node pkg="waypoint_server"
+        type="joy_waypoint_recorder.py"
+        name="joy_waypoint_recorder"
+        output="screen">
+
+    <param name="joy_topic" value="$(arg joy_topic)"/>
+
+    <param name="map_frame" value="$(arg map_frame)"/>
+    <param name="robot_frame" value="$(arg robot_frame)"/>
+
+    <param name="register_button" value="$(arg register_button)"/>
+    <param name="save_button" value="$(arg save_button)"/>
+    <param name="start_button" value="$(arg start_button)"/>
+    <param name="pause_button" value="$(arg pause_button)"/>
+
+    <param name="auto_save" value="$(arg auto_save)"/>
+
+    <param name="regist_pose_topic" value="/waypoint_manager/waypoint/regist_pose"/>
+    <param name="waypoints_topic" value="/waypoint_manager/waypoints"/>
+    <param name="append_route_topic" value="/waypoint_manager/route/append"/>
+
+    <!-- waypoint と route の両方を保存する -->
+    <param name="save_service" value="/waypoint_manager/waypoint_server/save"/>
+
+    <!-- start / pause 用 -->
+    <param name="reset_route_service" value="/waypoint_manager/waypoint_server/reset_route"/>
+    <param name="switch_cancel_service" value="/waypoint_manager/waypoint_server/switch_cancel"/>
+
+    <param name="cooldown_sec" value="1.0"/>
+    <param name="wait_new_id_timeout" value="5.0"/>
+  </node>
+</launch>
+
+
