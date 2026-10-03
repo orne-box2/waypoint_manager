@@ -1,0 +1,20 @@
+waypoint_server:
+  scale: 1
+  position:
+    x: 1
+    y: 2
+    z: 3
+  euler_angles:
+    x: 0
+    y: 0
+    z: 1.57
+  waypoints:
+    - id: registed_joy_59ac840454704028837cdf51be850c90
+      position:
+        x: -73.36786
+        y: -344.1939
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.901186

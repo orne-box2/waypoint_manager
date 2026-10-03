@@ -1,0 +1,4 @@
+waypoint_server:
+  route:
+    ids:
+    count_of_skip_ids: 1
