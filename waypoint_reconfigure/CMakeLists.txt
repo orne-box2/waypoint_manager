@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
     roslib
     tf
     geometry_msgs
+    nav_msgs
     waypoint_manager_msgs
     dynamic_reconfigure
 )

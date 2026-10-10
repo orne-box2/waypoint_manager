@@ -23,6 +23,7 @@
 #include <std_srvs/Empty.h>
 #include <std_msgs/Bool.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <nav_msgs/LoadMap.h>
 #include <dynamic_reconfigure/Reconfigure.h>
 #include <dynamic_reconfigure/Config.h>
 #include <dynamic_reconfigure/DoubleParameter.h>
@@ -38,6 +39,8 @@ namespace {
     static float current_goal_radius = default_goal_radius;
     static Eigen::Vector2f current_position = Eigen::Vector2f::Zero();
     static std::string old_id, file_path_, start_id, end_id, area_name;
+    static std::string default_costmap_map;
+    static bool has_default_costmap_map = false;
     static float default_global_inflation, default_local_inflation, default_trajectory_limit_vel, default_trajectory_limit_theta, default_odom_rot_dev_per_rot, default_odom_rot_dev_per_fw, default_odom_fw_dev_per_rot, default_odom_fw_dev_per_fw;
     static YAML::Node yaml_config;
     static float global_inflation, local_inflation, trajectory_limit_vel, trajectory_limit_theta, odom_rot_dev_per_rot, odom_rot_dev_per_fw, odom_fw_dev_per_rot, odom_fw_dev_per_fw; //key name
@@ -51,6 +54,7 @@ void change_odom_rot_dev_per_rot_param(const std::string& param_name, double val
 void change_odom_rot_dev_per_fw_param(const std::string& param_name, double value);
 void change_odom_fw_dev_per_rot_param(const std::string& param_name, double value);
 void change_odom_fw_dev_per_fw_param(const std::string& param_name, double value);
+void change_costmap_map_param(const std::string& map_url);
 
 void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
     try {
@@ -105,7 +109,11 @@ void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
                         }
                         if (p["key"].as<std::string>() == "odom_fw_dev_per_fw") {
                             change_odom_fw_dev_per_fw_param("odom_fw_dev_per_fw", default_odom_fw_dev_per_fw);
-                        }                                        
+                        }
+                        if (p["key"].as<std::string>() == "map" && has_default_costmap_map) {
+                            ROS_WARN("Reset costmap map to default %s", default_costmap_map.c_str());
+                            change_costmap_map_param(default_costmap_map);
+                        }
                     }
                     is_reconfigure.store(false);
                 }
@@ -165,6 +173,11 @@ void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
                             ROS_WARN("Set odom_fw_dev_per_fw %f", odom_fw_dev_per_fw);
                             change_odom_fw_dev_per_fw_param("odom_fw_dev_per_fw", odom_fw_dev_per_fw);
                         }
+                        if (p["key"].as<std::string>() == "map") {
+                            std::string map_url = p["value"].as<std::string>();
+                            ROS_WARN("Set costmap map %s", map_url.c_str());
+                            change_costmap_map_param(map_url);
+                        }
                     }
                 }
             }
@@ -196,6 +209,11 @@ void readYaml(ros::NodeHandle& private_nh) {
         default_odom_rot_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_fw"].as<float>();
         default_odom_fw_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_rot"].as<float>();
         default_odom_fw_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_fw"].as<float>();
+
+        if (yaml_config["waypoint_reconfigure_config"]["default_map"]) {
+            default_costmap_map = yaml_config["waypoint_reconfigure_config"]["default_map"].as<std::string>();
+            has_default_costmap_map = true;
+        }
 
     }
     catch(const std::exception& e)
@@ -285,6 +303,20 @@ void change_odom_fw_dev_per_fw_param(const std::string& param_name, double value
     std::string param_path = "/emcl2_node/" + param_name;
 
     ros::param::set(param_path, value);
+}
+
+void change_costmap_map_param(const std::string& map_url) {
+    nav_msgs::LoadMap::Request req;
+    nav_msgs::LoadMap::Response resp;
+    req.map_url = map_url;
+
+    if (ros::service::call("/map_server_for_costmap/change_map", req, resp) &&
+        resp.result == nav_msgs::LoadMap::Response::RESULT_SUCCESS) {
+        ROS_WARN("Changed costmap map to %s", map_url.c_str());
+    }
+    else {
+        ROS_WARN("Failed to change costmap map to %s", map_url.c_str());
+    }
 }
 
 auto main(int argc, char **argv) -> int {

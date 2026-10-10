@@ -53,10 +53,12 @@
   <build_depend>tf</build_depend>
   <build_depend>roslib</build_depend>
   <build_depend>geometry_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
   <build_depend>waypoint_manager_msgs</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
   <exec_depend>tf</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
   <exec_depend>waypoint_manager_msgs</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->

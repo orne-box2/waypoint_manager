@@ -4,13 +4,21 @@ waypoint_reconfigure_config:
   default_local_inflation: 0.55 
   default_global_inflation: 0.55 
   default_trajectory_limit_vel: 0.5
-  default_trajectory_limit_theta: 1.0 
+  default_trajectory_limit_theta: 1.0
+  # map切り替え機能を使う場合、エリア終了時に戻す「通常の」costmap地図をここに指定する
+  # default_map: /path/to/mymap_for_costmap.yaml
   areas:
 #    - name: "test"
-#      start_id: registed_0_1654677617925209392 
+#      start_id: registed_0_1654677617925209392
 #      end_id: registed_0_1654677629207839171
 #      properties:
 #        - key: trajectory_limit_theta
-#          value: 0.01 
+#          value: 0.01
 #        - key: local_inflation
 #          value: 1.0
+#    - name: "狭い通路の進入禁止エリア切り替え例"
+#      start_id: registed_0_xxxxxxxxxxxxxxxxxx   # このwaypointに到達したらmap切り替え開始
+#      end_id: registed_0_yyyyyyyyyyyyyyyyyy     # このwaypointに到達したらdefault_mapに戻す
+#      properties:
+#        - key: map
+#          value: /path/to/3F_standby_3_for_costmap.yaml
