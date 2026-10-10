@@ -5,7 +5,7 @@ waypoint_reconfigure_config:
   default_global_inflation: 0.55 
   default_trajectory_limit_vel: 0.5
   default_trajectory_limit_theta: 1.0
-  default_map: /home/orne_box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3.yaml
+  default_map: /home/orne-box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3.yaml
   #/path/to/mymap_for_costmap.yaml
   # map切り替え機能を使う場合、エリア終了時に戻す「通常の」costmap地図をここに指定する
   # default_map: /path/to/mymap_for_costmap.yaml
@@ -15,25 +15,25 @@ waypoint_reconfigure_config:
       end_id: registed_0_1791616071109000004     # このwaypointに到達したらdefault_mapに戻す
       properties:
         - key: map
-          value: /home/orne_box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_2.yaml
+          value: /home/orne-box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_2.yaml
     - name: "狭い通路の進入禁止エリア切り替え例2"
       start_id: registed_0_1791616071109000004   # このwaypointに到達したらmap切り替え開始
       end_id: registed_0_1791616078737000006     # このwaypointに到達したらdefault_mapに戻す
       properties:
         - key: map
-          value: /home/orne_box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_3.yaml
+          value: /home/orne-box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_3.yaml
     - name: "狭い通路の進入禁止エリア切り替え例3"
       start_id: registed_0_1791616078737000006   # このwaypointに到達したらmap切り替え開始
       end_id: registed_0_1791616153319000014     # このwaypointに到達したらdefault_mapに戻す
       properties:
         - key: map
-          value: /home/orne_box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_4.yaml
+          value: /home/orne-box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_4.yaml
     - name: "狭い通路の進入禁止エリア切り替え例4"
       start_id: registed_0_1791616153319000014   # このwaypointに到達したらmap切り替え開始
       end_id: registed_0_1791619655573000017     # このwaypointに到達したらdefault_mapに戻す
       properties:
         - key: map
-          value: /home/orne_box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_5.yaml
+          value: /home/orne-box/shiozawa_ws/src/orne-box/orne_box_navigation_executor/maps/3F_standby_3_5.yaml
 #    - name: "test"
 #      start_id: registed_0_1654677617925209392
 #      end_id: registed_0_1654677629207839171
