@@ -205,15 +205,16 @@ void readYaml(ros::NodeHandle& private_nh) {
         default_local_inflation = yaml_config["waypoint_reconfigure_config"]["default_local_inflation"].as<float>();
         default_trajectory_limit_vel = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_vel"].as<float>();
         default_trajectory_limit_theta = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_theta"].as<float>();
-        default_odom_rot_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_rot"].as<float>();
-        default_odom_rot_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_fw"].as<float>();
-        default_odom_fw_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_rot"].as<float>();
-        default_odom_fw_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_fw"].as<float>();
 
         if (yaml_config["waypoint_reconfigure_config"]["default_map"]) {
             default_costmap_map = yaml_config["waypoint_reconfigure_config"]["default_map"].as<std::string>();
             has_default_costmap_map = true;
         }
+
+        default_odom_rot_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_rot"].as<float>();
+        default_odom_rot_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_fw"].as<float>();
+        default_odom_fw_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_rot"].as<float>();
+        default_odom_fw_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_fw"].as<float>();
 
     }
     catch(const std::exception& e)
