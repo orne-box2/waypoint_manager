@@ -16,7 +16,7 @@ waypoints_file: $(find waypoint_server)/config/waypoints/3F.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/25_open.yaml
 
 
-waypoints_file: $(find waypoint_server)/config/waypoints/3F.yaml
+route_file: $(find waypoint_server)/config/routes/3F.yaml
 #route_file: $(find waypoint_server)/config/routes/test.yaml
 #route_file: $(find waypoint_server)/config/routes/20240625_tsuda_ch.yaml
 #route_file: $(find waypoint_server)/config/routes/20250607_tsuda_ch.yaml
