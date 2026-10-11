@@ -62,6 +62,8 @@ struct Zone {
 };
 std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::string>& route,
                            const std::map<std::string,Waypoint>& waypoints) {
+    if (!config.IsMap()||!config["areas"]||!config["areas"].IsSequence())
+        throw std::invalid_argument("Queue configuration areas must be a sequence");
     std::vector<Zone> zones; std::set<std::string> used;
     for (const auto& area:config["areas"]) {
         if (!area["queue_wait"]||!area["queue_wait"].as<bool>()) continue;
@@ -91,7 +93,6 @@ std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::stri
             throw std::invalid_argument("Approach and stop goal must be before the stop line");
         zones.push_back({area["name"].as<std::string>(),end,ids,Path(points),p,goal,yaw});
     }
-    if (zones.empty()) throw std::invalid_argument("No queue_wait: true areas configured");
     return zones;
 }
 struct Grid {
@@ -180,7 +181,9 @@ public:
         }
         if (zone<0) {
             for (size_t i=0;i<zones.size();++i) if (zones[i].ids.count(id)) { zone=i; break; }
-            waiting=true; clear_since=NAN;
+            // Entry alone does not require a restart delay. Obstacles and
+            // invalid observations still call pause() and require clear_duration.
+            waiting=false; clear_since=NAN;
         }
         identity=id;
     }
@@ -325,11 +328,12 @@ class Node {
         return result;
     }
     void stop() { cmd_pub.publish(geometry_msgs::Twist{}); }
-    void cancel() { cancel_pub.publish(actionlib_msgs::GoalID{}); }
-    void publishGoal() {
+    void cancel() { goal_stamp=NAN; cancel_pub.publish(actionlib_msgs::GoalID{}); }
+    void publishGoal(bool target_changed=true) {
         geometry_msgs::PoseStamped goal;
         goal.header.frame_id=frame; goal.header.stamp=ros::Time::now(); goal.pose=current_waypoint.pose;
-        goal_stamp=goal.header.stamp.toSec(); goal_pub.publish(goal);
+        if (target_changed||!std::isfinite(goal_stamp)) goal_stamp=goal.header.stamp.toSec();
+        goal_pub.publish(goal);
     }
     void fail(const std::string& reason) {
         fault=true; cancel(); stop(); if (controller) controller->fault=true;
@@ -391,6 +395,7 @@ class Node {
         waypoints=std::move(updated); waypoints_ready=true; initialize();
     }
     void onWaypoint(const waypoint_manager_msgs::Waypoint::ConstPtr& msg) {
+        const bool goal_changed=!waypoint_ready||msg->identity!=current_waypoint.identity||msg->pose!=current_waypoint.pose;
         current_waypoint=*msg; waypoint_ready=true;
         if (!queue_enabled) { publishGoal(); return; }
         if (!controller||fault) return;
@@ -400,7 +405,9 @@ class Node {
             std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
         }
         if (controller->fault) { fail("Waypoint changed before operator release"); return; }
-        if (controller->zone<0) publishGoal();
+        // Preserve the server's periodic goal resend. Only a different or
+        // canceled target needs a fresh command before relaying velocity.
+        if (controller->zone<0) publishGoal(goal_changed);
     }
     void onRunning(const std_msgs::Bool::ConstPtr& msg) {
         running=msg->data; if (!running) { cancel(); stop(); if (controller) controller->pause(); }
@@ -449,6 +456,9 @@ class Node {
         } catch (const std::exception& e) { maps.erase(key); ROS_ERROR("queue_wait grid: %s",e.what()); }
     }
     queue_wait::Decision decision(double now) {
+        // Normal navigation does not use queue sensor/collision checks. Avoid
+        // waiting for queue map transforms in the normal velocity relay.
+        if (controller->zone<0) return controller->step(now,nullptr,NAN,nullptr,NAN,NAN,{});
         queue_wait::Pose pose{}; bool pose_valid=false; double pose_stamp=NAN,map_stamp=NAN;
         try {
             tf::StampedTransform t; tf.lookupTransform(frame,base,ros::Time(0),t);
