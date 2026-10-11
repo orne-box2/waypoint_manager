@@ -286,7 +286,6 @@ public:
 #include <tf/transform_listener.h>
 #include <tf/message_filter.h>
 #include <actionlib_msgs/GoalID.h>
-#include <actionlib_msgs/GoalStatusArray.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/OccupancyGrid.h>
@@ -330,10 +329,11 @@ class Node {
     }
     void stop() { cmd_pub.publish(geometry_msgs::Twist{}); }
     void cancel() { goal_stamp=NAN; cancel_pub.publish(actionlib_msgs::GoalID{}); }
-    void publishGoal() {
+    void publishGoal(bool target_changed=true) {
         geometry_msgs::PoseStamped goal;
         goal.header.frame_id=frame; goal.header.stamp=ros::Time::now(); goal.pose=current_waypoint.pose;
-        goal_stamp=goal.header.stamp.toSec(); goal_pub.publish(goal);
+        if (target_changed||!std::isfinite(goal_stamp)) goal_stamp=goal.header.stamp.toSec();
+        goal_pub.publish(goal);
     }
     void fail(const std::string& reason) {
         fault=true; cancel(); stop(); if (controller) controller->fault=true;
@@ -405,27 +405,12 @@ class Node {
             std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
         }
         if (controller->fault) { fail("Waypoint changed before operator release"); return; }
-        // The server repeats its current waypoint as a heartbeat. Resending an
-        // unchanged goal would reset move_base and suppress velocity until its
-        // next command. A canceled goal still needs resending on operator resume.
-        if (controller->zone<0&&(goal_changed||!std::isfinite(goal_stamp))) publishGoal();
+        // Preserve the server's periodic goal resend. Only a different or
+        // canceled target needs a fresh command before relaying velocity.
+        if (controller->zone<0) publishGoal(goal_changed);
     }
     void onRunning(const std_msgs::Bool::ConstPtr& msg) {
         running=msg->data; if (!running) { cancel(); stop(); if (controller) controller->pause(); }
-    }
-    void onStatus(const actionlib_msgs::GoalStatusArray::ConstPtr& msg) {
-        if (!controller||fault||!running||controller->zone>=0||!std::isfinite(goal_stamp)) return;
-        // Heartbeats no longer resend healthy goals, but a failed normal goal
-        // still needs the legacy retry. Ignore results from superseded goals.
-        const actionlib_msgs::GoalStatus* latest=nullptr;
-        for (const auto& status:msg->status_list)
-            if (!latest||status.goal_id.stamp>latest->goal_id.stamp) latest=&status;
-        if (!latest||latest->goal_id.stamp.toSec()<goal_stamp) return;
-        if (latest->status==actionlib_msgs::GoalStatus::ABORTED||
-            latest->status==actionlib_msgs::GoalStatus::REJECTED) {
-            goal_stamp=NAN; stop();
-            ROS_WARN_THROTTLE(2,"queue_wait: normal goal failed; retry on next waypoint update");
-        }
     }
     void onCommand(const geometry_msgs::Twist::ConstPtr& msg) {
         const auto& l=msg->linear; const auto& a=msg->angular;
@@ -603,9 +588,7 @@ public:
         private_nh.param("pose_topic",goal_topic,std::string("move_base_simple/goal"));
         private_nh.param("waypoint_topic",waypoint_topic,std::string("waypoint"));
         private_nh.param("use_queue_wait",queue_enabled,false);
-        // Retain the current goal for a reconnecting move_base now that queue
-        // mode no longer republishes unchanged goals on every heartbeat.
-        goal_pub=nh.advertise<geometry_msgs::PoseStamped>(goal_topic,1,latch||queue_enabled);
+        goal_pub=nh.advertise<geometry_msgs::PoseStamped>(goal_topic,1,latch);
         subscribers.push_back(nh.subscribe(waypoint_topic,1,&Node::onWaypoint,this));
         if (!queue_enabled) return;
         private_nh.param("cmd_vel_in",input_topic,std::string("/queue_wait/cmd_vel_in"));
@@ -631,7 +614,6 @@ public:
         subscribers.push_back(nh.subscribe<sensor_msgs::LaserScan>("/scan",1,
             [this](const sensor_msgs::LaserScan::ConstPtr& msg) { scan_filter->add(msg); }));
         subscribers.push_back(nh.subscribe(input_topic,1,&Node::onCommand,this));
-        subscribers.push_back(nh.subscribe("/move_base/status",1,&Node::onStatus,this));
         subscribers.push_back(nh.subscribe("/waypoint_manager/waypoint_server/running",1,&Node::onRunning,this));
         subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/move_base/local_costmap/costmap",1,
             [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("local",m); }));
