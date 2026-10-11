@@ -59,6 +59,7 @@ struct Waypoint { Point position; bool stop; };
 struct Zone {
     std::string name,stop_id; std::set<std::string> ids; Path path;
     Point line,stop_goal; double line_yaw;
+    std::map<std::string,Point> stop_waypoints;
 };
 std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::string>& route,
                            const std::map<std::string,Waypoint>& waypoints) {
@@ -73,11 +74,13 @@ std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::stri
         auto begin=std::find(route.begin(),route.end(),start)-route.begin();
         auto finish=std::find(route.begin(),route.end(),end)-route.begin();
         if (begin>=finish) throw std::invalid_argument("Queue start_id must precede end_id");
-        std::set<std::string> ids;
+        std::set<std::string> ids; std::map<std::string,Point> stops;
         for (auto i=begin;i<=finish;++i) {
             if (std::count(route.begin(),route.end(),route[i])!=1||!used.insert(route[i]).second)
                 throw std::invalid_argument("Queue IDs must be unique; queue areas must not overlap");
             ids.insert(route[i]);
+            const auto& waypoint=waypoints.at(route[i]);
+            if (waypoint.stop) stops.emplace(route[i],waypoint.position);
         }
         if (!waypoints.at(end).stop) throw std::invalid_argument("Queue end waypoint needs stop: true");
         std::vector<Point> points;
@@ -91,7 +94,7 @@ std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::stri
         auto signedDistance=[&](Point v) { return (v.x-p.x)*std::cos(yaw)+(v.y-p.y)*std::sin(yaw); };
         if (signedDistance(points.front())>=0||signedDistance(goal)>=0)
             throw std::invalid_argument("Approach and stop goal must be before the stop line");
-        zones.push_back({area["name"].as<std::string>(),end,ids,Path(points),p,goal,yaw});
+        zones.push_back({area["name"].as<std::string>(),end,ids,Path(points),p,goal,yaw,std::move(stops)});
     }
     return zones;
 }
@@ -159,7 +162,7 @@ public:
     static constexpr double control_rate=20;
     std::vector<Zone> zones; std::vector<Point> footprint;
     int zone=-1;
-    bool fault=false,released=false,waiting=true,line_reached=false;
+    bool fault=false,released=false,waiting=true,line_reached=false,waypoint_reached=false;
     double clear_since=NAN,last_time=NAN;
     std::string identity; Decision last{"NORMAL"};
     Controller(std::vector<Zone> z,const YAML::Node& parameters,std::vector<Point> f):zones(std::move(z)),footprint(std::move(f)) {
@@ -185,6 +188,8 @@ public:
             // invalid observations still call pause() and require clear_duration.
             waiting=false; clear_since=NAN;
         }
+        // Periodic notifications of the same target must retain its stop.
+        if (id!=identity) waypoint_reached=false;
         identity=id;
     }
     void pause() { waiting=true; clear_since=NAN; }
@@ -247,12 +252,25 @@ public:
             (identity==z.stop_id&&std::hypot(pose->x-z.stop_goal.x,pose->y-z.stop_goal.y)<=p["stop_goal_radius"]))
             line_reached=true;
         if (!released&&line_reached) return hold("STOP_LINE");
+        double target_end=z.path.length,stop_remaining=INFINITY;
+        auto stop=z.stop_waypoints.find(identity);
+        if (identity!=z.stop_id&&stop!=z.stop_waypoints.end()) {
+            target_end=z.path.project(stop->second).along;
+            stop_remaining=target_end-q.along;
+            if (stop_remaining<=0||std::hypot(pose->x-stop->second.x,pose->y-stop->second.y)<=p["stop_goal_radius"])
+                waypoint_reached=true;
+        }
         if (waiting) return hold("QUEUE_WAIT");
         if (released) { last={"RELEASED_WAITING_FOR_NEXT_WAYPOINT",true,false}; return last; }
-        auto target=z.path.pointAt(std::min(q.along+p["lookahead"],z.path.length));
+        // Zero velocity persists until Next Waypoint selects another target.
+        // hold=false permits that manual action; stop:true in waypoint_server
+        // prevents automatic advancement. Obstacles and missing data still hold.
+        if (waypoint_reached) { last={"STOP_WAYPOINT",true,false}; return last; }
+        auto target=z.path.pointAt(std::min(q.along+p["lookahead"],target_end));
         double error=wrap(std::atan2(target.y-pose->y,target.x-pose->x)-pose->yaw);
         double angular=std::max(-p["max_angular"],std::min(p["max_angular"],1.5*error));
         double available=std::max(0.0,std::min(remaining-p["stop_margin"],gap-p["detection_distance"]));
+        available=std::max(0.0,std::min(available,stop_remaining));
         double speed=std::min(p["max_speed"],std::sqrt(2*p["deceleration"]*available));
         speed=std::min(speed,available/approachTime());
         speed*=std::max(0.0,std::cos(error)); if (std::abs(error)>.6) speed=0;
