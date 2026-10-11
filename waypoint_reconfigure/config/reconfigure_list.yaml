@@ -8,9 +8,9 @@ waypoint_reconfigure_config:
   # 3F実機試験用。シミュレータと同じ0→2は通常走行、2→4は列待ち。
   queue_wait:
     max_speed: 0.3
-    detection_distance: 1.0     # 赤枠と停止判定：車体前端から経路に沿って1m先まで
+    detection_distance: 0.8     # 赤枠と停止判定：車体前端から経路に沿って1m先まで
     detection_half_width: 0.4   # 経路中心から左右0.4m
-    resume_distance: 1.3        # 赤枠より先まで自動で確認し、1.3m以上空いたら再開候補
+    resume_distance: 1.0        # 赤枠より先まで自動で確認し、1.3m以上空いたら再開候補
     clear_duration: 2.0
   areas:
    - name: crossing_queue_3F
