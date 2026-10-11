@@ -7,9 +7,9 @@ robot_base_frame: base_link
 global_frame: map
 goal_publish_frequency: 0.5
 goal_check_frequency: 1.0
-default_goal_radius: 1.0 # 1.0
+default_goal_radius: 1.8
 set_goal_radius: 1.0
-waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba0926.yaml
+waypoints_file: $(find waypoint_server)/config/waypoints/3F.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/20240625_tsuda_ch.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/20250607_tsuda_ch.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/25_open.yaml
@@ -17,7 +17,7 @@ waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba0926.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/1m.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/1m_soto.yaml
 
-route_file: $(find waypoint_server)/config/routes/tsukuba0926.yaml
+route_file: $(find waypoint_server)/config/routes/3F.yaml
 #route_file: $(find waypoint_server)/config/routes/20240625_tsuda_ch.yaml
 #route_file: $(find waypoint_server)/config/routes/20250607_tsuda_ch.yaml
 #route_file: $(find waypoint_server)/config/routes/25_open.yaml
@@ -26,5 +26,5 @@ route_file: $(find waypoint_server)/config/routes/tsukuba0926.yaml
 #route_file: $(find waypoint_server)/config/routes/1m_soto.yaml
 
 
-enable_loop: true
+enable_loop: false
 debug: false

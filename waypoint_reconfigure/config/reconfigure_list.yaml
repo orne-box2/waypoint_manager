@@ -5,7 +5,7 @@ waypoint_reconfigure_config:
   default_global_inflation: 0.55
   default_trajectory_limit_vel: 1.0
   default_trajectory_limit_theta: 2.0
-  # 列待ちの共通設定。下のcrossing_queue_3Fは3Fでの試験用区間。
+  # 3F実機試験用。シミュレータと同じ0→2は通常走行、2→4は列待ち。
   queue_wait:
     max_speed: 0.3
     detection_distance: 1.0     # 赤枠と停止判定：車体前端から経路に沿って1m先まで
