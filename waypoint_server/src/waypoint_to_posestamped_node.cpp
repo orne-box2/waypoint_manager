@@ -281,6 +281,7 @@ public:
 
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
+#include <tf/message_filter.h>
 #include <actionlib_msgs/GoalID.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
@@ -297,6 +298,7 @@ public:
 class Node {
     ros::NodeHandle nh,private_nh{"~"};
     tf::TransformListener tf;
+    std::unique_ptr<tf::MessageFilter<sensor_msgs::LaserScan>> scan_filter;
     ros::Publisher goal_pub,cmd_pub,cancel_pub,active_pub,hold_pub,state_pub,detection_pub;
     std::vector<ros::Subscriber> subscribers;
     ros::Timer timer; ros::ServiceServer release_service;
@@ -411,18 +413,32 @@ class Node {
         raw_cmd=*msg; cmd_stamp=ros::Time::now().toSec();
     }
     void onScan(const sensor_msgs::LaserScan::ConstPtr& msg) {
-        scan_valid=false; scan.clear(); scan_stamp=msg->header.stamp.toSec();
+        const double stamp=msg->header.stamp.toSec(),now=ros::Time::now().toSec();
+        const double timeout=controller?controller->p.at("scan_timeout"):.5;
+        // Queued scans retain their capture time. Delayed or out-of-order
+        // messages must not refresh stale data or replace a newer observation.
+        if (msg->header.stamp.isZero()||now-stamp<-.05||now-stamp>timeout) return;
+        if (std::isfinite(scan_stamp)&&scan_stamp<=now+.05&&stamp<scan_stamp) return;
         try {
             if (!std::isfinite(msg->angle_min)||!std::isfinite(msg->angle_increment)||msg->angle_increment<=0)
                 throw std::runtime_error("Invalid scan angles");
             auto t=transform(frame,msg->header.frame_id,msg->header.stamp);
+            std::vector<queue_wait::Point> updated;
             for (size_t i=0;i<msg->ranges.size();++i) {
                 double r=msg->ranges[i],a=msg->angle_min+i*msg->angle_increment;
                 if (std::isfinite(r)&&r>=msg->range_min&&r<=msg->range_max)
-                    scan.push_back(queue_wait::transform({r*std::cos(a),r*std::sin(a)},t));
+                    updated.push_back(queue_wait::transform({r*std::cos(a),r*std::sin(a)},t));
             }
+            scan=std::move(updated); scan_stamp=stamp;
             scan_valid=!scan.empty(); // all NaN/inf is missing data, not front-clear evidence
-        } catch (const std::exception& e) { ROS_WARN_THROTTLE(2,"queue_wait scan: %s",e.what()); }
+        } catch (const tf::TransformException& e) {
+            // Preserve the last successful scan only until scan_timeout;
+            // a brief TF race must not reset the front-clear interval.
+            ROS_WARN_THROTTLE(2,"queue_wait scan: %s",e.what());
+        } catch (const std::exception& e) {
+            scan_valid=false; scan.clear(); scan_stamp=stamp;
+            ROS_WARN_THROTTLE(2,"queue_wait scan: %s",e.what());
+        }
     }
     void onMap(const std::string& key,const nav_msgs::OccupancyGrid::ConstPtr& msg) {
         try {
@@ -578,7 +594,15 @@ public:
         subscribers.push_back(nh.subscribe("/waypoint_manager/queue_wait/config",1,&Node::onConfig,this));
         subscribers.push_back(nh.subscribe("route",1,&Node::onRoute,this));
         subscribers.push_back(nh.subscribe("waypoints",1,&Node::onWaypoints,this));
-        subscribers.push_back(nh.subscribe("/scan",1,&Node::onScan,this));
+        // Wait for TF without blocking the 20 Hz velocity-control callbacks.
+        // The bounded filter delivers scans at their original timestamps.
+        scan_filter.reset(new tf::MessageFilter<sensor_msgs::LaserScan>(tf,frame,20,nh));
+        scan_filter->registerCallback([this](const sensor_msgs::LaserScan::ConstPtr& msg) { onScan(msg); });
+        scan_filter->registerFailureCallback([this](const sensor_msgs::LaserScan::ConstPtr&,tf::FilterFailureReason reason) {
+            ROS_WARN_THROTTLE(2,"queue_wait scan: dropped before TF was available (reason %d)",static_cast<int>(reason));
+        });
+        subscribers.push_back(nh.subscribe<sensor_msgs::LaserScan>("/scan",1,
+            [this](const sensor_msgs::LaserScan::ConstPtr& msg) { scan_filter->add(msg); }));
         subscribers.push_back(nh.subscribe(input_topic,1,&Node::onCommand,this));
         subscribers.push_back(nh.subscribe("/waypoint_manager/waypoint_server/running",1,&Node::onRunning,this));
         subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/move_base/local_costmap/costmap",1,
