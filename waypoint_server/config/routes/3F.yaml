@@ -6,5 +6,4 @@ waypoint_server:
       - registed_0_1791692517223276814
       - registed_0_1791692525785207549
       - registed_0_1791688376624122478
-    # RViz番号0（ID: 1）を初期位置とし、最初の目標を番号1にする。
     count_of_skip_ids: 1
