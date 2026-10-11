@@ -180,7 +180,9 @@ public:
         }
         if (zone<0) {
             for (size_t i=0;i<zones.size();++i) if (zones[i].ids.count(id)) { zone=i; break; }
-            waiting=true; clear_since=NAN;
+            // Entry alone does not require a restart delay. Obstacles and
+            // invalid observations still call pause() and require clear_duration.
+            waiting=false; clear_since=NAN;
         }
         identity=id;
     }
@@ -325,7 +327,7 @@ class Node {
         return result;
     }
     void stop() { cmd_pub.publish(geometry_msgs::Twist{}); }
-    void cancel() { cancel_pub.publish(actionlib_msgs::GoalID{}); }
+    void cancel() { goal_stamp=NAN; cancel_pub.publish(actionlib_msgs::GoalID{}); }
     void publishGoal() {
         geometry_msgs::PoseStamped goal;
         goal.header.frame_id=frame; goal.header.stamp=ros::Time::now(); goal.pose=current_waypoint.pose;
@@ -391,6 +393,7 @@ class Node {
         waypoints=std::move(updated); waypoints_ready=true; initialize();
     }
     void onWaypoint(const waypoint_manager_msgs::Waypoint::ConstPtr& msg) {
+        const bool goal_changed=!waypoint_ready||msg->identity!=current_waypoint.identity||msg->pose!=current_waypoint.pose;
         current_waypoint=*msg; waypoint_ready=true;
         if (!queue_enabled) { publishGoal(); return; }
         if (!controller||fault) return;
@@ -400,7 +403,10 @@ class Node {
             std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
         }
         if (controller->fault) { fail("Waypoint changed before operator release"); return; }
-        if (controller->zone<0) publishGoal();
+        // The server repeats its current waypoint as a heartbeat. Resending an
+        // unchanged goal would reset move_base and suppress velocity until its
+        // next command. A canceled goal still needs resending on operator resume.
+        if (controller->zone<0&&(goal_changed||!std::isfinite(goal_stamp))) publishGoal();
     }
     void onRunning(const std_msgs::Bool::ConstPtr& msg) {
         running=msg->data; if (!running) { cancel(); stop(); if (controller) controller->pause(); }
@@ -578,7 +584,9 @@ public:
         private_nh.param("pose_topic",goal_topic,std::string("move_base_simple/goal"));
         private_nh.param("waypoint_topic",waypoint_topic,std::string("waypoint"));
         private_nh.param("use_queue_wait",queue_enabled,false);
-        goal_pub=nh.advertise<geometry_msgs::PoseStamped>(goal_topic,1,latch);
+        // Retain the current goal for a reconnecting move_base now that queue
+        // mode no longer republishes unchanged goals on every heartbeat.
+        goal_pub=nh.advertise<geometry_msgs::PoseStamped>(goal_topic,1,latch||queue_enabled);
         subscribers.push_back(nh.subscribe(waypoint_topic,1,&Node::onWaypoint,this));
         if (!queue_enabled) return;
         private_nh.param("cmd_vel_in",input_topic,std::string("/queue_wait/cmd_vel_in"));
