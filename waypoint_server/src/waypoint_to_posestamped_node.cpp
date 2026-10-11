@@ -62,6 +62,8 @@ struct Zone {
 };
 std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::string>& route,
                            const std::map<std::string,Waypoint>& waypoints) {
+    if (!config.IsMap()||!config["areas"]||!config["areas"].IsSequence())
+        throw std::invalid_argument("Queue configuration areas must be a sequence");
     std::vector<Zone> zones; std::set<std::string> used;
     for (const auto& area:config["areas"]) {
         if (!area["queue_wait"]||!area["queue_wait"].as<bool>()) continue;
@@ -91,7 +93,6 @@ std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::stri
             throw std::invalid_argument("Approach and stop goal must be before the stop line");
         zones.push_back({area["name"].as<std::string>(),end,ids,Path(points),p,goal,yaw});
     }
-    if (zones.empty()) throw std::invalid_argument("No queue_wait: true areas configured");
     return zones;
 }
 struct Grid {
@@ -285,6 +286,7 @@ public:
 #include <tf/transform_listener.h>
 #include <tf/message_filter.h>
 #include <actionlib_msgs/GoalID.h>
+#include <actionlib_msgs/GoalStatusArray.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/OccupancyGrid.h>
@@ -411,6 +413,20 @@ class Node {
     void onRunning(const std_msgs::Bool::ConstPtr& msg) {
         running=msg->data; if (!running) { cancel(); stop(); if (controller) controller->pause(); }
     }
+    void onStatus(const actionlib_msgs::GoalStatusArray::ConstPtr& msg) {
+        if (!controller||fault||!running||controller->zone>=0||!std::isfinite(goal_stamp)) return;
+        // Heartbeats no longer resend healthy goals, but a failed normal goal
+        // still needs the legacy retry. Ignore results from superseded goals.
+        const actionlib_msgs::GoalStatus* latest=nullptr;
+        for (const auto& status:msg->status_list)
+            if (!latest||status.goal_id.stamp>latest->goal_id.stamp) latest=&status;
+        if (!latest||latest->goal_id.stamp.toSec()<goal_stamp) return;
+        if (latest->status==actionlib_msgs::GoalStatus::ABORTED||
+            latest->status==actionlib_msgs::GoalStatus::REJECTED) {
+            goal_stamp=NAN; stop();
+            ROS_WARN_THROTTLE(2,"queue_wait: normal goal failed; retry on next waypoint update");
+        }
+    }
     void onCommand(const geometry_msgs::Twist::ConstPtr& msg) {
         const auto& l=msg->linear; const auto& a=msg->angular;
         if (!std::isfinite(l.x)||!std::isfinite(l.y)||!std::isfinite(l.z)||!std::isfinite(a.x)||!std::isfinite(a.y)||!std::isfinite(a.z)) {
@@ -455,6 +471,9 @@ class Node {
         } catch (const std::exception& e) { maps.erase(key); ROS_ERROR("queue_wait grid: %s",e.what()); }
     }
     queue_wait::Decision decision(double now) {
+        // Normal navigation does not use queue sensor/collision checks. Avoid
+        // waiting for queue map transforms in the normal velocity relay.
+        if (controller->zone<0) return controller->step(now,nullptr,NAN,nullptr,NAN,NAN,{});
         queue_wait::Pose pose{}; bool pose_valid=false; double pose_stamp=NAN,map_stamp=NAN;
         try {
             tf::StampedTransform t; tf.lookupTransform(frame,base,ros::Time(0),t);
@@ -612,6 +631,7 @@ public:
         subscribers.push_back(nh.subscribe<sensor_msgs::LaserScan>("/scan",1,
             [this](const sensor_msgs::LaserScan::ConstPtr& msg) { scan_filter->add(msg); }));
         subscribers.push_back(nh.subscribe(input_topic,1,&Node::onCommand,this));
+        subscribers.push_back(nh.subscribe("/move_base/status",1,&Node::onStatus,this));
         subscribers.push_back(nh.subscribe("/waypoint_manager/waypoint_server/running",1,&Node::onRunning,this));
         subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/move_base/local_costmap/costmap",1,
             [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("local",m); }));
