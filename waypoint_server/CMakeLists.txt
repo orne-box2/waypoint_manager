@@ -12,6 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
     nav_msgs
     geometry_msgs
+    sensor_msgs
+    visualization_msgs
+    actionlib_msgs
     std_srvs
     tf
     waypoint_manager_msgs
@@ -197,6 +200,7 @@ target_compile_features(waypoint_server_node
         cxx_std_17
 )
 target_link_libraries(waypoint_to_posestamped_node
+  ${YAML_CPP_LIBRARIES}
   ${catkin_LIBRARIES}
 )
 target_compile_features(waypoint_to_posestamped_node
@@ -220,7 +224,7 @@ target_compile_features(waypoint_to_posestamped_node
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS waypoint_server_node
+install(TARGETS waypoint_server_node waypoint_to_posestamped_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

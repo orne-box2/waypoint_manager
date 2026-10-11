@@ -4,11 +4,12 @@
   <arg name="goal_topic" default="/move_base_simple/goal"/>
   <arg name="regist_goal_topic" default="/clicked_point"/>
   <arg name="config_file" default="$(find waypoint_server)/config/waypoint_server.yaml"/>
-  <arg name="reconfig_file" default="$(find waypoint_reconfigure)/config/reconfigure_list_2.yaml"/>
+  <arg name="reconfig_file" default="$(find waypoint_reconfigure)/config/reconfigure_list.yaml"/>
 
   <arg name="use_check_robot_moving" default="true"/>
   <arg name="use_waypoint_reconfigure" default="true"/>
   <arg name="use_scan_check" default="true"/>
+  <arg name="use_queue_wait" default="true"/>
 
 
   <group ns="waypoint_manager">
@@ -16,9 +17,11 @@
       <rosparam command="load" file="$(arg config_file)" subst_value="true"/>
       <remap from="waypoint/regist_point" to="$(arg regist_goal_topic)"/>
       <param name="clear_costmap_srv" value="/move_base/clear_costmaps" />
+      <param if="$(arg use_queue_wait)" name="latch" value="true"/>
     </node>
     <node pkg="waypoint_server" type="waypoint_to_posestamped_node" name="waypoint_to_posestamped" output="$(arg output)">
       <rosparam command="load" file="$(arg config_file)" subst_value="true"/>
+      <param name="use_queue_wait" value="$(arg use_queue_wait)"/>
       <remap from="move_base_simple/goal" to="$(arg goal_topic)"/>
     </node>
     <node pkg="waypoint_visualization" type="waypoint_visualization_node" name="waypoint_visualization" output="$(arg output)">
@@ -36,7 +39,7 @@
       <param name="limit_time" value="20.0" />
       <param name="limit_delta_pose_dist" value="0.1" />
     </node>   
-    <node if="$(arg use_waypoint_reconfigure)" pkg="waypoint_reconfigure" type="waypoint_reconfigure_node" name="waypoint_reconfigure_node" output="$(arg output)">
+    <node if="$(eval arg('use_waypoint_reconfigure') or arg('use_queue_wait'))" pkg="waypoint_reconfigure" type="waypoint_reconfigure_node" name="waypoint_reconfigure_node" output="$(arg output)">
       <rosparam command="load" file="$(arg config_file)" subst_value="true"/>
       <param name="file_path" value="$(arg reconfig_file)" />
     </node>

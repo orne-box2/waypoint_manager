@@ -31,6 +31,7 @@ namespace {
     static time_t start_time, last_moving_time;
     static std::atomic_bool is_fst_flag, is_fst_waypoint_reached, is_reached_goal, is_to_prev_waypoint;
     static std::string old_id;
+    static std::atomic_bool queue_active{false};
     static double delta_pose_dist = 0, pose_dist = 0;
     static float vel_x = 0;
     static float limit_delta_pose_dist = 1.0;
@@ -46,6 +47,10 @@ namespace {
 }
 // グローバル変数として定義（関数の外に書く）
 ros::Time last_mcl_pose_time = ros::Time(0);
+
+void QueueActiveCallback(const std_msgs::Bool::ConstPtr &msg) {
+    queue_active.store(msg->data);
+}
 
 /*void CmdVelCallback(const geometry_msgs::Twist::ConstPtr &msg) {
     try {
@@ -168,6 +173,7 @@ int main(int argc, char **argv) {
     auto mcl_pose_subscriber = nh.subscribe(mcl_pose_topic, 2, MclPoseCallback);
     auto cmd_vel_subscriber = nh.subscribe(cmd_vel_topic, 2, CmdVelCallback);
     auto is_reached_goal_subscriber = nh.subscribe<std_msgs::Bool>(is_reached_goal_topic, 1, IsReachedGoalCallback);
+    auto queue_subscriber = nh.subscribe<std_msgs::Bool>("/queue_wait/active", 1, QueueActiveCallback);
 
     auto prev_waypoint_service = nh.serviceClient<std_srvs::Trigger>("waypoint_server/prev_waypoint");
     auto next_waypoint_service = nh.serviceClient<std_srvs::Trigger>("waypoint_server/next_waypoint");
@@ -178,6 +184,16 @@ int main(int argc, char **argv) {
 
     while (ros::ok()) {
         ros::spinOnce();
+
+        if (queue_active.load()) {
+            last_moving_time = time(NULL);
+            clear_count = 0;
+            repeat_waypoint_counter = 0;
+            moving_confirm_count = 0;
+            is_to_prev_waypoint.store(false);
+            loop_rate.sleep();
+            continue;
+        }
 
         if (!recived_waypoint.load()) {
        //     ROS_INFO("Waiting waypoint check_moving_node");

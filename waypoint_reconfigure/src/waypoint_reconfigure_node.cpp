@@ -17,6 +17,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <std_msgs/Bool.h>
+#include <std_msgs/String.h>
 #include <waypoint_manager_msgs/Waypoint.h>
 #include <geometry_msgs/Twist.h>
 #include <std_srvs/Trigger.h>
@@ -79,6 +80,10 @@ void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
         if (msg->identity != old_id) {
             // 現在のwpと合致するエリアのスタートwpを全探索
             for (const auto &wp : yaml_config["waypoint_reconfigure_config"]["areas"]) {
+                // Queue-only areas are switched by the converter using the full route.
+                // They must not change the legacy dynamic-reconfigure area latch.
+                if (wp["queue_wait"] && wp["queue_wait"].as<bool>() &&
+                    (!wp["properties"] || wp["properties"].size() == 0)) continue;
                 area_name = wp["name"].as<std::string>();
                 start_id = wp["start_id"].as<std::string>();
                 end_id = wp["end_id"].as<std::string>();
@@ -205,25 +210,30 @@ void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
     }
 }
 
-void readYaml(ros::NodeHandle& private_nh) {
+bool readYaml(ros::NodeHandle& private_nh) {
     try{
         private_nh.param("file_path", file_path_, std::string(ros::package::getPath("waypoint_reconfigure") += "/config/reconfigure_list.yaml"));
         ROS_INFO("Load %s", file_path_.c_str());
         yaml_config = YAML::LoadFile(file_path_);
+        if (!yaml_config["waypoint_reconfigure_config"].IsMap() ||
+            !yaml_config["waypoint_reconfigure_config"]["areas"].IsSequence())
+            throw std::runtime_error("waypoint_reconfigure_config.areas must be a sequence");
 
         default_global_inflation = yaml_config["waypoint_reconfigure_config"]["default_global_inflation"].as<float>();
         default_local_inflation = yaml_config["waypoint_reconfigure_config"]["default_local_inflation"].as<float>();
         default_trajectory_limit_vel = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_vel"].as<float>();
         default_trajectory_limit_theta = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_theta"].as<float>();
-        default_odom_rot_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_rot"].as<float>();
-        default_odom_rot_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_fw"].as<float>();
-        default_odom_fw_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_rot"].as<float>();
-        default_odom_fw_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_fw"].as<float>();
-        default_cost_scale = yaml_config["waypoint_reconfigure_config"]["default_cost_scale"].as<float>();
+        default_odom_rot_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_rot"].as<float>(0.2);
+        default_odom_rot_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_fw"].as<float>(0.13);
+        default_odom_fw_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_rot"].as<float>(0.0001);
+        default_odom_fw_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_fw"].as<float>(0.05);
+        default_cost_scale = yaml_config["waypoint_reconfigure_config"]["default_cost_scale"].as<float>(10.0);
+        return true;
     }
     catch(const std::exception& e)
     {
         ROS_ERROR("%s", e.what());
+        return false;
     }
 }
 
@@ -340,7 +350,12 @@ auto main(int argc, char **argv) -> int {
     float goal_check_frequency,
           wait_no_waypoint_time;
 
-    readYaml(private_nh);
+    if (!readYaml(private_nh)) return 1;
+    // One shared YAML controls both existing area tuning and queue-mode switching.
+    auto queue_config_publisher = nh.advertise<std_msgs::String>("queue_wait/config", 1, true);
+    std_msgs::String queue_config;
+    queue_config.data = YAML::Dump(yaml_config["waypoint_reconfigure_config"]);
+    queue_config_publisher.publish(queue_config);
 
     recived_waypoint.store(false);
     is_fst_flag.store(true);

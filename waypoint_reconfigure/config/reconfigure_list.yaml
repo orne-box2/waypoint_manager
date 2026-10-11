@@ -1,112 +1,59 @@
 waypoint_reconfigure_config:
   version: 1.0.0
   name: "description"
-#  default_dwa_limit_vel: 1.0
-  default_local_inflation: 0.40 
-  default_global_inflation: 0.2 
-  default_trajectory_limit_vel: 1.0 
-  default_trajectory_limit_theta: 2.0 
-  default_odom_rot_dev_per_rot: 0.2 # 以下のパラメータは設定しても意味ない. いつか消す
-  default_odom_rot_dev_per_fw: 0.13
-  default_odom_fw_dev_per_rot: 0.0001
-  default_odom_fw_dev_per_fw: 0.05
+  default_local_inflation: 0.55
+  default_global_inflation: 0.55
+  default_trajectory_limit_vel: 1.0
+  default_trajectory_limit_theta: 2.0
+  # 列待ちの共通設定。下のcrossing_queue_3Fは3Fでの試験用区間。
+  queue_wait:
+    max_speed: 0.3
+    detection_distance: 1.0     # 赤枠と停止判定：車体前端から経路に沿って1m先まで
+    detection_half_width: 0.4   # 経路中心から左右0.4m
+    resume_distance: 1.3        # 赤枠より先まで自動で確認し、1.3m以上空いたら再開候補
+    clear_duration: 2.0
   areas:
-    - name: "test_stop"
-      start_id: registed_0_1654677617925209392 
-      end_id: registed_0_1654677629207839171
-      properties:
-        - key: trajectory_limit_theta
-          value: 0.01 
-        - key: local_inflation
-          value: 1.0
-
-    - name: "chari_in"
-      start_id: registed_0_1654678923563628537
-      end_id: registed_0_1654679091386560710
-      properties:
- #       - key: global_inflation
-  #        value: 6.9
-   #     - key: local_inflation
-    #      value: 0.4
+   - name: crossing_queue_3F
+     # RViz番号0→2は通常走行、2へ到達した後の2→4を列待ちにする。
+     # start_idは「目標WP」のIDなので、番号2の次の番号3を指定する。
+     start_id: registed_0_1791692525785207549  # RViz番号3（手前の番号2から固定経路を作る）
+     end_id: registed_0_1791688376624122478    # RViz番号4、一時停止WP
+     queue_wait: true
+     stop_line:
+       # 試験用境界：停止WPのmap座標から経路方向へ0.8m先。
+       # 実コースでは実測した停止線へ置き換えること。
+       point: [-35.259419, 3.790135]
+       yaw: 2.603425
+     properties: []
+   # - name: crossing_queue
+   #   start_id: REPLACE_WITH_APPROACH_ID
+   #   end_id: REPLACE_WITH_STOP_ID   # 列待ちはend_idも含む。stop: trueを設定する
+   #   queue_wait: true
+   #   stop_line:
+   #     point: [10.0, 0.0]          # 説明用。実測したmap座標へ置き換える
+   #     yaw: 0.0                   # 停止線の法線。横断方向を向く角度[rad]
+   #   properties: []
+   - name: "2to6_saka"
+     start_id: registed_0_1773749190996855168
+     end_id: registed_0_1650549739750079712
+     properties:
+       - key: local_cost_cloud
+         value: false
+   - name: "hosoitoko1"
+     start_id: registed_0_1650548559313191360
+     end_id: registed_0_1773122637091871360
+     properties:
+       - key: trajectory_limit_vel
+         value: 0.8
+   - name: "hosoitoko2"
+     start_id: registed_0_1773122674805135264
+     end_id: registed_0_1773123030866639488
+     properties:
         - key: trajectory_limit_vel
-          value: 0.3
-        - key: trajectory_limit_theta
-          value: 1.0
-        - key: odom_rot_dev_per_rot #4 意味ないいつかけす
-          value: 0.200 # 0.0001
-        - key: odom_rot_dev_per_fw #3
-          value: 0.03  # 0.01
-        - key: odom_fw_dev_per_rot #2
-          value: 0.0001
-        - key: odom_fw_dev_per_fw #1
-          value: 0.10 # 0.001
-    - name: "charisou"
-      start_id: registed_0_1654679091386560710
-      end_id: registed_0_1654679109649270723
-      properties:
-        - key: odom_rot_dev_per_rot
-          value: 0.000 # 0.0001
-        - key: odom_rot_dev_per_fw
-          value: 0.0  # 0.01
-        - key: odom_fw_dev_per_rot #2
-          value: 0.0
-        - key: odom_fw_dev_per_fw #1
-          value: 0.00 # 0.001
-    - name: "poll_in"
-      start_id: registed_0_1654679109649270723
-      end_id: registed_0_1654679339324142985
-      properties:
-     #   - key: global_inflation
-       #   value: 12.9
-      #  - key: local_inflation
-        #  value: 0.2
+          value: 0.8
+   - name: "pairon"
+     start_id: registed_0_1773123030866639488
+     end_id: registed_0_1650549932013220192
+     properties:
         - key: trajectory_limit_vel
-          value: 1.0
-        - key: trajectory_limit_theta
-          value: 2.0
-        - key: odom_rot_dev_per_rot
-          value: 0.200 # 0.0001
-        - key: odom_rot_dev_per_fw
-          value: 0.03  # 0.01
-        - key: odom_fw_dev_per_rot #2
-          value: 0.0001
-        - key: odom_fw_dev_per_fw #1
-          value: 0.10 # 0.001
-    - name: "saka_1"
-      start_id: registed_0_1654679360050734465
-      end_id: registed_0_1654679372784500817
-      properties:
-      #  - key: global_inflation
-       #   value: 12.0
-        - key: local_cost_cloud
-          value: false
-       # - key: local_inflation
-       #   value: 0.0
-    - name: "chari2_in"
-      start_id: registed_0_1654679372784500817
-      end_id: registed_0_1654679737561065550
-      properties:
-     #   - key: global_inflation
-    #      value: 12.0
-     #   - key: local_inflation
-      #    value: 0.1
-        - key: trajectory_limit_vel
-          value: 0.9
-        - key: trajectory_limit_theta
-          value: 2.0
-        - key: odom_rot_dev_per_rot
-          value: 0.000 # 0.0001
-        - key: odom_rot_dev_per_fw
-          value: 0.0  # 0.01
-        - key: odom_fw_dev_per_rot #2
-          value: 0.0
-        - key: odom_fw_dev_per_fw #1
-          value: 0.00 # 0.001
-    - name: "saka2"
-      start_id: registed_0_1654680874107441045
-      end_id: registed_0_1706866343072808411
-      properties:
-     #   - key: local_inflation
-      #    value: 0
-        - key: local_cost_cloud
-          value: false
+          value: 0.7

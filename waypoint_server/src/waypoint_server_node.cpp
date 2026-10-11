@@ -75,6 +75,7 @@ namespace waypoint_server {
             ros::Publisher waypoint_publisher,
                            waypoints_publisher,
                            route_publisher;
+            ros::Publisher running_publisher;
 
             ros::Subscriber is_reached_goal_subscriber,
                             regist_goal_pose_subscriber,
@@ -102,6 +103,10 @@ namespace waypoint_server {
 
             std::atomic<unsigned int> regist_goal_id;
             std::atomic_bool is_cancel;
+            std::atomic_bool queue_hold{false};
+            std::atomic_bool queue_active{false};
+            ros::Subscriber queue_hold_subscriber;
+            ros::Subscriber queue_active_subscriber;
 
             // TODO Change message type
             void isReachedGoal(const std_msgs::Bool::ConstPtr &),
@@ -308,6 +313,10 @@ namespace waypoint_server {
                 &Node::isReachedGoal,
                 this
               );
+        queue_hold_subscriber = nh.subscribe<std_msgs::Bool>("/queue_wait/hold", 1,
+            [this](const std_msgs::Bool::ConstPtr &msg) { queue_hold.store(msg->data); });
+        queue_active_subscriber = nh.subscribe<std_msgs::Bool>("/queue_wait/active", 1,
+            [this](const std_msgs::Bool::ConstPtr &msg) { queue_active.store(msg->data); });
         regist_goal_pose_subscriber
             = nh.subscribe<geometry_msgs::PoseStamped>(
                 param.regist_goal_pose_topic,
@@ -404,6 +413,10 @@ namespace waypoint_server {
         clear_costmap_service = private_nh.serviceClient<std_srvs::Empty>(param.clear_costmap_srv);
 
         is_cancel.store(true);
+        running_publisher = private_nh.advertise<std_msgs::Bool>("running", 1, true);
+        std_msgs::Bool running;
+        running.data = false;
+        running_publisher.publish(running);
         regist_goal_id.store(0);
 
         ROS_INFO("Loading waypoints_file %s", param.waypoints_file.c_str());
@@ -438,6 +451,9 @@ namespace waypoint_server {
     }
 
     void Node::isReachedGoal(const std_msgs::Bool::ConstPtr &msg) {
+        if (queue_hold.load()) {
+            return;
+        }
         if(router.isEmpty()) {
             ROS_WARN("Route size of zero");
             return;
@@ -610,6 +626,11 @@ namespace waypoint_server {
         std_srvs::TriggerResponse &response
     ) {
         ROS_INFO("Called resetRoute()");
+        if (queue_hold.load()) {
+            response.success = false;
+            response.message = "Queue hold: route reset is inhibited";
+            return true;
+        }
 
         if(router.isEmpty()) {
             ROS_WARN("Route size of zero");
@@ -619,6 +640,8 @@ namespace waypoint_server {
         publishGoal();
 
         ROS_INFO("Reset of route current goal %s", router.getIndex().c_str());
+        response.success = true;
+        response.message = "Route reset";
 
         return true;
     };
@@ -629,6 +652,8 @@ namespace waypoint_server {
     ) {
         ROS_INFO("Called switchCancel()");
         exchangeCancelState();
+        response.success = true;
+        response.message = is_cancel.load() ? "Paused" : "Running";
         return true;
     }
 
@@ -637,17 +662,28 @@ namespace waypoint_server {
         std_srvs::TriggerResponse &response
     ) {
         ROS_INFO("Called nextWaypoint()");
+        if (queue_hold.load()) {
+            response.success = false;
+            response.message = "Queue hold: wait for front space or release at the stop line";
+            return true;
+        }
 
         if(!router.forwardIndex()) {
             ROS_WARN("Failed forward index for route");
+            response.success = false;
+            response.message = "No next waypoint";
+            return true;
         }
         publishGoal();
 
-        ROS_WARN("Call ClearCostmaps");
-        ROS_WARN("%s", param.clear_costmap_srv.c_str());
-        
-        std_srvs::Empty data;
-        clear_costmap_service.call(data);
+        if (!queue_active.load()) {
+            ROS_WARN("Call ClearCostmaps");
+            ROS_WARN("%s", param.clear_costmap_srv.c_str());
+            std_srvs::Empty data;
+            clear_costmap_service.call(data);
+        }
+        response.success = true;
+        response.message = "Advanced to next waypoint";
 
         return true;
     }
@@ -657,12 +693,22 @@ namespace waypoint_server {
         std_srvs::TriggerResponse &response)
     {
         ROS_INFO("Called prevWaypoint()");
+        if (queue_hold.load()) {
+            response.success = false;
+            response.message = "Queue hold: previous waypoint is inhibited";
+            return true;
+        }
 
         if (!router.backIndex())
         {
             ROS_WARN("Failed back index for route");
+            response.success = false;
+            response.message = "No previous waypoint";
+            return true;
         }
         publishGoal();
+        response.success = true;
+        response.message = "Returned to previous waypoint";
 
         return true;
     }
@@ -751,6 +797,9 @@ namespace waypoint_server {
 
     void Node::exchangeCancelState() {
         is_cancel.store(!is_cancel.load());
+        std_msgs::Bool running;
+        running.data = !is_cancel.load();
+        running_publisher.publish(running);
 
         if(is_cancel.load()) {
             ROS_INFO("Changed is_cancel true");
