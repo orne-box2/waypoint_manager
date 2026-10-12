@@ -5,9 +5,17 @@
 #include <dynamic_reconfigure/DoubleParameter.h>
 #include <dynamic_reconfigure/Config.h>
 #include <std_srvs/Trigger.h>
+#include <std_msgs/Bool.h>
 
 // === グローバル変数 ===
 ros::ServiceClient dynamic_client;
+ros::Publisher front_stop_publisher;
+void publishFrontStop(bool stopped)
+{
+    std_msgs::Bool state;
+    state.data = stopped;
+    front_stop_publisher.publish(state);
+}
 bool obstacle_detected = false;
 ros::Time last_obstacle_time;
 double current_vel_x = -1.0;
@@ -113,6 +121,7 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
     if (force_stop)
     {
         bool detected = checkFrontObstacle(scan, stop_threshold, force_check_angle_deg);
+        publishFrontStop(detected);
 
         if (detected)
         {
@@ -161,6 +170,7 @@ void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
 bool forceStopCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
 {
     force_stop = true;
+    publishFrontStop(true);
     setMaxVelX(0.0);
     res.success = true;
     res.message = "Force stop activated.";
@@ -171,6 +181,7 @@ bool forceStopCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Respo
 bool forceResumeCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
 {
     force_stop = false;
+    publishFrontStop(false);
     res.success = true;
     res.message = "Force stop released. Resuming normal control.";
     return true;
@@ -194,6 +205,9 @@ int main(int argc, char** argv)
 
     dynamic_client = nh.serviceClient<dynamic_reconfigure::Reconfigure>(
         "/move_base/TrajectoryPlannerROS/set_parameters");
+
+    front_stop_publisher = nh.advertise<std_msgs::Bool>("/queue_wait/front_stop", 1, true);
+    publishFrontStop(false);
 
     ros::Subscriber scan_sub = nh.subscribe("/scan", 10, scanCallback);
 

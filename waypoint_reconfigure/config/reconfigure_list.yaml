@@ -5,34 +5,21 @@ waypoint_reconfigure_config:
   default_global_inflation: 0.55
   default_trajectory_limit_vel: 1.0
   default_trajectory_limit_theta: 2.0
-  # 3F実機試験用。シミュレータと同じ0→2は通常走行、2→4は列待ち。
   queue_wait:
     max_speed: 0.3
-    detection_distance: 0.5     # 赤枠と停止判定：車体前端から経路に沿って1m先まで
-    detection_half_width: 0.4   # 経路中心から左右0.4m
-    resume_distance: 0.8        # 赤枠より先まで自動で確認し、1.3m以上空いたら再開候補
+    detection_distance: 0.5
+    detection_half_width: 0.4
+    resume_distance: 0.8
     clear_duration: 2.0
   areas:
    - name: crossing_queue_3F
-     # RViz番号0→2は通常走行、2へ到達した後の2→4を列待ちにする。
-     # start_idは「目標WP」のIDなので、番号2の次の番号3を指定する。
-     start_id: registed_0_1791692525785207549  # RViz番号3（手前の番号2から固定経路を作る）
-     end_id: registed_0_1791688376624122478    # RViz番号4、一時停止WP
+     start_id: registed_0_1791692525785207549
+     end_id: registed_0_1791688376624122478
      queue_wait: true
      stop_line:
-       # 試験用境界：停止WPのmap座標から経路方向へ0.8m先。
-       # 実コースでは実測した停止線へ置き換えること。
        point: [-35.259419, 3.790135]
        yaw: 2.603425
      properties: []
-   # - name: crossing_queue
-   #   start_id: REPLACE_WITH_APPROACH_ID
-   #   end_id: REPLACE_WITH_STOP_ID   # 列待ちはend_idも含む。stop: trueを設定する
-   #   queue_wait: true
-   #   stop_line:
-   #     point: [10.0, 0.0]          # 説明用。実測したmap座標へ置き換える
-   #     yaw: 0.0                   # 停止線の法線。横断方向を向く角度[rad]
-   #   properties: []
    - name: "2to6_saka"
      start_id: registed_0_1773749190996855168
      end_id: registed_0_1650549739750079712
