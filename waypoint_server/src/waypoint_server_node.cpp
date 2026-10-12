@@ -94,7 +94,8 @@ namespace waypoint_server {
                                next_waypoint_service,
                                prev_waypoint_service;
 
-            ros::ServiceClient clear_costmap_service;
+            ros::ServiceClient clear_costmap_service,
+                               queue_release_service;
 
             NodeParameters param;
 
@@ -411,6 +412,7 @@ namespace waypoint_server {
             );
 
         clear_costmap_service = private_nh.serviceClient<std_srvs::Empty>(param.clear_costmap_srv);
+        queue_release_service = nh.serviceClient<std_srvs::Trigger>("/queue_wait/release");
 
         is_cancel.store(true);
         running_publisher = private_nh.advertise<std_msgs::Bool>("running", 1, true);
@@ -663,9 +665,20 @@ namespace waypoint_server {
     ) {
         ROS_INFO("Called nextWaypoint()");
         if (queue_hold.load()) {
-            response.success = false;
-            response.message = "Queue hold: wait for front space or release at the stop line";
-            return true;
+            if (!param.enable_loop && (router.isEmpty() || router.getIndex() == router.data().back())) {
+                response.success = false;
+                response.message = "No next waypoint";
+                ROS_WARN("%s", response.message.c_str());
+                return true;
+            }
+            std_srvs::Trigger release;
+            if (!queue_release_service.call(release) || !release.response.success) {
+                response.success = false;
+                response.message = release.response.message.empty()
+                    ? "Queue hold: release service unavailable" : release.response.message;
+                ROS_WARN("Next Waypoint held: %s", response.message.c_str());
+                return true;
+            }
         }
 
         if(!router.forwardIndex()) {
