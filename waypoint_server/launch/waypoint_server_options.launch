@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="use_queue_wait" default="true"/>
   <arg name="output" default="screen"/>
   <arg name="goal_topic" default="/move_base_simple/goal"/>
   <arg name="regist_goal_topic" default="/clicked_point"/>
   <arg name="config_file" default="$(find waypoint_server)/config/waypoint_server.yaml"/>
-  <arg name="reconfig_file" default="$(find waypoint_reconfigure)/config/reconfigure_list.yaml"/>
+  <arg name="reconfig_file" default="$(eval find('waypoint_reconfigure') + ('/config/reconfigure_list.yaml' if arg('use_queue_wait') else '/config/reconfigure_list_2.yaml'))"/>
 
   <arg name="use_check_robot_moving" default="true"/>
   <arg name="use_waypoint_reconfigure" default="true"/>
   <arg name="use_scan_check" default="true"/>
-  <arg name="use_queue_wait" default="true"/>
 
 
   <group ns="waypoint_manager">
@@ -42,6 +42,7 @@
     <node if="$(eval arg('use_waypoint_reconfigure') or arg('use_queue_wait'))" pkg="waypoint_reconfigure" type="waypoint_reconfigure_node" name="waypoint_reconfigure_node" output="$(arg output)">
       <rosparam command="load" file="$(arg config_file)" subst_value="true"/>
       <param name="file_path" value="$(arg reconfig_file)" />
+      <param name="use_waypoint_reconfigure" value="$(arg use_waypoint_reconfigure)"/>
     </node>
     <node if="$(arg use_scan_check)" pkg="check_robot_moving" type="scan_check_node" name="scan_check_node">
       <rosparam file="$(find check_robot_moving)/config/scan_check.yaml" command="load"/>

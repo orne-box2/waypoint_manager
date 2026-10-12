@@ -80,8 +80,6 @@ void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
         if (msg->identity != old_id) {
             // 現在のwpと合致するエリアのスタートwpを全探索
             for (const auto &wp : yaml_config["waypoint_reconfigure_config"]["areas"]) {
-                // Queue-only areas are switched by the converter using the full route.
-                // They must not change the legacy dynamic-reconfigure area latch.
                 if (wp["queue_wait"] && wp["queue_wait"].as<bool>() &&
                     (!wp["properties"] || wp["properties"].size() == 0)) continue;
                 area_name = wp["name"].as<std::string>();
@@ -210,7 +208,7 @@ void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
     }
 }
 
-bool readYaml(ros::NodeHandle& private_nh) {
+bool readYaml(ros::NodeHandle& private_nh, bool& tuning_enabled) {
     try{
         private_nh.param("file_path", file_path_, std::string(ros::package::getPath("waypoint_reconfigure") += "/config/reconfigure_list.yaml"));
         ROS_INFO("Load %s", file_path_.c_str());
@@ -219,15 +217,22 @@ bool readYaml(ros::NodeHandle& private_nh) {
             !yaml_config["waypoint_reconfigure_config"]["areas"].IsSequence())
             throw std::runtime_error("waypoint_reconfigure_config.areas must be a sequence");
 
-        default_global_inflation = yaml_config["waypoint_reconfigure_config"]["default_global_inflation"].as<float>();
-        default_local_inflation = yaml_config["waypoint_reconfigure_config"]["default_local_inflation"].as<float>();
-        default_trajectory_limit_vel = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_vel"].as<float>();
-        default_trajectory_limit_theta = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_theta"].as<float>();
-        default_odom_rot_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_rot"].as<float>(0.2);
-        default_odom_rot_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_fw"].as<float>(0.13);
-        default_odom_fw_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_rot"].as<float>(0.0001);
-        default_odom_fw_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_fw"].as<float>(0.05);
-        default_cost_scale = yaml_config["waypoint_reconfigure_config"]["default_cost_scale"].as<float>(10.0);
+        if (!tuning_enabled) return true;
+
+        try {
+            default_global_inflation = yaml_config["waypoint_reconfigure_config"]["default_global_inflation"].as<float>();
+            default_local_inflation = yaml_config["waypoint_reconfigure_config"]["default_local_inflation"].as<float>();
+            default_trajectory_limit_vel = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_vel"].as<float>();
+            default_trajectory_limit_theta = yaml_config["waypoint_reconfigure_config"]["default_trajectory_limit_theta"].as<float>();
+            default_odom_rot_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_rot"].as<float>(0.2);
+            default_odom_rot_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_rot_dev_per_fw"].as<float>(0.13);
+            default_odom_fw_dev_per_rot = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_rot"].as<float>(0.0001);
+            default_odom_fw_dev_per_fw = yaml_config["waypoint_reconfigure_config"]["default_odom_fw_dev_per_fw"].as<float>(0.05);
+            default_cost_scale = yaml_config["waypoint_reconfigure_config"]["default_cost_scale"].as<float>(10.0);
+        } catch (const std::exception& e) {
+            tuning_enabled=false;
+            ROS_ERROR("Area tuning disabled: %s",e.what());
+        }
         return true;
     }
     catch(const std::exception& e)
@@ -350,8 +355,9 @@ auto main(int argc, char **argv) -> int {
     float goal_check_frequency,
           wait_no_waypoint_time;
 
-    if (!readYaml(private_nh)) return 1;
-    // One shared YAML controls both existing area tuning and queue-mode switching.
+    bool tuning_enabled;
+    private_nh.param("use_waypoint_reconfigure", tuning_enabled, true);
+    if (!readYaml(private_nh, tuning_enabled)) return 1;
     auto queue_config_publisher = nh.advertise<std_msgs::String>("queue_wait/config", 1, true);
     std_msgs::String queue_config;
     queue_config.data = YAML::Dump(yaml_config["waypoint_reconfigure_config"]);
@@ -403,11 +409,8 @@ auto main(int argc, char **argv) -> int {
     );
 
     auto loop_rate = ros::Rate(5);
-    auto waypoint_subscriber = nh.subscribe(
-        waypoint_topic,
-        1,
-        waypointCallback
-    );
+    ros::Subscriber waypoint_subscriber;
+    if (tuning_enabled) waypoint_subscriber = nh.subscribe(waypoint_topic, 1, waypointCallback);
 
     ROS_INFO("Start waypoint_reconfigure_node");
 

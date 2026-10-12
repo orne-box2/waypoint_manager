@@ -11,7 +11,6 @@
 #include <vector>
 #include <yaml-cpp/yaml.h>
 
-// The existing waypoint converter also owns autonomous velocity in queue mode.
 namespace queue_wait {
 struct Point { double x, y; };
 struct Pose { double x, y, yaw; };
@@ -117,8 +116,6 @@ struct Grid {
             polygon.push_back({x,y});
         }
         if (minx<0||miny<0||maxx>=width||maxy>=height) return false;
-        // Separating axes test the entire occupied cell against the footprint.
-        // The bounding rectangle alone overestimates a rotated vehicle near walls.
         struct Axis { double x,y,low,high; };
         std::vector<Axis> axes{{1,0,minx,maxx},{0,1,miny,maxy}};
         for (size_t i=0;i<polygon.size();++i) {
@@ -133,9 +130,6 @@ struct Grid {
         }
         for (int y=std::floor(miny);y<=std::floor(maxy);++y)
             for (int x=std::floor(minx);x<=std::floor(maxx);++x) {
-                // A published costmap uses 99 for inscribed inflation, 100 for
-                // actual obstacles. Checking inflation against the whole body
-                // expands it twice; polygon collision uses lethal cells instead.
                 if (data[y*width+x]>=0&&data[y*width+x]<(inflated_costmap?100:99)) continue;
                 bool separated=false;
                 for (auto axis:axes) {
@@ -158,7 +152,7 @@ public:
         {"scan_timeout",.5},{"pose_timeout",.5},{"map_timeout",1.5},
         {"max_lateral_deviation",.25},{"corridor_half_width",.65},
         {"deceleration",.3},{"stop_margin",.2},{"stop_goal_radius",.2},
-        {"prediction_time",1},{"cmd_timeout",.5}};
+        {"prediction_time",1}};
     static constexpr double control_rate=20;
     std::vector<Zone> zones; std::vector<Point> footprint;
     int zone=-1;
@@ -166,6 +160,7 @@ public:
     double clear_since=NAN,last_time=NAN;
     std::string identity; Decision last{"NORMAL"};
     Controller(std::vector<Zone> z,const YAML::Node& parameters,std::vector<Point> f):zones(std::move(z)),footprint(std::move(f)) {
+        if (parameters&&!parameters.IsNull()&&!parameters.IsMap()) throw std::invalid_argument("queue_wait parameters must be a map");
         for (const auto& value:parameters) {
             auto key=value.first.as<std::string>();
             if (!p.count(key)) throw std::invalid_argument("Unknown queue parameter: "+key);
@@ -184,11 +179,8 @@ public:
         }
         if (zone<0) {
             for (size_t i=0;i<zones.size();++i) if (zones[i].ids.count(id)) { zone=i; break; }
-            // Entry alone does not require a restart delay. Obstacles and
-            // invalid observations still call pause() and require clear_duration.
-            waiting=false; clear_since=NAN;
+            waiting=false; clear_since=NAN; last_time=NAN;
         }
-        // Periodic notifications of the same target must retain its stop.
         if (id!=identity) waypoint_reached=false;
         identity=id;
     }
@@ -202,9 +194,6 @@ public:
         double start=path.project({pose.x,pose.y}).along,front=-INFINITY;
         for (auto v:footprint) front=std::max(front,path.project(transform(v,pose)).along);
         double stop_end=front+p.at("detection_distance");
-        // Keep observing beyond the red stop range for gradual approach and
-        // restart hysteresis. The outer range also covers one scan timeout
-        // and control cycle of travel at the configured maximum speed.
         double preview=std::max(p.at("resume_distance"),p.at("detection_distance")+p.at("max_speed")*approachTime());
         preview+=p.at("max_speed")*(p.at("scan_timeout")+1/control_rate);
         return {start,front,front+preview,stop_end,p.at("detection_half_width")};
@@ -262,9 +251,6 @@ public:
         }
         if (waiting) return hold("QUEUE_WAIT");
         if (released) { last={"RELEASED_WAITING_FOR_NEXT_WAYPOINT",true,false}; return last; }
-        // Zero velocity persists until Next Waypoint selects another target.
-        // hold=false permits that manual action; stop:true in waypoint_server
-        // prevents automatic advancement. Obstacles and missing data still hold.
         if (waypoint_reached) { last={"STOP_WAYPOINT",true,false}; return last; }
         auto target=z.path.pointAt(std::min(q.along+p["lookahead"],target_end));
         double error=wrap(std::atan2(target.y-pose->y,target.x-pose->x)-pose->yaw);
@@ -298,7 +284,7 @@ public:
         released=true; message="Released; use Next Waypoint to continue"; return true;
     }
 };
-}  // namespace queue_wait
+}
 
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
@@ -307,6 +293,7 @@ public:
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/OccupancyGrid.h>
+#include <map_msgs/OccupancyGridUpdate.h>
 #include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/String.h>
@@ -322,46 +309,104 @@ class Node {
     std::unique_ptr<tf::MessageFilter<sensor_msgs::LaserScan>> scan_filter;
     ros::Publisher goal_pub,cmd_pub,cancel_pub,active_pub,hold_pub,state_pub,detection_pub;
     std::vector<ros::Subscriber> subscribers;
+    ros::Subscriber accepted_goal_sub;
     ros::Timer timer; ros::ServiceServer release_service;
     bool queue_enabled=false,running=false,was_active=false,config_ready=false;
     bool route_ready=false,waypoints_ready=false,waypoint_ready=false,scan_valid=false,fault=false;
-    std::string frame,base,input_topic,output_topic,config_text,previous_state;
+    bool normal_goal_sent=false,goal_pending=true,front_stop=false,waypoint_frame_valid=false,running_known=false;
+    bool navigation_ready=false,published_active=true,published_hold=true;
+    std::string frame,base,input_topic,output_topic,previous_state,queue_error;
     YAML::Node config;
     std::unique_ptr<queue_wait::Controller> controller;
     std::vector<std::string> route;
     std::map<std::string,queue_wait::Waypoint> waypoints;
     waypoint_manager_msgs::Waypoint current_waypoint;
-    std::vector<queue_wait::Point> scan; geometry_msgs::Twist raw_cmd;
-    double scan_stamp=NAN,cmd_stamp=NAN,goal_stamp=NAN;
+    std::vector<queue_wait::Point> scan;
+    sensor_msgs::LaserScan::ConstPtr latest_scan;
+    std::set<uint64_t> goal_requests;
+    double scan_stamp=NAN;
+    ros::WallTime next_initialization;
     struct Map { std::shared_ptr<queue_wait::Grid> grid; std::string frame; double stamp; };
     std::map<std::string,Map> maps;
     queue_wait::Pose transform(const std::string& target,const std::string& source,ros::Time stamp) {
         if (target==source) return {0,0,0};
-        // Laser and TF messages can arrive in either order. Wait briefly for the
-        // transform at the scan timestamp; never substitute an older pose.
         tf.waitForTransform(target,source,stamp,ros::Duration(.02));
         tf::StampedTransform t; tf.lookupTransform(target,source,stamp,t);
         queue_wait::Pose result{t.getOrigin().x(),t.getOrigin().y(),tf::getYaw(t.getRotation())};
         if (!queue_wait::finite(result)) throw std::runtime_error("Non-finite transform");
         return result;
     }
+    static bool sameFrame(std::string a,std::string b) {
+        while (!a.empty()&&a.front()=='/') a.erase(a.begin());
+        while (!b.empty()&&b.front()=='/') b.erase(b.begin());
+        return a==b;
+    }
+    static bool samePose(const geometry_msgs::Pose& a,const geometry_msgs::Pose& b) {
+        auto square=[](double v) { return v*v; };
+        double position=square(a.position.x-b.position.x)+square(a.position.y-b.position.y)+square(a.position.z-b.position.z);
+        double direct=square(a.orientation.x-b.orientation.x)+square(a.orientation.y-b.orientation.y)+
+            square(a.orientation.z-b.orientation.z)+square(a.orientation.w-b.orientation.w);
+        double opposite=square(a.orientation.x+b.orientation.x)+square(a.orientation.y+b.orientation.y)+
+            square(a.orientation.z+b.orientation.z)+square(a.orientation.w+b.orientation.w);
+        return position<=1e-12&&std::min(direct,opposite)<=1e-12;
+    }
     void stop() { cmd_pub.publish(geometry_msgs::Twist{}); }
-    void cancel() { goal_stamp=NAN; cancel_pub.publish(actionlib_msgs::GoalID{}); }
+    void cancel() {
+        normal_goal_sent=false; goal_pending=true; goal_requests.clear();
+        cancel_pub.publish(actionlib_msgs::GoalID{});
+    }
+    bool queueTarget() const {
+        if (!config_ready||!route_ready||!waypoints_ready||!waypoint_ready) return true;
+        auto target=std::find(route.begin(),route.end(),current_waypoint.identity);
+        if (target==route.end()) return true;
+        if (!config["areas"]||!config["areas"].IsSequence()) return true;
+        try {
+            for (const auto& area:config["areas"]) {
+                if (!area["queue_wait"]||!area["queue_wait"].as<bool>()) continue;
+                auto begin=std::find(route.begin(),route.end(),area["start_id"]?area["start_id"].as<std::string>():std::string{});
+                auto end=std::find(route.begin(),route.end(),area["end_id"]?area["end_id"].as<std::string>():std::string{});
+                if (begin==route.end()&&end==route.end()) return true;
+                if (begin==route.end()) begin=route.begin();
+                if (end==route.end()) end=route.end()-1;
+                if (begin>end) std::swap(begin,end);
+                if (std::find(begin,end+1,current_waypoint.identity)!=end+1) return true;
+            }
+        } catch (const std::exception&) { return true; }
+        return false;
+    }
     void publishGoal(bool target_changed=true) {
+        if (queue_enabled&&(!navigation_ready||!goal_pub.getNumSubscribers()||!accepted_goal_sub.getNumPublishers())) {
+            normal_goal_sent=false; goal_pending=true; goal_requests.clear(); return;
+        }
         geometry_msgs::PoseStamped goal;
         goal.header.frame_id=frame; goal.header.stamp=ros::Time::now(); goal.pose=current_waypoint.pose;
-        if (target_changed||!std::isfinite(goal_stamp)) goal_stamp=goal.header.stamp.toSec();
-        goal_pub.publish(goal);
+        if (target_changed||!normal_goal_sent) { goal_pending=true; goal_requests.clear(); }
+        if (goal_pending) {
+            goal_requests.insert(goal.header.stamp.toNSec());
+            if (goal_requests.size()>64) goal_requests.erase(goal_requests.begin());
+        }
+        normal_goal_sent=true; goal_pub.publish(goal);
+    }
+    void onAcceptedGoal(const geometry_msgs::PoseStamped::ConstPtr& msg) {
+        if (!running||fault||!navigation_ready||queueTarget()) { cancel(); return; }
+        if (!goal_pending) return;
+        if (sameFrame(msg->header.frame_id,frame)&&samePose(msg->pose,current_waypoint.pose)&&
+            goal_requests.count(msg->header.stamp.toNSec())) {
+            goal_pending=false; goal_requests.clear();
+        }
     }
     void fail(const std::string& reason) {
-        fault=true; cancel(); stop(); if (controller) controller->fault=true;
+        if (!fault) { cancel(); if (running) stop(); }
+        fault=true; if (controller) controller->fault=true;
         ROS_ERROR("queue_wait: %s",reason.c_str());
     }
     void initialize() {
         if (controller||fault||!config_ready||!route_ready||!waypoints_ready) return;
         try {
             std::string wired_topic; ros::param::get("/move_base/queue_wait_cmd_vel_topic",wired_topic);
-            if (wired_topic!=input_topic) throw std::invalid_argument("Enable use_queue_wait in navigation launch too");
+            navigation_ready=wired_topic==input_topic;
+            if (!navigation_ready) throw std::invalid_argument("Enable use_queue_wait in navigation launch too");
+            if (!waypoint_frame_valid) throw std::invalid_argument("Waypoint frame differs from global frame");
             std::vector<queue_wait::Point> footprint; XmlRpc::XmlRpcValue f;
             if (!ros::param::get("/move_base/local_costmap/footprint",f)) throw std::invalid_argument("Missing local_costmap/footprint");
             if (f.getType()==XmlRpc::XmlRpcValue::TypeArray) {
@@ -382,21 +427,79 @@ class Node {
                 }
             } else throw std::invalid_argument("Invalid footprint type");
             controller.reset(new queue_wait::Controller(queue_wait::loadZones(config,route,waypoints),config["queue_wait"],footprint));
-            if (waypoint_ready) { controller->waypoint(current_waypoint.identity); if (controller->zone<0) publishGoal(); }
+            if (waypoint_ready) controller->waypoint(current_waypoint.identity);
+            queue_error.clear();
             ROS_INFO("queue_wait: %zu configured crossing areas",controller->zones.size());
-        } catch (const std::exception& e) { fail(e.what()); }
+        } catch (const std::exception& e) {
+            if (queue_error!=e.what()) ROS_ERROR("queue_wait: %s",e.what());
+            queue_error=e.what();
+        }
+        if (running&&waypoint_ready&&!queueTarget()&&!normal_goal_sent) publishGoal();
+    }
+    static bool sameConfig(const YAML::Node& a,const YAML::Node& b) {
+        if (a.Type()!=b.Type()||a.size()!=b.size()) return false;
+        if (a.IsScalar()) return a.as<std::string>()==b.as<std::string>();
+        if (a.IsSequence()) {
+            for (size_t i=0;i<a.size();++i) if (!sameConfig(a[i],b[i])) return false;
+        } else if (a.IsMap()) {
+            for (const auto& value:a) {
+                auto key=value.first.as<std::string>();
+                if (!b[key]||!sameConfig(value.second,b[key])) return false;
+            }
+        }
+        return true;
+    }
+    static YAML::Node number(const YAML::Node& source) {
+        try { const double value=source.as<double>(); return YAML::Node(value==0?0.0:value); }
+        catch (const YAML::Exception&) { return source; }
+    }
+    static YAML::Node queueConfig(const YAML::Node& source) {
+        if (!source.IsMap()||!source["areas"]||!source["areas"].IsSequence()) return source;
+        YAML::Node result;
+        result["queue_wait"]=source["queue_wait"]?source["queue_wait"]:YAML::Node(YAML::NodeType::Map);
+        if (result["queue_wait"].IsMap()) {
+            YAML::Node parameters(YAML::NodeType::Map);
+            for (const auto& value:result["queue_wait"]) parameters[value.first.as<std::string>()]=number(value.second);
+            result["queue_wait"]=parameters;
+        }
+        result["areas"]=YAML::Node(YAML::NodeType::Sequence);
+        for (const auto& area:source["areas"]) {
+            if (!area.IsMap()||!area["queue_wait"]||!area["queue_wait"].as<bool>()) continue;
+            YAML::Node queue;
+            for (const auto& key:{"name","start_id","end_id","stop_line"}) if (area[key]) queue[key]=area[key];
+            if (queue["stop_line"].IsMap()) {
+                YAML::Node line;
+                if (area["stop_line"]["yaw"]) line["yaw"]=number(area["stop_line"]["yaw"]);
+                auto points=area["stop_line"]["point"];
+                if (points.IsSequence()) {
+                    line["point"]=YAML::Node(YAML::NodeType::Sequence);
+                    for (const auto& point:points) line["point"].push_back(number(point));
+                } else if (points) line["point"]=points;
+                queue["stop_line"]=line;
+            }
+            queue["queue_wait"]=true;
+            result["areas"].push_back(queue);
+        }
+        return result;
     }
     void onConfig(const std_msgs::String::ConstPtr& msg) {
-        if (config_ready&&config_text!=msg->data) { fail("Configuration changed; restart with the new route/config"); return; }
-        try { config=YAML::Load(msg->data); config_text=msg->data; config_ready=true; initialize(); }
-        catch (const std::exception& e) { fail(e.what()); }
+        try {
+            auto updated=queueConfig(YAML::Load(msg->data));
+            if (config_ready&&sameConfig(config,updated)) return;
+            if (controller) { fail("Configuration changed; restart with the new route/config"); return; }
+            config=updated; config_ready=true; initialize();
+        } catch (const std::exception& e) {
+            if (controller) fail(e.what());
+            else { config_ready=false; queue_error=e.what(); ROS_ERROR("queue_wait: %s",e.what()); }
+        }
     }
     void onRoute(const waypoint_manager_msgs::Route::ConstPtr& msg) {
         if (controller&&route!=msg->identities) fail("Route changed; restart with the new route/config");
         route=msg->identities; route_ready=true; initialize();
     }
     void onWaypoints(const waypoint_manager_msgs::Waypoints::ConstPtr& msg) {
-        if (msg->info.header.frame_id!=frame) { fail("Waypoint frame differs from global frame"); return; }
+        waypoint_frame_valid=sameFrame(msg->info.header.frame_id,frame);
+        if (controller&&!waypoint_frame_valid) { fail("Waypoint frame differs from global frame"); return; }
         std::map<std::string,queue_wait::Waypoint> updated;
         for (const auto& w:msg->waypoints) {
             bool is_stop=false;
@@ -413,35 +516,42 @@ class Node {
         waypoints=std::move(updated); waypoints_ready=true; initialize();
     }
     void onWaypoint(const waypoint_manager_msgs::Waypoint::ConstPtr& msg) {
-        const bool goal_changed=!waypoint_ready||msg->identity!=current_waypoint.identity||msg->pose!=current_waypoint.pose;
+        const bool goal_changed=!waypoint_ready||msg->identity!=current_waypoint.identity||!samePose(msg->pose,current_waypoint.pose);
         current_waypoint=*msg; waypoint_ready=true;
         if (!queue_enabled) { publishGoal(); return; }
-        if (!controller||fault) return;
-        int previous_zone=controller->zone; controller->waypoint(msg->identity);
-        if (controller->zone>=0&&previous_zone<0) {
-            cancel(); stop(); was_active=true;
-            std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
+        if (fault) return;
+        if (controller) {
+            controller->waypoint(msg->identity);
+            if (controller->fault) { fail("Waypoint changed before operator release"); return; }
         }
-        if (controller->fault) { fail("Waypoint changed before operator release"); return; }
-        // Preserve the server's periodic goal resend. Only a different or
-        // canceled target needs a fresh command before relaying velocity.
-        if (controller->zone<0) publishGoal(goal_changed);
+        if (queueTarget()&&!was_active) {
+            cancel(); if (running) stop(); was_active=true;
+            scan_valid=false; scan_stamp=NAN;
+            if (controller&&controller->zone>=0&&latest_scan) scan_filter->add(latest_scan);
+            std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
+            published_active=published_hold=true;
+        }
+        if (running&&!queueTarget()) publishGoal(goal_changed);
     }
     void onRunning(const std_msgs::Bool::ConstPtr& msg) {
-        running=msg->data; if (!running) { cancel(); stop(); if (controller) controller->pause(); }
+        if (running_known&&running==msg->data) return;
+        const bool was_running=running; running_known=true; running=msg->data;
+        if (!running) { cancel(); if (was_running) stop(); if (controller) controller->pause(); }
+        else if (waypoint_ready&&!fault&&!queueTarget()) publishGoal();
     }
     void onCommand(const geometry_msgs::Twist::ConstPtr& msg) {
+        if (!running||fault||!navigation_ready||queueTarget()) return;
         const auto& l=msg->linear; const auto& a=msg->angular;
         if (!std::isfinite(l.x)||!std::isfinite(l.y)||!std::isfinite(l.z)||!std::isfinite(a.x)||!std::isfinite(a.y)||!std::isfinite(a.z)) {
-            raw_cmd=geometry_msgs::Twist{}; cmd_stamp=NAN; return;
+            stop(); return;
         }
-        raw_cmd=*msg; cmd_stamp=ros::Time::now().toSec();
+        if (goal_pending&&*msg!=geometry_msgs::Twist{}) return;
+        cmd_pub.publish(*msg);
     }
     void onScan(const sensor_msgs::LaserScan::ConstPtr& msg) {
+        if (!controller||controller->zone<0) return;
         const double stamp=msg->header.stamp.toSec(),now=ros::Time::now().toSec();
         const double timeout=controller?controller->p.at("scan_timeout"):.5;
-        // Queued scans retain their capture time. Delayed or out-of-order
-        // messages must not refresh stale data or replace a newer observation.
         if (msg->header.stamp.isZero()||now-stamp<-.05||now-stamp>timeout) return;
         if (std::isfinite(scan_stamp)&&scan_stamp<=now+.05&&stamp<scan_stamp) return;
         try {
@@ -455,10 +565,8 @@ class Node {
                     updated.push_back(queue_wait::transform({r*std::cos(a),r*std::sin(a)},t));
             }
             scan=std::move(updated); scan_stamp=stamp;
-            scan_valid=!scan.empty(); // all NaN/inf is missing data, not front-clear evidence
+            scan_valid=!scan.empty();
         } catch (const tf::TransformException& e) {
-            // Preserve the last successful scan only until scan_timeout;
-            // a brief TF race must not reset the front-clear interval.
             ROS_WARN_THROTTLE(2,"queue_wait scan: %s",e.what());
         } catch (const std::exception& e) {
             scan_valid=false; scan.clear(); scan_stamp=stamp;
@@ -473,9 +581,24 @@ class Node {
             maps[key]={grid,msg->header.frame_id,msg->header.stamp.toSec()};
         } catch (const std::exception& e) { maps.erase(key); ROS_ERROR("queue_wait grid: %s",e.what()); }
     }
+    void onMapUpdate(const map_msgs::OccupancyGridUpdate::ConstPtr& msg) {
+        auto found=maps.find("local");
+        if (found==maps.end()) return;
+        auto& map=found->second; auto& grid=*map.grid;
+        const double stamp=msg->header.stamp.toSec(),now=ros::Time::now().toSec();
+        if (msg->header.stamp.isZero()||stamp>now+.05||(map.stamp<=now+.05&&stamp<map.stamp)) return;
+        if (msg->header.frame_id!=map.frame||msg->x<0||msg->y<0||
+            static_cast<uint64_t>(msg->x)+msg->width>static_cast<uint64_t>(grid.width)||
+            static_cast<uint64_t>(msg->y)+msg->height>static_cast<uint64_t>(grid.height)||
+            msg->data.size()!=static_cast<size_t>(msg->width)*msg->height) {
+            maps.erase(found); return;
+        }
+        for (size_t y=0;y<msg->height;++y)
+            std::copy_n(msg->data.begin()+y*msg->width,msg->width,
+                        grid.data.begin()+(msg->y+y)*grid.width+msg->x);
+        map.stamp=msg->header.stamp.toSec();
+    }
     queue_wait::Decision decision(double now) {
-        // Normal navigation does not use queue sensor/collision checks. Avoid
-        // waiting for queue map transforms in the normal velocity relay.
         if (controller->zone<0) return controller->step(now,nullptr,NAN,nullptr,NAN,NAN,{});
         queue_wait::Pose pose{}; bool pose_valid=false; double pose_stamp=NAN,map_stamp=NAN;
         try {
@@ -522,8 +645,6 @@ class Node {
                     geometry_msgs::Point point; point.x=p.x; point.y=p.y; point.z=.08;
                     marker.points.push_back(point);
                 };
-                // Use the same projection as clearance(), trimming overlapping
-                // edges at bends. Boundary sampling has a maximum step of 5 cm.
                 auto edge=[&](queue_wait::Point a,queue_wait::Point b,bool cap=false,double along=NAN) {
                     int steps=std::max(1,static_cast<int>(std::ceil(std::hypot(b.x-a.x,b.y-a.y)/.05)));
                     auto point=[&](double k) {
@@ -556,7 +677,6 @@ class Node {
                     if (low==start) edge(offset(a,normal,width),offset(a,normal,-width),true,start);
                     if (high==end) edge(offset(b,normal,width),offset(b,normal,-width),true,end);
                 }
-                // Clamped projections around internal vertices give round corners.
                 for (size_t i=1;i<path.segments.size();++i) {
                     const auto& s=path.segments[i];
                     if (s.offset<start||s.offset>end) continue;
@@ -572,29 +692,47 @@ class Node {
         detection_pub.publish(marker);
     }
     void tick(const ros::TimerEvent&) {
-        geometry_msgs::Twist output; queue_wait::Decision result{"CONFIG_UNAVAILABLE",true,true};
-        double now=ros::Time::now().toSec();
-        if (controller&&!fault) {
-            result=decision(now);
-            if (!running) { controller->pause(); result.hold=result.active; result.state="OPERATOR_PAUSED"; }
-            else if (result.active) {
+        if (!controller&&!fault&&ros::WallTime::now()>=next_initialization) {
+            next_initialization=ros::WallTime::now()+ros::WallDuration(1); initialize();
+        }
+        queue_wait::Decision result{"CONFIG_UNAVAILABLE",true,true};
+        const double now=ros::Time::now().toSec();
+        if (!fault) {
+            if (!queueTarget()) {
+                result={"NORMAL"};
+                if (running&&!normal_goal_sent) publishGoal();
+            }
+            else if (controller) result=decision(now);
+            if (!navigation_ready) result={"NAVIGATION_UNAVAILABLE",true,true};
+            if (!running) {
+                if (controller) controller->pause();
+                result.hold=result.active; result.state="OPERATOR_PAUSED";
+            } else if (result.active) {
                 if (!was_active) cancel();
+                if (front_stop) {
+                    if (controller) { controller->pause(); result=controller->hold("FRONT_STOP"); }
+                    else result={"FRONT_STOP",true,true};
+                }
+                geometry_msgs::Twist output;
                 output.linear.x=result.linear; output.angular.z=result.angular;
-            } else if (!was_active&&cmd_stamp>=goal_stamp&&now-cmd_stamp>=0&&
-                       now-cmd_stamp<=controller->p["cmd_timeout"]) output=raw_cmd;
+                cmd_pub.publish(output);
+            }
         }
         was_active=result.active;
         std_msgs::Bool active,held; active.data=result.active; held.data=result.hold;
-        active_pub.publish(active); hold_pub.publish(held); cmd_pub.publish(output);
-        std_msgs::String state; state.data=result.state; state_pub.publish(state);
-        if (previous_state!=state.data) { ROS_INFO("queue_wait: %s",state.data.c_str()); previous_state=state.data; }
+        if (active.data!=published_active) { active_pub.publish(active); published_active=active.data; }
+        if (held.data!=published_hold) { hold_pub.publish(held); published_hold=held.data; }
+        if (previous_state!=result.state) {
+            std_msgs::String state; state.data=result.state; state_pub.publish(state);
+            ROS_INFO("queue_wait: %s",state.data.c_str()); previous_state=state.data;
+        }
         publishDetectionRange(ros::Time::now());
     }
     bool release(std_srvs::Trigger::Request&,std_srvs::Trigger::Response& response) {
-        if (!controller||fault||!running) { response.message="Resume Switch Cancel and valid queue configuration first"; return true; }
+        if (!controller||fault||!running||front_stop) { response.message="Resume Switch Cancel and valid queue configuration first"; return true; }
         double now=ros::Time::now().toSec(); decision(now);
         response.success=controller->release(now,response.message);
-        if (response.success) { std_msgs::Bool held; held.data=false; hold_pub.publish(held); }
+        if (response.success) { std_msgs::Bool held; held.data=false; hold_pub.publish(held); published_hold=false; }
         return true;
     }
 public:
@@ -622,19 +760,23 @@ public:
         subscribers.push_back(nh.subscribe("/waypoint_manager/queue_wait/config",1,&Node::onConfig,this));
         subscribers.push_back(nh.subscribe("route",1,&Node::onRoute,this));
         subscribers.push_back(nh.subscribe("waypoints",1,&Node::onWaypoints,this));
-        // Wait for TF without blocking the 20 Hz velocity-control callbacks.
-        // The bounded filter delivers scans at their original timestamps.
         scan_filter.reset(new tf::MessageFilter<sensor_msgs::LaserScan>(tf,frame,20,nh));
         scan_filter->registerCallback([this](const sensor_msgs::LaserScan::ConstPtr& msg) { onScan(msg); });
         scan_filter->registerFailureCallback([this](const sensor_msgs::LaserScan::ConstPtr&,tf::FilterFailureReason reason) {
             ROS_WARN_THROTTLE(2,"queue_wait scan: dropped before TF was available (reason %d)",static_cast<int>(reason));
         });
         subscribers.push_back(nh.subscribe<sensor_msgs::LaserScan>("/scan",1,
-            [this](const sensor_msgs::LaserScan::ConstPtr& msg) { scan_filter->add(msg); }));
+            [this](const sensor_msgs::LaserScan::ConstPtr& msg) {
+                latest_scan=msg; if (controller&&controller->zone>=0) scan_filter->add(msg);
+            }));
         subscribers.push_back(nh.subscribe(input_topic,1,&Node::onCommand,this));
+        accepted_goal_sub=nh.subscribe("/move_base/current_goal",1,&Node::onAcceptedGoal,this);
+        subscribers.push_back(nh.subscribe<std_msgs::Bool>("/queue_wait/front_stop",1,
+            [this](const std_msgs::Bool::ConstPtr& m) { front_stop=m->data; }));
         subscribers.push_back(nh.subscribe("/waypoint_manager/waypoint_server/running",1,&Node::onRunning,this));
         subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/move_base/local_costmap/costmap",1,
             [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("local",m); }));
+        subscribers.push_back(nh.subscribe("/move_base/local_costmap/costmap_updates",1,&Node::onMapUpdate,this));
         subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/map_for_costmap",1,
             [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("constraint",m); }));
         release_service=nh.advertiseService("/queue_wait/release",&Node::release,this);
