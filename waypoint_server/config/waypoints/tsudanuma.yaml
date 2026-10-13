@@ -1,0 +1,106 @@
+waypoint_server:
+  scale: 1
+  position:
+    x: 1
+    y: 2
+    z: 3
+  euler_angles:
+    x: 0
+    y: 0
+    z: 1.57
+  waypoints:
+    - id: 3
+      position:
+        x: -36.97797
+        y: 34.07285
+        z: -2.999997
+      euler_angles:
+        x: -0
+        y: 0
+        z: -0
+      properties:
+        - key: stop
+          value: ""
+      connections:
+        - 1
+    - id: 1
+      position:
+        x: -39.20535
+        y: 27.06305
+        z: -3.000004
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.0891088
+      properties:
+        - key: goal_radius
+          value: 1.000000
+        - key: stop
+          value: true
+      connections:
+        - 2
+    - id: registed_goal_4
+      position:
+        x: -27.6636
+        y: -32.8257
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 3.079683
+    - id: registed_0_1791688376624122478
+      position:
+        x: -31.59605
+        y: 51.36095
+        z: -3.000005
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.746901
+      properties:
+        - key: stop
+          value: true
+        - key: goal_radius
+          value: 1.000000
+    - id: registed_0_1650546387605502784
+      position:
+        x: -28.83642
+        y: 60.8947
+        z: -2.999999
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+      properties:
+        - key: stop
+          value: true
+        - key: goal_radius
+          value: 1.000000
+    - id: registed_0_1791692517223276814
+      position:
+        x: -35.20036
+        y: 39.8647
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+      properties:
+        - key: stop
+          value: ""
+        - key: goal_radius
+          value: 0.25
+    - id: registed_0_1791692525785207549
+      position:
+        x: -33.56824
+        y: 45.19483
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.57
+      properties:
+        - key: goal_radius
+          value: 1.000000
+        - key: stop
+          value: true

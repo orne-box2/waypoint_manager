@@ -16,9 +16,6 @@ waypoint_reconfigure_config:
      start_id: registed_0_1791692525785207549
      end_id: registed_0_1791688376624122478
      queue_wait: true
-     stop_line:
-       point: [-35.259419, 3.790135]
-       yaw: 2.603425
      properties: []
    - name: "2to6_saka"
      start_id: registed_0_1773749190996855168
