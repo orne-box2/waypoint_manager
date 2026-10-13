@@ -59,6 +59,7 @@ struct Zone {
     std::string name,stop_id; std::set<std::string> ids; Path path;
     Point line,stop_goal; double line_yaw;
     std::map<std::string,Point> stop_waypoints;
+    bool has_stop_line;
 };
 std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::string>& route,
                            const std::map<std::string,Waypoint>& waypoints) {
@@ -85,15 +86,20 @@ std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::stri
         std::vector<Point> points;
         for (auto i=std::max<decltype(begin)>(0,begin-1);i<=finish;++i)
             points.push_back(waypoints.at(route[i]).position);
-        auto line=area["stop_line"]["point"];
-        if (!line.IsSequence()||line.size()!=2) throw std::invalid_argument("stop_line.point needs [x,y]");
-        Point p{line[0].as<double>(),line[1].as<double>()};
-        double yaw=area["stop_line"]["yaw"].as<double>(); Point goal=waypoints.at(end).position;
-        if (!finite(p)||!std::isfinite(yaw)||!finite(goal)) throw std::invalid_argument("Non-finite stop line/goal");
-        auto signedDistance=[&](Point v) { return (v.x-p.x)*std::cos(yaw)+(v.y-p.y)*std::sin(yaw); };
-        if (signedDistance(points.front())>=0||signedDistance(goal)>=0)
-            throw std::invalid_argument("Approach and stop goal must be before the stop line");
-        zones.push_back({area["name"].as<std::string>(),end,ids,Path(points),p,goal,yaw,std::move(stops)});
+        const auto line=area["stop_line"];
+        bool has_stop_line=line&&!line.IsNull();
+        Point p{},goal=waypoints.at(end).position; double yaw=0;
+        if (has_stop_line) {
+            if (!line.IsMap()) throw std::invalid_argument("stop_line must contain point and yaw");
+            auto point=line["point"];
+            if (!point.IsSequence()||point.size()!=2) throw std::invalid_argument("stop_line.point needs [x,y]");
+            p={point[0].as<double>(),point[1].as<double>()}; yaw=line["yaw"].as<double>();
+            if (!finite(p)||!std::isfinite(yaw)) throw std::invalid_argument("Non-finite stop line");
+            auto signedDistance=[&](Point v) { return (v.x-p.x)*std::cos(yaw)+(v.y-p.y)*std::sin(yaw); };
+            if (signedDistance(points.front())>=0||signedDistance(goal)>=0)
+                throw std::invalid_argument("Approach and stop goal must be before the stop line");
+        }
+        zones.push_back({area["name"].as<std::string>(),end,ids,Path(points),p,goal,yaw,std::move(stops),has_stop_line});
     }
     return zones;
 }
@@ -210,6 +216,7 @@ public:
     }
     double boundary(Pose pose) const {
         const auto& z=zones[zone]; double closest=INFINITY;
+        if (!z.has_stop_line) return closest;
         for (auto v:footprint) {
             auto q=transform(v,pose);
             closest=std::min(closest,(z.line.x-q.x)*std::cos(z.line_yaw)+(z.line.y-q.y)*std::sin(z.line_yaw));
@@ -238,10 +245,11 @@ public:
         } else clear_since=NAN;
         double remaining=boundary(*pose);
         if (remaining<=p["stop_margin"]+.03||
+            (!z.has_stop_line&&q.along>=z.path.length)||
             (identity==z.stop_id&&std::hypot(pose->x-z.stop_goal.x,pose->y-z.stop_goal.y)<=p["stop_goal_radius"]))
             line_reached=true;
         if (!released&&line_reached) return hold("STOP_LINE");
-        double target_end=z.path.length,stop_remaining=INFINITY;
+        double target_end=z.path.length,stop_remaining=z.has_stop_line?INFINITY:z.path.length-q.along;
         auto stop=z.stop_waypoints.find(identity);
         if (identity!=z.stop_id&&stop!=z.stop_waypoints.end()) {
             target_end=z.path.project(stop->second).along;
@@ -264,7 +272,9 @@ public:
         double horizon=std::max(p["prediction_time"],speed/p["deceleration"]+1/control_rate);
         double dt=std::min(.05,.5*p["max_lateral_deviation"]/std::max(speed,.01));
         for (int i=0;i<=std::ceil(horizon/dt);++i) {
-            if (z.path.project({prediction.x,prediction.y}).lateral>p["max_lateral_deviation"]||
+            auto projected=z.path.project({prediction.x,prediction.y});
+            if (projected.lateral>p["max_lateral_deviation"]||
+                (!z.has_stop_line&&projected.along>z.path.length)||
                 boundary(prediction)<p["stop_margin"]||!collision(prediction,footprint)) return hold("TRAJECTORY_BLOCKED");
             for (auto v:footprint) if (z.path.project(transform(v,prediction)).lateral>p["corridor_half_width"])
                 return hold("TRAJECTORY_BLOCKED");
@@ -276,7 +286,7 @@ public:
     }
     bool release(double now,std::string& message) {
         if (!std::isfinite(last_time)||now-last_time>2/control_rate||last.state!="STOP_LINE") {
-            message="Release requires fresh data and a stop at the stop line"; return false;
+            message="Release requires fresh data and a stop at the end of the queue area"; return false;
         }
         if (!std::isfinite(clear_since)||now-clear_since<p["clear_duration"]||waiting) {
             message="Front space must be continuously clear before release"; return false;
