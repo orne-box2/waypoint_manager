@@ -11,11 +11,16 @@ waypoint_reconfigure_config:
     detection_half_width: 0.4
     resume_distance: 0.8
     clear_duration: 2.0
+  # waypoint_server.yamlで選択したルートだけtrueにする。
+  queue_wait_profiles:
+    tsukuba26_1: &queue_tsukuba26_1 false
+    tsukuba26_2: &queue_tsukuba26_2 true
+    tsukuba26_3: &queue_tsukuba26_3 false
   areas:
    - name: crossing_queue_tsukuba
      start_id: registed_joy_5871c6275225465c9f7e37d8577cee9b
      end_id: registed_joy_fcf7b2ffb46649318b3c5dfa7ea8a491
-     queue_wait: true
+     queue_wait: *queue_tsukuba26_2
      properties: []
    - name: crossing_queue_3F
      start_id: registed_0_1791692525785207549
@@ -46,3 +51,28 @@ waypoint_reconfigure_config:
      properties:
         - key: trajectory_limit_vel
           value: 0.7
+   - name: crossing_queue_tsukuba26_1_85_88
+     start_id: registed_joy_af27c57cca3b430b8bc10bd522683620
+     end_id: registed_joy_78cd0bad55484df9aadc5a646aca5c5f
+     queue_wait: *queue_tsukuba26_1
+     properties: []
+   - name: crossing_queue_tsukuba26_1_92_95
+     start_id: registed_joy_80495a2600f54b0bb6e6bbf23186eba1
+     end_id: registed_joy_c60f0137436c49f6bdf5a928f56f2c1f
+     queue_wait: *queue_tsukuba26_1
+     properties: []
+   - name: crossing_queue_tsukuba26_1_111_112
+     start_id: registed_joy_0f357d35e3964c25adafcaea3d6821d7
+     end_id: registed_joy_773b78802d1b4f14a6f5bd9ab6b82c29
+     queue_wait: *queue_tsukuba26_1
+     properties: []
+   - name: crossing_queue_tsukuba26_1_116_117
+     start_id: registed_joy_11372133e9824744a49b584a20cc9b8c
+     end_id: registed_joy_7d9383594237459daadf44ffe0b4b2f2
+     queue_wait: *queue_tsukuba26_1
+     properties: []
+   - name: crossing_queue_tsukuba26_3_478_488
+     start_id: registed_joy_9a6e9e3b4bbe4eb987cc9b4a8ec3adaa
+     end_id: registed_joy_fc24d9ca13134e2fa4d7f709a19fb5f5
+     queue_wait: *queue_tsukuba26_3
+     properties: []

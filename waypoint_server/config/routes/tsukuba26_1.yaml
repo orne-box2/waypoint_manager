@@ -1,0 +1,40 @@
+waypoint_server:
+  route:
+    ids:
+      - registed_joy_af27c57cca3b430b8bc10bd522683620
+      - registed_joy_2ad1237936754ab091d93005034da793
+      - registed_joy_608b02c63b8b432ca83bd73507ad140e
+      - registed_joy_78cd0bad55484df9aadc5a646aca5c5f
+      - registed_joy_7dea1c407e0a4e9280ba9a1ec95718fb
+      - registed_joy_55c3036c7baf42d6967851ac3ea14f97
+      - registed_joy_152b3f35622046f5a5d7b8c895da6aa6
+      - registed_joy_80495a2600f54b0bb6e6bbf23186eba1
+      - registed_joy_d88e3f21534944b0b6e4c2a56cb551d3
+      - registed_joy_5d720a980f87466fa8a5c66438f150a1
+      - registed_joy_c60f0137436c49f6bdf5a928f56f2c1f
+      - registed_joy_c86f2249ac594794b88b5c14fe297bd5
+      - registed_joy_c3e4411144884d2b888536f422a4c062
+      - registed_joy_2adeafc450124f479a0990a469ad8d36
+      - registed_joy_37d81909531d43838625ef4ff624a072
+      - registed_joy_88167b6d72de47b88f441a200422c21b
+      - registed_joy_8e80bdd60dd64f9e8577b70aab95be15
+      - registed_joy_779cb401ebaf4aafb8cfe76c7a04aae3
+      - registed_joy_d2290975871543a195155b4247661fca
+      - registed_joy_15c5e85a4a874c95a9bd4269f654ff7a
+      - registed_joy_06042332905547e2a3903860116b3bda
+      - registed_joy_87f30ebcf05549009ddaed95dd757a04
+      - registed_joy_b0abf6d84dc94bd39fca5d979506c0ce
+      - registed_joy_a0a0a5d95563460e92820d9930f6e53a
+      - registed_joy_32550902ff434a778462f84eea6846ac
+      - registed_joy_3d4524dbbe9e47d2bb1fcf4c8aaef73f
+      - registed_joy_0f357d35e3964c25adafcaea3d6821d7
+      - registed_joy_773b78802d1b4f14a6f5bd9ab6b82c29
+      - registed_joy_f4ead280f098487e988ae8712e804bbb
+      - registed_joy_d6f1590ffc0a421eb5ca96518ff5799f
+      - registed_joy_bd8c548b92d242a89e171d97e9b296ba
+      - registed_joy_11372133e9824744a49b584a20cc9b8c
+      - registed_joy_7d9383594237459daadf44ffe0b4b2f2
+      - registed_joy_1dfff8157f6b4907be67bf562c738981
+      - registed_joy_3c642515888e45089023817d1e479fab
+      - registed_joy_669aca0245a549bdadcdbc52d6d84cf8
+    count_of_skip_ids: 0

@@ -15,7 +15,10 @@ set_goal_radius: 1.0
 #waypoints_file: $(find waypoint_server)/config/waypoints/25_open.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/20250823_tsuda_ch.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/1m.yaml
-waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba261003queuewait.yaml
+#waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba261003_edited.yaml
+#waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba26_1.yaml
+waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba26_2.yaml
+#waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba26_3.yaml
 
 #route_file: $(find waypoint_server)/config/routes/3F.yaml
 #route_file: $(find waypoint_server)/config/routes/20240625_tsuda_ch.yaml
@@ -23,7 +26,10 @@ waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba261003queuewait.
 #route_file: $(find waypoint_server)/config/routes/25_open.yaml
 #route_file: $(find waypoint_server)/config/routes/20250823_tsuda_ch.yaml
 #route_file: $(find waypoint_server)/config/routes/1m.yaml
-route_file: $(find waypoint_server)/config/routes/tsukuba261003queuewait.yaml
+#route_file: $(find waypoint_server)/config/routes/tsukuba261003.yaml
+#route_file: $(find waypoint_server)/config/routes/tsukuba26_1.yaml
+route_file: $(find waypoint_server)/config/routes/tsukuba26_2.yaml
+#route_file: $(find waypoint_server)/config/routes/tsukuba26_3.yaml
 
 
 enable_loop: false

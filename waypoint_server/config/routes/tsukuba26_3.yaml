@@ -1,0 +1,35 @@
+waypoint_server:
+  route:
+    ids:
+      - registed_joy_7c52bcbb2bcc4e86b62ea113097e6f75
+      - registed_joy_482c04ec8b12451aa6a0beb14f505a57
+      - registed_joy_39309b5c07d842a8b65882b223ff63dc
+      - registed_joy_9a6e9e3b4bbe4eb987cc9b4a8ec3adaa
+      - registed_joy_37d35362dda048ce971441710944bf87
+      - registed_joy_0e138d90041346cbb5c5c4e9564517d0
+      - registed_joy_da15a97d310f44de9ad448e28224f1c4
+      - registed_joy_7da8afb9051b488ab83c538c1f0cd95d
+      - registed_joy_5861d7cf3b0943d4986b6be196525db7
+      - registed_joy_ca8a179434b84305a21cde10aeefb718
+      - registed_joy_32f4e2c166c541d39824ecd2c8a436cb
+      - registed_joy_d36e2fc45c244e5e8001e776a1334b66
+      - registed_joy_4c9bace6becb4adb83f98c407124c488
+      - registed_joy_fc24d9ca13134e2fa4d7f709a19fb5f5
+      - registed_joy_2fa63f0a9510446aa25c0e98e446385d
+      - registed_joy_61512fc58fab43f08ee60f9d9f00abe8
+      - registed_joy_f67db698b0ae4fc59a221ef8b49b65aa
+      - registed_joy_c702d476b17e49bc9d8da96504870f82
+      - registed_joy_4e7e166ccede47fb997995c074053de2
+      - registed_joy_cd92d09e2620457491541bbc4fd3637c
+      - registed_joy_62a04786e224405288cdc09295876948
+      - registed_joy_302fde08f2944dfc84bd9db69d1e705f
+      - registed_joy_71d310d600024b3e837b16ed40637dbf
+      - registed_joy_10d2852e88ea4c16b5c64c5ebfe80292
+      - registed_joy_ca808e265ded46148a964a42f601dd47
+      - registed_joy_0719075a5a5347fe89fa7afdf8f1e8f5
+      - registed_joy_13fb33e6741f496f865db667b49b0566
+      - registed_joy_259c8360d52c4f1f89e5f5f24943f3f2
+      - registed_joy_6e7c54efd26b4a5ea1c15bd7ea00a95c
+      - registed_joy_20e6be90fc564d86b163d87a8d10ebec
+      - registed_joy_96204e3aed1f4cf4b5c70e0c40863e01
+    count_of_skip_ids: 0
