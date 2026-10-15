@@ -18,6 +18,11 @@ waypoint_server:
         x: 0
         y: 0
         z: 0.6266317
+      properties:
+        - key: goal_radius
+          value: 1.0
+        - key: stop
+          value: true
     - id: registed_joy_2ad1237936754ab091d93005034da793
       position:
         x: 16.12074
@@ -345,3 +350,8 @@ waypoint_server:
         x: 0
         y: 0
         z: 2.292708
+      properties:
+        - key: goal_radius
+          value: 1.0
+        - key: stop
+          value: true
