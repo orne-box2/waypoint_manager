@@ -159,7 +159,7 @@ public:
         {"max_lateral_deviation",.25},{"corridor_half_width",.65},
         {"deceleration",.3},{"stop_margin",.2},{"stop_goal_radius",.2},
         {"prediction_time",1}};
-    static constexpr double control_rate=20;
+    static constexpr double control_rate=10;
     std::vector<Zone> zones; std::vector<Point> footprint;
     int zone=-1;
     bool fault=false,released=false,waiting=true,line_reached=false,waypoint_reached=false;

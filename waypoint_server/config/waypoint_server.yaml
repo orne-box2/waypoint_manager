@@ -15,7 +15,7 @@ set_goal_radius: 1.0
 #waypoints_file: $(find waypoint_server)/config/waypoints/25_open.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/20250823_tsuda_ch.yaml
 #waypoints_file: $(find waypoint_server)/config/waypoints/1m.yaml
-waypoints_file: $(find waypoint_server)/config/waypoints/tsudanuma.yaml
+waypoints_file: $(find waypoint_server)/config/waypoints/tsukuba261003queuewait.yaml
 
 #route_file: $(find waypoint_server)/config/routes/3F.yaml
 #route_file: $(find waypoint_server)/config/routes/20240625_tsuda_ch.yaml
@@ -23,7 +23,7 @@ waypoints_file: $(find waypoint_server)/config/waypoints/tsudanuma.yaml
 #route_file: $(find waypoint_server)/config/routes/25_open.yaml
 #route_file: $(find waypoint_server)/config/routes/20250823_tsuda_ch.yaml
 #route_file: $(find waypoint_server)/config/routes/1m.yaml
-route_file: $(find waypoint_server)/config/routes/tsudanuma.yaml
+route_file: $(find waypoint_server)/config/routes/tsukuba261003queuewait.yaml
 
 
 enable_loop: false

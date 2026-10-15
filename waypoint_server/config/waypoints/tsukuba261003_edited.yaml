@@ -1,0 +1,6074 @@
+waypoint_server:
+  scale: 1
+  position:
+    x: 1
+    y: 2
+    z: 3
+  euler_angles:
+    x: 0
+    y: 0
+    z: 1.57
+  waypoints:
+    - id: registed_joy_1025f1537db845fca0e09e5cd8df3b5f
+      position:
+        x: 50.72441
+        y: -58.35939
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.254213
+    - id: registed_joy_0a65e376c139438398749b07cbb232ae
+      position:
+        x: 51.70022
+        y: -59.08947
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.581876
+    - id: registed_joy_cb8cbf1ec123442cab9afa50c57ceb43
+      position:
+        x: 53.21076
+        y: -60.46638
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.265234
+    - id: registed_joy_c27323be17bc47ed90bd06c766d7d945
+      position:
+        x: 55.59145
+        y: -63.46753
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.316218
+    - id: registed_joy_f98fd39ce5604b199bcdb754ba81d28f
+      position:
+        x: 58.32216
+        y: -66.63723
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.296188
+    - id: registed_joy_76c2a384209d4d228edabfde49dc5ca8
+      position:
+        x: 56.50939
+        y: -79.73124
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8581344
+    - id: registed_joy_b3ecd1e7beb74c498ae8283e664411f7
+      position:
+        x: 53.27142
+        y: -84.09697
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.9128089
+    - id: registed_joy_0701a84547454d49ac02f012d065098b
+      position:
+        x: 51.04839
+        y: -86.9061
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8204223
+    - id: registed_joy_beed926cf7b84603ba6b8f9a52e2af8d
+      position:
+        x: 47.91662
+        y: -89.72251
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.5853477
+    - id: registed_joy_7a36e75414ab4d1198e6e9d00ee5817b
+      position:
+        x: 44.3315
+        y: -92.56534
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.5773398
+    - id: registed_joy_fb9dd5c14f014fa380f7f0400f343623
+      position:
+        x: 35.78853
+        y: -98.95538
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6908111
+    - id: registed_joy_5a4491d8dd004e3bace3dc9e3213e58d
+      position:
+        x: 32.36831
+        y: -101.6344
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.707769
+    - id: registed_joy_5322bcd428d34386a44e01b65aa1ed15
+      position:
+        x: 26.11564
+        y: -107.3264
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6818612
+    - id: registed_joy_79be107757b04b57b53a8f0d999c62fd
+      position:
+        x: 9.922424
+        y: -112.7211
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.3480085
+    - id: registed_joy_1d6392271f0944849cf8318cfdc68965
+      position:
+        x: 7.542702
+        y: -111.326
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7428581
+    - id: registed_joy_82e69d058d2c4274824675f4439bfc0e
+      position:
+        x: 6.534332
+        y: -110.5971
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.4483334
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_b402820f10154c6db9173fd385c24a97
+      position:
+        x: 5.409996
+        y: -110.1529
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.3669604
+    - id: registed_joy_e725bb7da147442f9ca83ab41a43800a
+      position:
+        x: 2.658669
+        y: -109.0064
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7215263
+    - id: registed_joy_0b54b09a9c4d4286a748bbf43f45c884
+      position:
+        x: -7.085632
+        y: -98.26376
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.9101959
+    - id: registed_joy_c12c2e9a9e26499a844618b3c35018ad
+      position:
+        x: -9.080201
+        y: -94.85091
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.041905
+    - id: registed_joy_8c0bceeb7c0c430cba4ce6aa85362573
+      position:
+        x: -10.78296
+        y: -89.14777
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.198224
+    - id: registed_joy_a235ee51d6654c0d8cd59d98e7beb916
+      position:
+        x: 16.97424
+        y: -113.8033
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.2851782
+    - id: registed_joy_b53162b77b654be488c29b74ca1a6aad
+      position:
+        x: -11.80673
+        y: -87.11349
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.141426
+    - id: registed_joy_a1e3f12d6a5c48f0af11fa107c7bde67
+      position:
+        x: -12.82755
+        y: -84.71072
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.178873
+    - id: registed_joy_5f05883ad61d4ec8a99e55119cd4097a
+      position:
+        x: -14.16439
+        y: -81.93606
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.096144
+    - id: registed_joy_100b46d0b68245daa5ad547ea7a2ca36
+      position:
+        x: -15.25537
+        y: -79.96252
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.065805
+    - id: registed_joy_fbd5a536838343e691fb44049355e4eb
+      position:
+        x: -16.23704
+        y: -77.33069
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.21378
+    - id: registed_joy_fb07d990390a47d9bcbaff3bb25b5c9a
+      position:
+        x: -17.76982
+        y: -74.57684
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.062901
+    - id: registed_joy_c1493857a88a4a4e977b2d13bd271194
+      position:
+        x: -21.35931
+        y: -70.1541
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8890241
+    - id: registed_joy_096ab0cb182f4cc09fd29ea283964d86
+      position:
+        x: -26.74353
+        y: -63.51999
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8890241
+    - id: registed_joy_4df0e9e241bf4ccf843e4cde18e71f08
+      position:
+        x: -32.33001
+        y: -57.06441
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7942938
+    - id: registed_joy_2fd4ed8593714bfaa11d334a3e36a62f
+      position:
+        x: -34.19445
+        y: -54.86941
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_21097a36bc4844acaaf8e536cafc9c34
+      position:
+        x: -36.05889
+        y: -52.67441
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_21016625ab8a42f784d11a27cdda67ba
+      position:
+        x: -39.78778
+        y: -48.28442
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_fe31e403105b4620939c62cdad5412c6
+      position:
+        x: -43.51667
+        y: -43.89442
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_d03a62a21a944ed580fb62c37f860878
+      position:
+        x: -45.38111
+        y: -41.69943
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_f4e8b23e78cb4490a929ff9551eb03e0
+      position:
+        x: -47.24556
+        y: -39.50443
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_47c9c2256b38428caf7e3712b905f734
+      position:
+        x: -49.11
+        y: -37.30943
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_f11fd8000405491db06828a15af5f9cf
+      position:
+        x: -52.83889
+        y: -32.91944
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_31344d7ea66c41fca219c454dab32280
+      position:
+        x: -56.56778
+        y: -28.52945
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_99ef4bd84d01442dac081b4a39265329
+      position:
+        x: -60.29666
+        y: -24.13945
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_6d9a0787f32043998a134fbbb32a4086
+      position:
+        x: -62.16111
+        y: -21.94446
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_9136de1c641942bcb50ad49e1eaf9586
+      position:
+        x: -65.88999
+        y: -17.55446
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_f54e7410c7f549d9b0f0064f748ddedf
+      position:
+        x: -64.02555
+        y: -19.74946
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_a9e958d2a7a54df08e8d30af8c617ff9
+      position:
+        x: -78.18502
+        y: -3.941918
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_1b5e085923f8431fb068cc70c9b89bc2
+      position:
+        x: -79.94145
+        y: -1.997269
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_b7231d58aac54a39b5f7807f830c1eb7
+      position:
+        x: -81.69788
+        y: -0.05261993
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7866952
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_e56cb192648d4df6aefae8b1da5b8cf4
+      position:
+        x: -86.48551
+        y: 5.216098
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_c47ec0a44ae54ccba6f9f23ebddeb4d4
+      position:
+        x: -90.00504
+        y: 9.164251
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_c171ddc2f81e483691615e0dc637986c
+      position:
+        x: -91.76481
+        y: 11.13833
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_ccede7266e8d446a9fe51aa76a04411c
+      position:
+        x: -93.52458
+        y: 13.1124
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_e55b1467607147aab9def71d4f3ed4e1
+      position:
+        x: -95.28434
+        y: 15.08648
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_1272e6a5fd1c4ea480bf9c9cc4b44fbe
+      position:
+        x: -97.04411
+        y: 17.06056
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_b95da8f81b3442108329efabac7b1fd9
+      position:
+        x: 61.32322
+        y: -70.1386
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.243806
+    - id: registed_joy_deef202124e14b3dbec743138fb83048
+      position:
+        x: -98.80388
+        y: 19.03463
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_8962ad3745384ffb8a7752f607a5a89a
+      position:
+        x: -30.33301
+        y: -59.09726
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8890241
+    - id: registed_joy_1ac2497d38d9416dbb08a86096a38453
+      position:
+        x: -102.3234
+        y: 22.98279
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_fdb46cb5872540adb6520eb1113522d1
+      position:
+        x: -104.0832
+        y: 24.95687
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_c96831ea1121435f98d849a3f596ff42
+      position:
+        x: -107.6027
+        y: 28.90502
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_1b9ae85ae6394cdfa5284b9cfcd5c2e2
+      position:
+        x: -109.3625
+        y: 30.8791
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_4181915f319e4f398fa2a413b270da09
+      position:
+        x: -111.1222
+        y: 32.85317
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_39ce21b443b04da784efabb39d58fcaf
+      position:
+        x: -54.70333
+        y: -30.72444
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_51244f6ebff54e2db201cfca5bd3e832
+      position:
+        x: -112.882
+        y: 34.82725
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_30817b3a14044fae96e25336fc536fa0
+      position:
+        x: -116.4015
+        y: 38.7754
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_4e25ad320dc44ca28fcdc1715e9a75d6
+      position:
+        x: -121.6808
+        y: 44.69763
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_1ff4bd8a49a349f0b1a5326cb86e985d
+      position:
+        x: -123.4406
+        y: 46.67171
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_9e5b262ebdbc4f4da6216f671d9af891
+      position:
+        x: -128.7199
+        y: 52.59394
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_250e11e08b5344c09a7ee06ae1c3fe12
+      position:
+        x: -133.9992
+        y: 58.51617
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8207895
+    - id: registed_joy_2b2bb1959db94e8783bf3fd6ec83617a
+      position:
+        x: -135.6235
+        y: 60.13108
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.637485
+    - id: registed_joy_df6dc2b438c3403390e60d5dddf985ca
+      position:
+        x: -139.4068
+        y: 61.15341
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.229038
+    - id: registed_joy_8d59c2976d374c8b961e62a086e8f862
+      position:
+        x: -141.0413
+        y: 60.52478
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.5225501
+    - id: registed_joy_ca37236c3bfc4ec4ae22ed6a425189a0
+      position:
+        x: -144.0633
+        y: 57.61546
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.78159
+    - id: registed_joy_4513ec561ef7456bb45aad5a9600af81
+      position:
+        x: -145.9925
+        y: 55.73872
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7680798
+    - id: registed_joy_b658232ffe5c46229c1dc930b4ad0203
+      position:
+        x: -158.105
+        y: 45.27637
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.722461
+    - id: registed_joy_7ed1b6e5a67b4afcae5787a00084e823
+      position:
+        x: -160.2533
+        y: 43.28323
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7487136
+    - id: registed_joy_5d5c3762f19d4dbd80fa46beb3266d79
+      position:
+        x: -162.4552
+        y: 41.30649
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7206466
+    - id: registed_joy_ed8ddd48b96d417f98b600280e1cd766
+      position:
+        x: -164.0645
+        y: 39.83443
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7373919
+    - id: registed_joy_aaa815d98fd14d01a7a1320092f7de6c
+      position:
+        x: -386.6246
+        y: 125.0217
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8739908
+    - id: registed_joy_ae0b9c21c23e458f87fedbd2ffe7479a
+      position:
+        x: -238.9741
+        y: 263.8942
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_71d310d600024b3e837b16ed40637dbf
+      position:
+        x: -249.0426
+        y: -36.06535
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.3579222
+    - id: registed_joy_7b51dbff0944473ebd9c3036d1f92cf1
+      position:
+        x: -388.2118
+        y: 123.2758
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7680378
+    - id: registed_joy_152b3f35622046f5a5d7b8c895da6aa6
+      position:
+        x: 1.267769
+        y: -109.322
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.404754
+    - id: registed_joy_01db30723d294f3a886b3d2fdbe4f2b6
+      position:
+        x: -390.6115
+        y: 116.3872
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.417487
+    - id: registed_joy_b17a75c6046d46eabd7b34c2b94d21c8
+      position:
+        x: -384.9281
+        y: 127.2046
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7520684
+    - id: registed_joy_5d863fc4a95c47ac9c6079ab6e68d9e6
+      position:
+        x: -0.8390656
+        y: -143.5574
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.056097
+    - id: registed_joy_27dba80472b54a7ea8a8da4a8e658cbc
+      position:
+        x: -4.628998
+        y: -101.1329
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8106073
+    - id: registed_joy_c60f0137436c49f6bdf5a928f56f2c1f
+      position:
+        x: -9.458405
+        y: -96.52303
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.186447
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_ca0f5221904c49e5a60bcbce053d1ae6
+      position:
+        x: -390.7526
+        y: 106.615
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.835856
+    - id: registed_joy_140d92c957a74fc785b6d17812faf92c
+      position:
+        x: -388.516
+        y: 102.9753
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.121821
+    - id: registed_joy_075523f625474fcf949f1bc1cb698f28
+      position:
+        x: -375.3691
+        y: 88.11686
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_773b78802d1b4f14a6f5bd9ab6b82c29
+      position:
+        x: -62.69559
+        y: -23.46931
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.280495
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_2b5a1cb36fad49cdb5521c3a35aed397
+      position:
+        x: -373.0001
+        y: 85.52436
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_1031af97a5c84a5396e86f26698661fd
+      position:
+        x: -358.2566
+        y: 146.6718
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.5857946
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_29c7b58f50ad4a1d98eddb09d660d6ef
+      position:
+        x: -114.6418
+        y: 36.80133
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_7ab0fdb5656b442aa225ad8afac6c48b
+      position:
+        x: -369.2196
+        y: 141.3934
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.382264
+    - id: registed_joy_00814d976b8a479da213af92357f57d5
+      position:
+        x: -363.524
+        y: 75.15439
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_8a5a08b0cd934c2191d33942134f9062
+      position:
+        x: -349.31
+        y: 59.59942
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_26567b3095cf4b0eb158d360b9dfceee
+      position:
+        x: -163.3419
+        y: 40.49048
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_110d384169ec4f4fae5b3a5a1c98eb02
+      position:
+        x: -342.2029
+        y: 51.82194
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_f67db698b0ae4fc59a221ef8b49b65aa
+      position:
+        x: -257.5927
+        y: -29.29948
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7278559
+    - id: registed_joy_b167a56e379b491e90abcb54f6cc3e8e
+      position:
+        x: -339.8339
+        y: 49.22945
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_266047a850674ecd9c08fa9f944a80f9
+      position:
+        x: 30.15356
+        y: -103.7243
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7433548
+    - id: registed_joy_1fab789c703a440ea569a43829aec5ed
+      position:
+        x: -211.4978
+        y: 281.205
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_10245e67443540d3b834308b903eb4a8
+      position:
+        x: -28.53827
+        y: -61.30862
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8890241
+    - id: registed_joy_07d638a11dee4a97b84d6b8fde04ec2a
+      position:
+        x: -110.7791
+        y: 30.50573
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_4e3426eb86b04f2c8815e4bb436bd9f3
+      position:
+        x: -344.5719
+        y: 54.41443
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_d2fcb63e1c6c4e5eb8a141a729990ed2
+      position:
+        x: -105.3142
+        y: 24.29884
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_30ed3b99fb144c7996f70996dea03788
+      position:
+        x: -320.8818
+        y: 28.4895
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_56fd562f3b9143edb7a3e3616b2172f4
+      position:
+        x: -318.1955
+        y: 25.88557
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.371767
+    - id: registed_joy_178a681ef14240cbb75f8541c263a34a
+      position:
+        x: -232.7917
+        y: -21.87738
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_df07944d7b5b4b3eb6513891032160eb
+      position:
+        x: -315.7745
+        y: 23.21878
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.307923
+    - id: registed_joy_a24ead6fae2a40e8a3a9ee77099689a7
+      position:
+        x: -211.1152
+        y: 228.7199
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_3476a22d75c1470cb2f07cf882db2921
+      position:
+        x: -308.5114
+        y: 15.21838
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.307923
+    - id: registed_joy_5f83ad57651c4aaa8592465629a2854f
+      position:
+        x: 56.80725
+        y: -64.84445
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292584
+    - id: registed_joy_33baeaeb511d485f9a0750befb5d9651
+      position:
+        x: -251.3392
+        y: 252.2468
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_29dbeffc20d4458fbae19545cc68692e
+      position:
+        x: -263.7044
+        y: 240.5995
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_fc2381e2eda943a8945cdf5a597f424c
+      position:
+        x: -13.21887
+        y: -83.7762
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.156247
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_db78b9e02c784cdfae7a618c4b9b8dd2
+      position:
+        x: -179.6962
+        y: 26.17215
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7368253
+    - id: registed_joy_466ec26ecbc544a69f1626fbf8e5cc91
+      position:
+        x: -290.0846
+        y: -5.212927
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_b2fe3be05e5849ff9f49007682bbf1d4
+      position:
+        x: -206.4649
+        y: 2.969804
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_a2b30bd0e97c428a8bf94e1a1034ca01
+      position:
+        x: -282.9776
+        y: -12.99041
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_7bc422093cbe45f9895d7ada806735e4
+      position:
+        x: -280.6086
+        y: -15.5829
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_a3e5e258564c43dc8a932223f16f6891
+      position:
+        x: -276.2181
+        y: -18.62271
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.383854
+    - id: registed_joy_9fa7460835984836a790805517bf0ba3
+      position:
+        x: -270.2701
+        y: -21.30426
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.889499
+    - id: registed_joy_8be1b283185d4fcb96006728a35aee1d
+      position:
+        x: -130.4797
+        y: 54.56802
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_7c0505e945df4feba97b70bcdffd95e1
+      position:
+        x: -390.5081
+        y: 111.2364
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.668045
+    - id: registed_joy_2488db14216f44309936a4690e1caea8
+      position:
+        x: -256.0773
+        y: -27.94089
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.314771
+    - id: registed_joy_6a8b094f42fa4f14addf82609d4f2cbc
+      position:
+        x: -262.2892
+        y: 180.1716
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.955723
+    - id: registed_joy_9f8bb5779c124aefbdbeede1424a70f1
+      position:
+        x: -97.11685
+        y: 14.98852
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_c3e4411144884d2b888536f422a4c062
+      position:
+        x: -13.32966
+        y: -85.97488
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.054106
+    - id: registed_joy_fcf7b2ffb46649318b3c5dfa7ea8a491
+      position:
+        x: -249.3018
+        y: -35.30184
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.310289
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_d8f91f5a3b7b491b84a1cbe686800921
+      position:
+        x: -245.518
+        y: -31.86621
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.488998
+    - id: registed_joy_bd8c548b92d242a89e171d97e9b296ba
+      position:
+        x: -72.04726
+        y: -12.58269
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.347217
+    - id: registed_joy_2a216238b8344aa8ad57a05ca20f98f2
+      position:
+        x: -244.5824
+        y: -31.94863
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: 3.053733
+    - id: registed_joy_16a40f7cc4bd4e9ca86002215f7d2871
+      position:
+        x: -19.56457
+        y: -72.36547
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8890241
+    - id: registed_joy_5871c6275225465c9f7e37d8577cee9b
+      position:
+        x: -235.1498
+        y: -23.89163
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_0d22c7be621540ad82286b84878eb784
+      position:
+        x: -391.0826
+        y: 111.9158
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.524786
+    - id: registed_joy_947204ade7654dc6b23db5dfd1e33fb5
+      position:
+        x: 62.44147
+        y: -73.68917
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.229859
+    - id: registed_joy_9bf2d4fbac29411684a7fbf5f596df77
+      position:
+        x: -228.0754
+        y: -17.84888
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_5e672b899d2a4c26b1b4d39dcbaf185b
+      position:
+        x: -223.1651
+        y: 217.0865
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_0e138d90041346cbb5c5c4e9564517d0
+      position:
+        x: -280.1447
+        y: -14.90933
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_0196f2290fe844ba9f7cd01e6362380d
+      position:
+        x: -24.94879
+        y: -65.73136
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8890241
+    - id: registed_joy_434590aa65194ddb8d5c81b548d62ad6
+      position:
+        x: -50.97444
+        y: -35.11444
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_f2fc2a133093457ab4e53439d1f6e3b0
+      position:
+        x: -194.0465
+        y: 13.52214
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.10784
+    - id: registed_joy_5785f53799764db7b686019cd050b474
+      position:
+        x: -242.0653
+        y: 260.9823
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_aa43f1d64460412c82ca66e17a7e2cc7
+      position:
+        x: -190.5511
+        y: 17.22026
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.349811
+    - id: registed_joy_779cb401ebaf4aafb8cfe76c7a04aae3
+      position:
+        x: -26.94118
+        y: -65.19959
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.29991
+    - id: registed_joy_eb5e732a653b49309e053156e4aa0bf5
+      position:
+        x: -332.7269
+        y: 41.45196
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_bbd4f7f2ad8a4770902c2ab2b7cc8420
+      position:
+        x: 12.38409
+        y: -113.5293
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.315152
+    - id: registed_joy_f615080128774d398d922703217f973f
+      position:
+        x: -258.3487
+        y: -25.1958
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.342468
+    - id: registed_joy_c2e4dd1a1d0e48a784cc77c536336ed2
+      position:
+        x: -188.0535
+        y: 19.45297
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.401285
+    - id: registed_joy_fd076267afe545deaa6508e02ed52b34
+      position:
+        x: -362.1436
+        y: 147.8132
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.2030809
+    - id: registed_joy_44906720b3e3440ca662c8367ff47514
+      position:
+        x: -171.5715
+        y: 33.39201
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_976de755f2a249718fdb6030aec24054
+      position:
+        x: -99.84929
+        y: 18.09196
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_24f2483e96254306968a97da1ec82828
+      position:
+        x: -222.7485
+        y: -11.53732
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_dc69071b061b45f88c977597480d2e1a
+      position:
+        x: -179.9277
+        y: 230.2209
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.285833
+    - id: registed_joy_0a2c11c6dcc545e0b3bf92bd241c29c9
+      position:
+        x: -165.3993
+        y: 38.71587
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_9312c40c0ad143bfb2ca61a6d89e5158
+      position:
+        x: -125.2004
+        y: 48.64579
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_80f543c4605a46b39937ed4d9b4cec4a
+      position:
+        x: -177.705
+        y: 232.7806
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.285833
+    - id: registed_joy_a4e98899981e4188ac55c0ed974c73d6
+      position:
+        x: -358.786
+        y: 69.9694
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_0312da2df65a49d6801f7e2dab102113
+      position:
+        x: -259.3149
+        y: 182.1862
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.439826
+    - id: registed_joy_20425f038db547bb9a08dd1cb7d82b8c
+      position:
+        x: -253.9556
+        y: -30.24294
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.318236
+    - id: registed_joy_bdf4ed8b05244f44a62f396665273d99
+      position:
+        x: -157.1696
+        y: 45.81434
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_0ab7e4d8ccbf4b8eb08d1179c3c9f8b2
+      position:
+        x: 41.00243
+        y: -94.62788
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.619525
+    - id: registed_joy_da9490e12d2b47afa45c3f20e8829c20
+      position:
+        x: -185.2167
+        y: 21.59801
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.046194
+    - id: registed_joy_6b045313aa5d4476a9c3b7748d4b569b
+      position:
+        x: -221.5943
+        y: -12.12706
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.409198
+    - id: registed_joy_18db719c1f614063aa77d2e0acf93862
+      position:
+        x: 54.47182
+        y: -62.30955
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.316277
+    - id: registed_joy_05624aa57fce439f8d77d3745a747c18
+      position:
+        x: -155.1122
+        y: 47.58896
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_42c9bf860a684002939ea074e04e8d53
+      position:
+        x: -198.9067
+        y: 236.3708
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 3.072094
+    - id: registed_joy_3fa66e12edfb4c9da3be8f180af23b04
+      position:
+        x: -192.3552
+        y: 13.75392
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7641562
+    - id: registed_joy_4912700ba85341f5a698ea00459b62ac
+      position:
+        x: -153.0548
+        y: 49.36358
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_f569abd9a8ed4f72aa0379fe1767a0f2
+      position:
+        x: -146.8825
+        y: 54.68743
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_92a4ef91187b46a2b3cfc24efadf3d9b
+      position:
+        x: -144.8251
+        y: 56.46205
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_1b5f5d787bdb4289b433d0cfc1a199fa
+      position:
+        x: -363.5081
+        y: 146.6827
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.46672
+    - id: registed_joy_13fb33e6741f496f865db667b49b0566
+      position:
+        x: -243.6846
+        y: -30.18935
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_fe445d7414a14c4da46a44030598c645
+      position:
+        x: -320.3935
+        y: 28.75575
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_0183520cae4b4f9492ea0e36d55884f9
+      position:
+        x: -142.7677
+        y: 58.23667
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_1c148125f87847f8a40f62cdc41d94e2
+      position:
+        x: -84.72575
+        y: 3.242021
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_80495a2600f54b0bb6e6bbf23186eba1
+      position:
+        x: -2.154892
+        y: -105.6386
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.306878
+    - id: registed_joy_b211c9d8bfd9471cbbcadc408d86f0a0
+      position:
+        x: -2.722931
+        y: -140.5638
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.223494
+    - id: registed_joy_089290fecde94066b6c6057aa12bd43c
+      position:
+        x: -181.8586
+        y: 24.51892
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_df61b22176c94b83b095442d2c234180
+      position:
+        x: -135.3711
+        y: 58.43671
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.782134
+    - id: registed_joy_3510998971cd41ca8507ceb6841e6cfa
+      position:
+        x: -354.048
+        y: 64.78441
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_30631f7db6fc45c6b5069866a637b043
+      position:
+        x: -310.9232
+        y: 18.48161
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_7da8afb9051b488ab83c538c1f0cd95d
+      position:
+        x: -276.8112
+        y: -19.18048
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.9318616
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_d9a90c2f15d24c259604f8e076430b28
+      position:
+        x: -119.9211
+        y: 42.72356
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_c1cfdc13a62e490088c2dc42f8efc478
+      position:
+        x: -132.6386
+        y: 55.33327
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_90de7083d952402da1a13edeea9da7db
+      position:
+        x: -356.8048
+        y: 147.9336
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7546387
+    - id: registed_joy_fac912f87beb4f9c9e658b0095e540c2
+      position:
+        x: -124.4413
+        y: 46.02294
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_d0a203462f49455ebb778c8b864eb2cf
+      position:
+        x: -150.9974
+        y: 51.13819
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_ff2eecf6ab554ed6a2791ec6759f0565
+      position:
+        x: -113.5115
+        y: 33.60917
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_6f3047a0c84e46358c78a39be3488121
+      position:
+        x: -200.0864
+        y: 236.4138
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 3.086383
+    - id: registed_joy_2e3220ae086d457cb89748dfbab4848e
+      position:
+        x: -108.0466
+        y: 27.40229
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_d2290975871543a195155b4247661fca
+      position:
+        x: -30.05602
+        y: -61.71279
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.248927
+    - id: registed_joy_5314a99283e7443eaa72bd9e15c3e187
+      position:
+        x: -297.1917
+        y: 2.564555
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_4889aec2810042138c1405bab017b0c9
+      position:
+        x: -285.3466
+        y: -10.39791
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_53f9c734a67c473aa9bc20cc2d6c8c75
+      position:
+        x: -294.8226
+        y: -0.02793882
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_0b259d6db5b24380b64efd0de7163f96
+      position:
+        x: 38.88896
+        y: -96.38667
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7304261
+    - id: registed_joy_aabbe5befcc94f78a428aecb9c3254b1
+      position:
+        x: -273.7519
+        y: 191.3101
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_d81642b9ded840deb1b7763e8d803fa5
+      position:
+        x: -88.24528
+        y: 7.190174
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_90be9ac399fe45fdae56d8a20ca2d059
+      position:
+        x: -244.855
+        y: 196.1463
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_c2a20d936fbd498c8f3fd07faffb6342
+      position:
+        x: -82.96598
+        y: 1.267944
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8379245
+    - id: registed_joy_b432760430594dc9b4cbd7a881b80507
+      position:
+        x: 100.7898
+        y: -140.8654
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.9889814
+    - id: registed_joy_050de5e414c9445594ed9ffcedae8684
+      position:
+        x: 11.11935
+        y: -152.8385
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.226379
+    - id: registed_joy_06042332905547e2a3903860116b3bda
+      position:
+        x: -36.47506
+        y: -53.79628
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.220779
+    - id: registed_joy_15c5e85a4a874c95a9bd4269f654ff7a
+      position:
+        x: -32.82422
+        y: -58.27648
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.254547
+    - id: registed_joy_5f93f08466b24723bcf27f4d7c700d21
+      position:
+        x: 116.2825
+        y: -173.112
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.476071
+    - id: registed_joy_23960c7034174a04936883f142349121
+      position:
+        x: -374.8476
+        y: 87.83203
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_5fbfbfa018e6442e901f5445e604770c
+      position:
+        x: 86.98843
+        y: -95.73168
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8541907
+    - id: registed_joy_3da13de1db2c4b41ab5ccbbfc43e7add
+      position:
+        x: -373.89
+        y: 137.2362
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.712923
+    - id: registed_joy_83828c197bb04814ace12a30d391bbfd
+      position:
+        x: -183.916
+        y: 22.7443
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_8df0dd80e4c540d99d45f97ab90b2479
+      position:
+        x: -147.8803
+        y: 53.99008
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7453275
+    - id: registed_joy_4652303bee40441e99a2fc9837deffec
+      position:
+        x: -328.2625
+        y: 178.6916
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.4507
+    - id: registed_joy_9ce765f2701842e3a7318efe5ee45f25
+      position:
+        x: -384.8452
+        y: 98.48683
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.256312
+    - id: registed_joy_7d9383594237459daadf44ffe0b4b2f2
+      position:
+        x: -78.65043
+        y: -5.859886
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.276411
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_c408b0475cc540b7b5cb834e489067f0
+      position:
+        x: -313.3535
+        y: 20.55198
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.307923
+    - id: registed_joy_b29ffb38c948450d86c3f9883cf5d773
+      position:
+        x: -337.4649
+        y: 46.63695
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_73aebefe57cd4989a5828991c2365050
+      position:
+        x: -276.0696
+        y: 228.9521
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_0a896ec8a42742c58e46251c3fbd1284
+      position:
+        x: -185.75
+        y: 255.2762
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_b9ec301c612c4878825a32b0955ed58c
+      position:
+        x: -308.4513
+        y: 196.6283
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_bcd8ceb2ff7c4a8da79dee0959db4053
+      position:
+        x: -205.1022
+        y: 2.703227
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.409198
+    - id: registed_joy_06be28bff1ee45d9a282a43ffd743073
+      position:
+        x: 113.9249
+        y: -166.2455
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.3649924
+    - id: registed_joy_a742d0278264492694359a09655c110a
+      position:
+        x: -139.2247
+        y: 59.73503
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.956681
+    - id: registed_joy_9b330221ad21422c8f8caa1c5e4b8fe6
+      position:
+        x: 1.649261
+        y: -146.8783
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311374
+    - id: registed_joy_028359f36a3c40ccb6b3677f06dfff27
+      position:
+        x: -391.1596
+        y: 109.5048
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.606487
+    - id: registed_joy_38e18df7109747f6b843f370133ba8ba
+      position:
+        x: -129.9062
+        y: 52.22983
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_009803a21907476cbbb2fdcb58ce6f9a
+      position:
+        x: -325.1286
+        y: 33.89282
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_6ff0bf3845864832a5410b60740a8430
+      position:
+        x: -41.65223
+        y: -46.08942
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_7bea4280b8cc47b38d0660f4c3c401f5
+      position:
+        x: 94.73718
+        y: -133.4554
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.9587579
+    - id: registed_joy_9c8ec0335c544193892e87450778c155
+      position:
+        x: -272.9783
+        y: 231.864
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_0fd8dfade0c641c08468e3de54bba593
+      position:
+        x: 67.0633
+        y: -215.2005
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_765e046f79c6477a8a4b17b2807f669d
+      position:
+        x: -192.6581
+        y: 233.4357
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.371498
+    - id: registed_joy_62145b3da33e48bcb8c1be8375573925
+      position:
+        x: -232.4017
+        y: 207.6425
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.480257
+    - id: registed_joy_c52e8ffc9042490e9bd0d3811d71d24a
+      position:
+        x: 95.73757
+        y: -105.7757
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8541907
+    - id: registed_joy_1cace073003f480b90322438be385dbb
+      position:
+        x: 73.2157
+        y: -209.9394
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_ffed94de93e64ff096680d48a9693789
+      position:
+        x: 85.5205
+        y: -199.4173
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_8b4545375df5457da07a8830c7028d1c
+      position:
+        x: 23.89559
+        y: -109.1677
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6453028
+    - id: registed_joy_ee2ce47cbb0c41bb947dabefcf95ca58
+      position:
+        x: 91.6729
+        y: -194.1562
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_0f357d35e3964c25adafcaea3d6821d7
+      position:
+        x: -58.9232
+        y: -27.73755
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.294605
+    - id: registed_joy_4a6fd0aabf454fcab83250bf8ca65bb8
+      position:
+        x: 92.82119
+        y: -102.4277
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8541907
+    - id: registed_joy_d8a2dc7f15484ca48121e02cb8d865e3
+      position:
+        x: 93.58839
+        y: -131.6882
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.049319
+    - id: registed_joy_4e5dc2c12d2440f78887ed2f5945b09e
+      position:
+        x: -266.6086
+        y: -22.17789
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.99966
+    - id: registed_joy_e7d9c62f38ef4058af525c6e60efd287
+      position:
+        x: 101.5547
+        y: -142.2543
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.326571
+    - id: registed_joy_61db180dcfed4a588326099eae1dd4c8
+      position:
+        x: -380.1071
+        y: 93.30184
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_5826c116ef1e4ea58cfb8c380a8a366d
+      position:
+        x: -126.9601
+        y: 50.61986
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_55c3036c7baf42d6967851ac3ea14f97
+      position:
+        x: 4.348801
+        y: -111.1354
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.843257
+    - id: registed_joy_0e6f1c23990242919b0e5b8e8160d211
+      position:
+        x: 81.15567
+        y: -89.03567
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8541907
+    - id: registed_joy_e60152d152804d4eb8af963669fc45bc
+      position:
+        x: 60.4364
+        y: -216.4503
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.394248
+    - id: registed_joy_2a0d69e31207408c8f987d429edf1eb5
+      position:
+        x: -301.2484
+        y: 7.217985
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.307923
+    - id: registed_joy_c0b66d343da24f3489c550a2c7172374
+      position:
+        x: -346.9409
+        y: 57.00693
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_4f89e7cbca6f4044b5064f3b3e2076c2
+      position:
+        x: -127.1737
+        y: 49.12639
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_6e47f24531f84787abb4ac29dafcbd3a
+      position:
+        x: 103.607
+        y: -149.7595
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.180722
+    - id: registed_joy_4ab72919f13046a9b093416f37cf88d5
+      position:
+        x: 78.23929
+        y: -85.68767
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.6581537
+    - id: registed_joy_a1c80d8c392346188ac433795843501f
+      position:
+        x: -372.3488
+        y: 138.3425
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.437473
+    - id: registed_joy_7b43e84bdce14bf1aedeb086eb9f5e47
+      position:
+        x: -387.5087
+        y: 123.9405
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.046415
+    - id: registed_joy_0353fa2cd92f4b6cbb164f012026ec57
+      position:
+        x: -198.7405
+        y: 10.1916
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.10542
+    - id: registed_joy_cae954fcd6394b4794a50e5483551d58
+      position:
+        x: 71.88249
+        y: -80.69358
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8848443
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_cdc7b378946b4dffae0919e978c0d059
+      position:
+        x: -390.224
+        y: 118.7651
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.413589
+    - id: registed_joy_f7489572fa0f48d892f1f9661c74742c
+      position:
+        x: 27.06127
+        y: -171.8934
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_32550902ff434a778462f84eea6846ac
+      position:
+        x: -51.37841
+        y: -36.27403
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.294605
+    - id: registed_joy_7c52bcbb2bcc4e86b62ea113097e6f75
+      position:
+        x: -291.9826
+        y: -2.066661
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_39e45377547443a0af34fad12c9de824
+      position:
+        x: -263.0942
+        y: 180.5016
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.551704
+    - id: registed_joy_5cca20dc87ab4bc785604c402e1eb7a7
+      position:
+        x: -100.5636
+        y: 21.00871
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_32f4e2c166c541d39824ecd2c8a436cb
+      position:
+        x: -269.9109
+        y: -22.66937
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.3781987
+    - id: registed_joy_6d7e670734a64c27b0d8dede3536fd61
+      position:
+        x: 55.51976
+        y: -209.2104
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.899133
+    - id: registed_joy_c089d66e837b478e8b11c6b927dff60a
+      position:
+        x: -306.0904
+        y: 12.55158
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.307923
+    - id: registed_joy_577e05d6ed804198b6e32a269ff7967e
+      position:
+        x: 79.3681
+        y: -204.6783
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_0f6cd27aea7b4994960fcbf3a8ef5686
+      position:
+        x: -383.7603
+        y: 128.3313
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8013562
+    - id: registed_joy_68f8b231b8ac418a8c5dff42881b1f38
+      position:
+        x: 3.950668
+        y: -149.7072
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.223934
+    - id: registed_joy_88167b6d72de47b88f441a200422c21b
+      position:
+        x: -20.5254
+        y: -73.10585
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.209487
+    - id: registed_joy_4a852ba03f8847ea8dc785be3086c122
+      position:
+        x: -177.7438
+        y: 28.06816
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_39309b5c07d842a8b65882b223ff63dc
+      position:
+        x: -287.2474
+        y: -7.203729
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_8087c4a56fe440268e0e950247c431ce
+      position:
+        x: 110.1301
+        y: -178.3731
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_96204e3aed1f4cf4b5c70e0c40863e01
+      position:
+        x: -234.3797
+        y: -21.89956
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_1f62a9e4be6c47399f12b2c82fc13f00
+      position:
+        x: 117.4652
+        y: -170.4601
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.390085
+    - id: registed_joy_78da172ee48148eea250a1dfbfbc013f
+      position:
+        x: 99.61077
+        y: -120.2762
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.081043
+    - id: registed_joy_e35f6ad6d3764534a568d335053e40f0
+      position:
+        x: -94.3844
+        y: 11.88507
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_7a1d189eb6cb4fbc9eb85f761bc230b6
+      position:
+        x: -389.3564
+        y: 117.763
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.765685
+    - id: registed_joy_b33ac86383334701ba5ba8aaf9c86f12
+      position:
+        x: 75.06089
+        y: -83.19062
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.6659169
+    - id: registed_joy_0dad9bd91e234a35b0719d82f9db7ace
+      position:
+        x: -310.0738
+        y: 196.9219
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7216873
+    - id: registed_joy_35daf978edd941d8be050b9f41ad1e87
+      position:
+        x: -225.0748
+        y: -13.60977
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_6aa729772189409188e80f694336911c
+      position:
+        x: -323.2508
+        y: 31.08199
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_b2c4d33d8ca443bfb8d2bb21dfc55759
+      position:
+        x: -331.7128
+        y: 176.539
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_d0bed6298b2b4dfd924f6f64e273a238
+      position:
+        x: -352.5011
+        y: 152.3337
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7363572
+    - id: registed_joy_34d084dc6b2d44168deb4c37a3116a0e
+      position:
+        x: -388.1063
+        y: 122.4986
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.999829
+    - id: registed_joy_4ec1d754eddd48199796497f0e39f893
+      position:
+        x: 116.1376
+        y: -168.2424
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8165157
+    - id: registed_joy_532c3c3b8aac4aa891d2ed7be5f14092
+      position:
+        x: -303.6694
+        y: 9.884784
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.307923
+    - id: registed_joy_e63350c4f343417fbcdcfc8acd0d27bb
+      position:
+        x: 113.2063
+        y: -175.7425
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_88b71d0b57a4405c8102ca28e9d617b7
+      position:
+        x: -251.9418
+        y: -32.40758
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.301167
+    - id: registed_joy_a88a2680019340b1a434cf718ec1511e
+      position:
+        x: -71.15929
+        y: -11.72052
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_a78c08afb9da4c5e9cd7903a26e8b633
+      position:
+        x: -389.5787
+        y: 121.0707
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.31473
+    - id: registed_joy_c40f9d9ebe68408d818a8d439a6a2185
+      position:
+        x: 101.8992
+        y: -147.2266
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.16055
+    - id: registed_joy_4227fec6a27a48639895e6543e8281bf
+      position:
+        x: 105.9012
+        y: -156.6949
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.176049
+    - id: registed_joy_2adeafc450124f479a0990a469ad8d36
+      position:
+        x: -15.50348
+        y: -81.83288
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.985278
+    - id: registed_joy_12b2413aaec64bb7a81b7c1b3073a4dc
+      position:
+        x: -152.0211
+        y: 50.35501
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6971408
+    - id: registed_joy_8b3bc60a7bd94f9ebe23324eb6b22879
+      position:
+        x: 98.27875
+        y: -137.9094
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.938714
+    - id: registed_joy_180332f43e4e4201a21759d7ecf6ea2a
+      position:
+        x: 82.4443
+        y: -202.0478
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_3e5af84fb97f45239356028ab53b7716
+      position:
+        x: -390.91
+        y: 114.3361
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.505543
+    - id: registed_joy_4685df7278c74831b53f07c43909df22
+      position:
+        x: 84.07205
+        y: -92.38368
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8541907
+    - id: registed_joy_649ccb14179d4636a282bae332c9e794
+      position:
+        x: -192.4787
+        y: 15.42067
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.403872
+    - id: registed_joy_8b49fb5bcb2a41e3acba14106d0c7cf3
+      position:
+        x: -304.4891
+        y: 200.2156
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_bc53a8fcf4424ec9880f3d148c4fa6ce
+      position:
+        x: 8.860641
+        y: -151.1007
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.785963
+    - id: registed_joy_8c78168c52af4d84931d4a85ac28bcf0
+      position:
+        x: -380.9248
+        y: 130.5251
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.419304
+    - id: registed_joy_c137ed72691341bf937a4d1c4d1c40d3
+      position:
+        x: -287.7156
+        y: -7.805421
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_5d4fccdfa5d54352a2451f2791ada825
+      position:
+        x: -193.582
+        y: 12.42508
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7365646
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_1c00b6ead6254a19b60d8dd76f260480
+      position:
+        x: -116.244
+        y: 36.71261
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_82471700c497436eb6c47fbec0210b40
+      position:
+        x: -204.1387
+        y: 5.04225
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_f4ead280f098487e988ae8712e804bbb
+      position:
+        x: -65.81282
+        y: -19.84044
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.280495
+    - id: registed_joy_b0abf6d84dc94bd39fca5d979506c0ce
+      position:
+        x: -43.83362
+        y: -44.8105
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.294605
+    - id: registed_joy_8b6d87df132649fcaaf21c96228db0f9
+      position:
+        x: 13.49498
+        y: -123.7107
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7211782
+    - id: registed_joy_218ef6e6aca042b481faf49f275a0ccd
+      position:
+        x: -118.1613
+        y: 40.74948
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_f9269b9333d54974947c6ab5c00961f4
+      position:
+        x: -262.8889
+        y: -22.83664
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.953111
+    - id: registed_joy_3d4524dbbe9e47d2bb1fcf4c8aaef73f
+      position:
+        x: -55.1508
+        y: -32.00579
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.294605
+    - id: registed_joy_eed9ad93026448b8b89c4f09b1393a58
+      position:
+        x: -303.8325
+        y: 202.4535
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8128487
+    - id: registed_joy_38797107c38c47bb9275a91fdbd48324
+      position:
+        x: -183.7927
+        y: 23.05508
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.5517955
+    - id: registed_joy_7d5b1d076d9d42a6b77e975e2fbb7545
+      position:
+        x: -173.6289
+        y: 31.61739
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_fcd00715b04e49d0bd3c1947452fcffa
+      position:
+        x: -185.9734
+        y: 20.96968
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.511565
+    - id: registed_joy_300b32896452436889bc42ca3a0534a3
+      position:
+        x: -356.417
+        y: 67.3769
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_b93bba25b05640bb8f5eb77d8a029de0
+      position:
+        x: -320.3381
+        y: 185.8663
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_f2032e29151c4f158808d28bc29c024b
+      position:
+        x: -201.563
+        y: 236.4191
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 3.140339
+    - id: registed_joy_459f44f88d9347f1bcedb53274f548f8
+      position:
+        x: 16.43332
+        y: -159.1901
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_477357d833d24de699bdf2b97faa827f
+      position:
+        x: -335.0959
+        y: 44.04446
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_5d720a980f87466fa8a5c66438f150a1
+      position:
+        x: -7.444511
+        y: -99.74741
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.279744
+    - id: registed_joy_65cbbca7dafc400b9380181ed594c9e2
+      position:
+        x: 70.1395
+        y: -212.5699
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_02a9808d23d84e18ae5319e5de311adb
+      position:
+        x: -149.6854
+        y: 52.4716
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6926602
+    - id: registed_joy_497bee615b1d429cb107ebd48f70d1ea
+      position:
+        x: -223.5176
+        y: 278.4534
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_7dea1c407e0a4e9280ba9a1ec95718fb
+      position:
+        x: 9.631119
+        y: -113.2379
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.756922
+    - id: registed_joy_32335c7f8ab44f43aaadd77fb24cfea9
+      position:
+        x: -325.6198
+        y: 33.67448
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_74ba1dc45a8b4b0a8243a60fbd68db1a
+      position:
+        x: 13.77634
+        y: -156.0143
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_92546ac49bd34cc588a9e8e611341fda
+      position:
+        x: -239.8661
+        y: -27.92013
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_9a6e9e3b4bbe4eb987cc9b4a8ec3adaa
+      position:
+        x: -284.8799
+        y: -9.772263
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_e422deba6a8943429dc144fb51b912fd
+      position:
+        x: -209.2253
+        y: -1.004345
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.409198
+    - id: registed_joy_26b8e4ef8b354d29b3cbf751fe1d0137
+      position:
+        x: 101.6141
+        y: -145.5881
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.668799
+    - id: registed_joy_a93cd24792834d859f3f6418b6901a82
+      position:
+        x: 53.31557
+        y: -204.662
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.171529
+    - id: registed_joy_d88e3f21534944b0b6e4c2a56cb551d3
+      position:
+        x: -4.554962
+        y: -103.0423
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.338716
+    - id: registed_joy_921540ad7c8a408fb2939f494f8ef240
+      position:
+        x: -350.2758
+        y: 157.3432
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.440402
+    - id: registed_joy_240864bc046a493497d763e6233036f9
+      position:
+        x: -246.0214
+        y: -32.25093
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.416363
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_7335ea2f95344bbdbbdf0a339176e6f6
+      position:
+        x: 19.09031
+        y: -162.366
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_60c42acf246a4fdaa99cfcdb1cde7f8f
+      position:
+        x: -385.3546
+        y: 126.609
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.456738
+    - id: registed_joy_2086c2e1846b4c49a270aaf9570daef8
+      position:
+        x: -381.3506
+        y: 130.713
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7784916
+    - id: registed_joy_69822a99e24544df9f7155556485e51e
+      position:
+        x: -390.6987
+        y: 109.2826
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.53876
+    - id: registed_joy_87452a3785af4c06b6f489e7989d0316
+      position:
+        x: -303.8204
+        y: 10.77601
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_f60455e7e0a5434ab27bc9d3d88894bc
+      position:
+        x: -378.9097
+        y: 132.7477
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7571922
+    - id: registed_joy_78cd0bad55484df9aadc5a646aca5c5f
+      position:
+        x: 12.77454
+        y: -114.795
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.404478
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_a0a0a5d95563460e92820d9930f6e53a
+      position:
+        x: -47.60601
+        y: -40.54227
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.294605
+    - id: registed_joy_7b3e4090bcac46829d0e3c0a0e996ed2
+      position:
+        x: -141.1869
+        y: 59.7832
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -3.021157
+    - id: registed_joy_77aa1bd545634e2ab35e0e4979a44cec
+      position:
+        x: -0.2603151
+        y: -135.8037
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7211782
+    - id: registed_joy_5322788daa64457cb6facf04b51c23b9
+      position:
+        x: -3.69914
+        y: -138.827
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7211782
+    - id: registed_joy_962fd6d7aa2e4b64aa8556004bd8633d
+      position:
+        x: -382.4761
+        y: 95.89434
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_6725c55f9a264ed58d1bd0a09e15918f
+      position:
+        x: 45.66018
+        y: -194.1242
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_d85a37fa7f2541c482a1f4f24837b7ca
+      position:
+        x: 20.57783
+        y: -111.6522
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.5798112
+    - id: registed_joy_64ca1e4d348f40fcbbc0fb8b5e53afc3
+      position:
+        x: 97.8253
+        y: -188.8952
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_37d81909531d43838625ef4ff624a072
+      position:
+        x: -17.62376
+        y: -77.01373
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.209487
+    - id: registed_joy_608b02c63b8b432ca83bd73507ad140e
+      position:
+        x: 14.45004
+        y: -116.5993
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.309235
+    - id: registed_joy_9f893ff3ccee44adb1cdee560caca385
+      position:
+        x: -167.4567
+        y: 36.94125
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_a6cf2a01022d426585a5d5e43843ec30
+      position:
+        x: -348.8043
+        y: 59.57816
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_38179b75decf42fbb77437762bba6d94
+      position:
+        x: 10.05616
+        y: -126.7339
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7211782
+    - id: registed_joy_45b77c4931ca4c41a342843b22d4f485
+      position:
+        x: -377.7381
+        y: 90.70935
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_c12d924c5299489b859b529999dbf95c
+      position:
+        x: -211.1174
+        y: -1.17509
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_209cddb90d7148e4abc09a72cef2fdca
+      position:
+        x: -349.5958
+        y: 157.4031
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.136443
+    - id: registed_joy_c86f2249ac594794b88b5c14fe297bd5
+      position:
+        x: -11.76189
+        y: -90.33374
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.82726
+    - id: registed_joy_9c402858791c4d66a4c462290f057efc
+      position:
+        x: 97.97607
+        y: -122.6059
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.264652
+    - id: registed_joy_f79bf3f1f8e44565a6c4efaa1fbc895e
+      position:
+        x: 88.5967
+        y: -196.7868
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_2ad1237936754ab091d93005034da793
+      position:
+        x: 16.12074
+        y: -118.3828
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.274171
+    - id: registed_joy_ff4b25b9ca3e466ebe212bc6dbf981a2
+      position:
+        x: 32.37524
+        y: -178.2451
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_0e3d0da8759640fdb8890f3b83043290
+      position:
+        x: 94.7491
+        y: -191.5257
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_c2528f77f2ba4333b3272543677991d9
+      position:
+        x: -359.0519
+        y: 147.6106
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 3.019422
+    - id: registed_joy_776419a411b14d0fa2389610b0cf4bdd
+      position:
+        x: -217.4713
+        y: -8.419489
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.409198
+    - id: registed_joy_de6935fd9d2643f2bd3953b1bbd6dc4d
+      position:
+        x: 50.46862
+        y: -58.03889
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.228767
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_3e4e68d514ff435f98feb8556648050e
+      position:
+        x: -365.893
+        y: 77.74688
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_ba86464d0e904604a2fdc70b7b76c60a
+      position:
+        x: -91.65196
+        y: 8.78163
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_5ac26c524f5c4bf8bdcaaf940761408a
+      position:
+        x: 6.617335
+        y: -129.7572
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7211782
+    - id: registed_joy_83c8034fa4f04dadbdfb14fed45b6539
+      position:
+        x: -349.1784
+        y: 156.7703
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.072143
+    - id: registed_joy_b49165095c9148278ab7e2a49eeaf0a7
+      position:
+        x: 35.03223
+        y: -181.4209
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_c924664fac4d4300b4ed93e62febfaf5
+      position:
+        x: -137.8841
+        y: 59.38107
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.921486
+    - id: registed_joy_22b5686f27bf486fa0ef3402fe19f99a
+      position:
+        x: 43.00319
+        y: -190.9484
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_4bfb6339b7c04c9aba14be941255d55f
+      position:
+        x: 7.141861
+        y: -151.0264
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.90294
+    - id: registed_joy_2dd16e74913d41c2bf5172a714cb39e2
+      position:
+        x: 76.2919
+        y: -207.3089
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_2a50941e88bd415f96fedb72953fac38
+      position:
+        x: -202.6608
+        y: 236.413
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 3.125723
+    - id: registed_joy_0318616d61fd467b8c62bf21cc957d6c
+      position:
+        x: -249.675
+        y: 191.4929
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_22f9bb3076fb44a7a5a1571de945ed1b
+      position:
+        x: -230.4336
+        y: -19.86313
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_210227e724904e8f95a6a545581c1c70
+      position:
+        x: -261.6217
+        y: 180.2222
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.452115
+    - id: registed_joy_d40c71cab23342638c1b9235fe67035c
+      position:
+        x: -137.5701
+        y: 61.12663
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.2148835
+    - id: registed_joy_1ae0a2e9f30e42e5bbcb33e3167c5f00
+      position:
+        x: -261.9047
+        y: 180.1106
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -3.117325
+    - id: registed_joy_eb6b2042e749470c94e09bd4d13b9acd
+      position:
+        x: -377.2152
+        y: 90.40056
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_575838dba62c491088946fbc9c3ef42d
+      position:
+        x: -301.4529
+        y: 8.207475
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_469b2fda31784d2e84ebf6b32a4a7571
+      position:
+        x: -142.7523
+        y: 59.114
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7883385
+    - id: registed_joy_a67e5cdaa2a7409da15bbd54cfa314e7
+      position:
+        x: -102.5817
+        y: 21.1954
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_bbc3dc82b14b40d2aa16cc0da0b8305d
+      position:
+        x: -105.8429
+        y: 26.93094
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_caaa00a9500a49a0ba38fa283b670761
+      position:
+        x: -350.0114
+        y: 154.7962
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434371
+    - id: registed_joy_9f637ae992de440aa42fe2544ffefc40
+      position:
+        x: 96.51868
+        y: -135.6443
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8616667
+    - id: registed_joy_8df820f741d24663a676e2f90b8e4ecd
+      position:
+        x: 48.31717
+        y: -197.3
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_0c37e607a3204f3d9090f01ed508006a
+      position:
+        x: 51.02406
+        y: -201.7559
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.203852
+    - id: registed_joy_3cba09f9370442e99009c8e565cec3ee
+      position:
+        x: -273.7034
+        y: -20.12595
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.704838
+    - id: registed_joy_bc1ad28aa3b04a449e7720e799e3f232
+      position:
+        x: -220.7551
+        y: 219.4132
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_11372133e9824744a49b584a20cc9b8c
+      position:
+        x: -75.34885
+        y: -9.221289
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.347217
+    - id: registed_joy_2918060886a840fdb6a811b577915d47
+      position:
+        x: 95.39503
+        y: -125.3635
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.310208
+    - id: registed_joy_16db23db9dd04dd5b7ac7c127dde4647
+      position:
+        x: -184.5659
+        y: 225.5874
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: 2.371498
+    - id: registed_joy_74e266a08bfe49199c6aeab2232d3638
+      position:
+        x: 107.1507
+        y: -160.6349
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.118274
+    - id: registed_joy_d59904ebb04a43ff8c89597c8742249a
+      position:
+        x: -276.8936
+        y: 194.588
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_7ba153e0259c4df3a16c3fffb9cfa34d
+      position:
+        x: 99.21411
+        y: -138.9669
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7720336
+    - id: registed_joy_f0e2fd962f4c4b11bcbe6a598080551b
+      position:
+        x: -161.2844
+        y: 42.2651
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_20e6be90fc564d86b163d87a8d10ebec
+      position:
+        x: -236.7059
+        y: -23.97201
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_988e3765228b43c48d7ea23b306c53f0
+      position:
+        x: -88.91951
+        y: 5.678187
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_ca2293dd03ea48ad9a21b5fedf14363a
+      position:
+        x: 37.68922
+        y: -184.5967
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_7d5da14883dd48aaa4c39ed272089d7d
+      position:
+        x: -165.7699
+        y: 38.36888
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6469452
+    - id: registed_joy_cae6b0420c2f4c60ae612ad498b46173
+      position:
+        x: 21.7473
+        y: -165.5418
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_ab6ea799a7b44290b1222d1933472c34
+      position:
+        x: 93.24412
+        y: -128.8567
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.894803
+    - id: registed_joy_bb1a41d09ab5438fa02e26b274368be6
+      position:
+        x: -190.6047
+        y: 15.37047
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6742053
+    - id: registed_joy_bb5fba2d8fb443588df16744f48c76cf
+      position:
+        x: -169.5141
+        y: 35.16663
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_643380169a2a492bb354b70f431c856d
+      position:
+        x: -159.227
+        y: 44.03972
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_af27c57cca3b430b8bc10bd522683620
+      position:
+        x: 16.93381
+        y: -120.6874
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6266317
+    - id: registed_joy_2f071df02fca46a1899fa8b41e858469
+      position:
+        x: -194.0911
+        y: 12.12183
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.4424738
+    - id: registed_joy_e857e1669d894ae4bb79a0ef67ac1e28
+      position:
+        x: -376.441
+        y: 134.9181
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6878436
+    - id: registed_joy_3c642515888e45089023817d1e479fab
+      position:
+        x: -83.45462
+        y: -0.5286982
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_980a1e92d82e4f81b1e830072960f2e2
+      position:
+        x: -267.4684
+        y: 184.7543
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_669aca0245a549bdadcdbc52d6d84cf8
+      position:
+        x: -86.18707
+        y: 2.574745
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_ddc6d85b8f5e4558bf9b0a12131f8f27
+      position:
+        x: -155.9114
+        y: 47.21815
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7253135
+    - id: registed_joy_534759eda34241c5a7c09d1b152ae269
+      position:
+        x: -148.9399
+        y: 52.91281
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_32c7762fc3e9407ab108bb1712668a34
+      position:
+        x: -386.6855
+        y: 100.6747
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8880614
+    - id: registed_joy_9316adb1be6b4edf85876a915e546ff3
+      position:
+        x: -371.6202
+        y: 139.3724
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7416261
+    - id: registed_joy_8e4ee43a49b94f0898376022585a22a4
+      position:
+        x: -306.188
+        y: 13.34454
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_587f76aa55124fb7ac215044cc530711
+      position:
+        x: -10.27383
+        y: -91.12161
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.381918
+    - id: registed_joy_10d2852e88ea4c16b5c64c5ebfe80292
+      position:
+        x: -247.499
+        y: -35.72141
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6154706
+    - id: registed_joy_5f7d923e50bb46dcb4a2d7fb5a9a3a12
+      position:
+        x: -365.2772
+        y: 145.2361
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7453903
+    - id: registed_joy_bc89c8c9c3c6495f89aea41b575d821c
+      position:
+        x: -389.7343
+        y: 104.7038
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.906797
+    - id: registed_joy_9a34aaf1b3274dd9b10165d26f8e6f23
+      position:
+        x: -354.6892
+        y: 150.1526
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7093101
+    - id: registed_joy_d513dab1d32d4f0a90deec6d98e1064c
+      position:
+        x: -350.3969
+        y: 154.182
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7457958
+    - id: registed_joy_bd97d3266eaf429bbed9b93b32eee97c
+      position:
+        x: -349.1942
+        y: 155.359
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8626928
+    - id: registed_joy_ae7b89eaeb034ed3b6221af9fea08c27
+      position:
+        x: -225.7173
+        y: -15.83463
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_b6848171d8714eb18f59d6cc4bfc34c4
+      position:
+        x: -348.9773
+        y: 156.2712
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.843907
+    - id: registed_joy_a186d3a9ad0548acb92a96eea8cf0b6c
+      position:
+        x: -350.1072
+        y: 158.1207
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.093813
+    - id: registed_joy_5f695e3f4259401f95fec240acc163bf
+      position:
+        x: -350.2606
+        y: 159.068
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.9553432
+    - id: registed_joy_0c5640518afb4425adab99ba7187c81e
+      position:
+        x: -348.9556
+        y: 155.7744
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.41421
+    - id: registed_joy_c052d16f5c0646d8801c58bf459726f1
+      position:
+        x: -347.1693
+        y: 161.9798
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_0c052670b70f479b814d16db2ac53634
+      position:
+        x: -344.078
+        y: 164.8917
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_97d6e35407cf43d78e86c8e5a0484e2f
+      position:
+        x: -213.3483
+        y: -4.711917
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.409198
+    - id: registed_joy_9c28357d89504ab2a11640631ccdb30b
+      position:
+        x: -340.9867
+        y: 167.8035
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_b057de94328c4c549f25ea1a60ce53e2
+      position:
+        x: 89.90481
+        y: -99.07969
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8541907
+    - id: registed_joy_e7f377cabd434ca78f4fae893c17dc98
+      position:
+        x: -337.8954
+        y: 170.7154
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_ca8a179434b84305a21cde10aeefb718
+      position:
+        x: -273.049
+        y: -21.28781
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.4094014
+    - id: registed_joy_6582a347d8cc46cfa8ad8fdf56e6909f
+      position:
+        x: -334.8041
+        y: 173.6272
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_8ad8a07fddeb4a39b17d3468e5c82f9c
+      position:
+        x: -328.6216
+        y: 179.4509
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_c0bcc9e3e39140338205e2a55bb18540
+      position:
+        x: -325.5303
+        y: 182.3627
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_508925a944c7438f9dece6021fd720bf
+      position:
+        x: -188.612
+        y: 229.5116
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.371498
+    - id: registed_joy_f6a307e2144b43c699a526fe36fa1992
+      position:
+        x: -310.9324
+        y: 17.88518
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.307923
+    - id: registed_joy_c6c20aa852714e4b8bf9360a8e6b9f56
+      position:
+        x: -242.445
+        y: 198.473
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_f49c4d94ec4948ce85276abf5a886a1b
+      position:
+        x: -319.3477
+        y: 188.1864
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_96424748c6204af5a18e6115b43a3404
+      position:
+        x: -292.4536
+        y: -2.620433
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_46cb0bfb50a04fe99d98bdcad70caed1
+      position:
+        x: -316.2564
+        y: 191.0982
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_b189b04c88af434eb591827db62858af
+      position:
+        x: -390.6331
+        y: 107.2331
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.229384
+    - id: registed_joy_4d2610b5244241eca70bf2fa5e1103bf
+      position:
+        x: 107.0539
+        y: -181.0036
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_4a4b0d7305164837a742e57bbdbb6ea2
+      position:
+        x: -215.7699
+        y: -5.319984
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_5861d7cf3b0943d4986b6be196525db7
+      position:
+        x: -275.3923
+        y: -20.21439
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.5328174
+    - id: registed_joy_363d1d830d0040378fbb22fca367e90b
+      position:
+        x: -313.1651
+        y: 194.0101
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_4feb4ead2acc42c5ae93d166479363e2
+      position:
+        x: -153.9875
+        y: 48.78821
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6328738
+    - id: registed_joy_616930b761b9435fa1a8030e9c35a15f
+      position:
+        x: -237.625
+        y: 203.1264
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_8210b0fb22884f7d836f4af8326aeccd
+      position:
+        x: -220.4223
+        y: -9.464877
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_9e7044da0f6c47769513f443c4f62262
+      position:
+        x: -306.7717
+        y: 199.8279
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7291137
+    - id: registed_joy_128cd5783abf4dc2b46ec1b54a0e3b8a
+      position:
+        x: -300.7999
+        y: 205.6574
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_5cfb9094c4494cf0bb6007269a3bc5e1
+      position:
+        x: -286.3189
+        y: 204.4218
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_592c36232a3841e899b71d95d5de6d3a
+      position:
+        x: -294.6173
+        y: 211.4811
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_f9ae1b132ae04a4bb4bcc4706825b821
+      position:
+        x: -384.3179
+        y: 98.10617
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_c60bd2333a2d4c829177b5de989c3f26
+      position:
+        x: -121.7089
+        y: 42.9195
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_2473f71e42304a13a002bea97a560a98
+      position:
+        x: -291.526
+        y: 214.3929
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_1c0ea65d4bfb4b9b83b31341cf481219
+      position:
+        x: 103.9777
+        y: -183.6341
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_928b6e7236bf483abef908d1c1d76f19
+      position:
+        x: -288.4347
+        y: 217.3048
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_11b3dde3fd8747bba188ddba5470e2f9
+      position:
+        x: -285.3435
+        y: 220.2166
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_4465293055d64c46933ff1ad96e412c9
+      position:
+        x: -215.176
+        y: 284.9091
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_ade27a2b0a0b4212941545d12b82658c
+      position:
+        x: -198.9434
+        y: 8.662704
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8384506
+    - id: registed_joy_e6edb331486e43de8dbd7f26bc4428ee
+      position:
+        x: 60.62712
+        y: -75.67761
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6937171
+    - id: registed_joy_9cf64435c3b64c12b8640b19d1e7e717
+      position:
+        x: -360.9219
+        y: 147.2001
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.6651095
+    - id: registed_joy_9e2f5603b8764f168b1a2843caccfb9f
+      position:
+        x: -269.887
+        y: 234.7758
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_2b61095981284a429da955a21006959e
+      position:
+        x: -266.7957
+        y: 237.6876
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_0657dd613d89468dbc7a4692d0a1f127
+      position:
+        x: -260.6131
+        y: 243.5113
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_f0185b88eef44e8c93180889c0a07a72
+      position:
+        x: -351.679
+        y: 62.19192
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_e4385f1136ac4c71b724251ddfaa0552
+      position:
+        x: -390.3491
+        y: 112.5495
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.691352
+    - id: registed_joy_df1c3c96096647ea8f95021958334e72
+      position:
+        x: -257.5218
+        y: 246.4231
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_ba9dedbfb442498b80b66daa2e45559f
+      position:
+        x: -254.4305
+        y: 249.335
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_1583b0876b6f420091a37e7dba7780ea
+      position:
+        x: -327.9888
+        y: 36.26698
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_9235536624c14c0dbfe902e30bb41e9b
+      position:
+        x: -248.2479
+        y: 255.1587
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_7defafc093aa40839e14923d99c07d38
+      position:
+        x: -232.7915
+        y: 269.7178
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_01170c4819694342a171fec1b756d920
+      position:
+        x: -58.43222
+        y: -26.33445
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_1c5e8306dda743fdbe249b67aba73f1e
+      position:
+        x: -229.7002
+        y: 272.6297
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_856ddef0069a4771b6d37c2f61c11710
+      position:
+        x: -226.6089
+        y: 275.5415
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_265fc0d677844fc09de80b8cb17131d1
+      position:
+        x: -365.2779
+        y: 144.9481
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.414321
+    - id: registed_joy_81d5ffd8bd244ecf80cda72483436757
+      position:
+        x: 63.9871
+        y: -217.831
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: 2.770735
+    - id: registed_joy_aa849164b9bf45458a2a020d49ab2fa8
+      position:
+        x: -220.4263
+        y: 281.3652
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6523634
+    - id: registed_joy_2ee41ddae8304d6089ba983a5150663b
+      position:
+        x: -207.8195
+        y: 277.5009
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_4a6fa2d7fa414d4ab1867205f1bdfdd6
+      position:
+        x: -178.3935
+        y: 247.868
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_59ac840454704028837cdf51be850c90
+      position:
+        x: -73.36783
+        y: -344.1938
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 1.901186
+    - id: registed_joy_d7bfc28160c6462ab72b5b07d41cf2c3
+      position:
+        x: -204.1413
+        y: 273.7968
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_324d24c63a7c422889dbc6d4b77c303c
+      position:
+        x: -200.463
+        y: 270.0927
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_6db8bf9738f34910afdcb5d6fb7606a8
+      position:
+        x: -196.7848
+        y: 266.3886
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_4df939b12d4e4236b24cc07c96e8a903
+      position:
+        x: -193.1065
+        y: 262.6845
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_82b2ce17dbc0489ba6654a8dc7cf30bc
+      position:
+        x: -182.0718
+        y: 251.5721
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_109ab7a492a84b7bab5f7ed7fdda9836
+      position:
+        x: -308.5556
+        y: 15.91308
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_780375008f0c43229e02c6dabddd2752
+      position:
+        x: -278.2395
+        y: -18.1754
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_840fcf10622d415fa769751ce7122d13
+      position:
+        x: -174.7153
+        y: 244.1639
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_f3769f12cde647d8a0d03d03a22812ca
+      position:
+        x: -171.037
+        y: 240.4598
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.856549
+    - id: registed_joy_eee79e93cc854afeab1f51621f3326e6
+      position:
+        x: -173.1309
+        y: 237.6824
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.358196
+    - id: registed_joy_9bd920babd0e47119ee9d9c8f58c145a
+      position:
+        x: -383.0745
+        y: 128.5964
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.46542
+    - id: registed_joy_62a04786e224405288cdc09295876948
+      position:
+        x: -250.2579
+        y: -35.83526
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.07179249
+    - id: registed_joy_3fafe095c0cc483c96d629333bb86abb
+      position:
+        x: -182.1503
+        y: 227.6612
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.43217
+    - id: registed_joy_92875ef38d2147f39cb41f750c141692
+      position:
+        x: -237.508
+        y: -25.90588
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_2cfe015c187845fcb014a4ff7d64bf28
+      position:
+        x: -186.5889
+        y: 227.5495
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.371498
+    - id: registed_joy_2b3c11bed9ba4408b52dfb220001dd65
+      position:
+        x: -370.6311
+        y: 82.93187
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_1ab38f58adc8405792b4265388d5e6a6
+      position:
+        x: -190.6351
+        y: 231.4736
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.371498
+    - id: registed_joy_c6c5a346f72d443e839b3765986c3143
+      position:
+        x: 108.6141
+        y: -162.7675
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8404246
+    - id: registed_joy_9549d2f35edf418b9c671d0ceb3e8dfe
+      position:
+        x: -194.6812
+        y: 235.3978
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.344655
+    - id: registed_joy_aab1160e6b80430d8246a3cfcf98fefa
+      position:
+        x: -118.9764
+        y: 39.81606
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.292708
+    - id: registed_joy_294325d3162240afb854f6eb13a19b25
+      position:
+        x: -195.9538
+        y: 236.1276
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.974328
+    - id: registed_joy_e3427c41ea0f43e594f61538a0f54c8e
+      position:
+        x: -197.3054
+        y: 236.2533
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 3.018256
+    - id: registed_joy_27bb8367688e4edd974eef9a1be140f2
+      position:
+        x: -0.101059
+        y: -106.2591
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.894133
+    - id: registed_joy_d4ca9ae8679c42568bcce7649ceba6b1
+      position:
+        x: -179.8012
+        y: 26.29354
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_6f73ca2641914babaa24c10d82c91aee
+      position:
+        x: -203.8852
+        y: 235.7
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.336961
+    - id: registed_joy_84046b6dcff04adb9371344f74467f8d
+      position:
+        x: -206.2952
+        y: 233.3733
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_b2e5993554834989a582ec49f5c02271
+      position:
+        x: -300.5269
+        y: 203.8029
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_afbaa14c6bea4c15a1bede8bad95554b
+      position:
+        x: -283.1771
+        y: 201.1438
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_f1a33defe4a04546b2eefe1c47ea6166
+      position:
+        x: 104.5367
+        y: -152.5298
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.305501
+    - id: registed_joy_5e025caa0206499d9def9ea3b799d792
+      position:
+        x: -208.7052
+        y: 231.0466
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_482c04ec8b12451aa6a0beb14f505a57
+      position:
+        x: -289.615
+        y: -4.635195
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_9a8338cc948644cb8f6c6ce9e3774457
+      position:
+        x: -213.5251
+        y: 226.3933
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_e6bca87e675f48fc8d8bc662d7c8a3a7
+      position:
+        x: -2.731094
+        y: -103.1592
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8495461
+    - id: registed_joy_5e3c058a900047fc9ab6e55c38f979f7
+      position:
+        x: -215.9351
+        y: 224.0666
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_691aec8d2200445abd66930acec4598a
+      position:
+        x: -200.9792
+        y: 6.410799
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.409198
+    - id: registed_joy_54ba8440577140e2967f3d6800ce5269
+      position:
+        x: -334.5989
+        y: 44.16695
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_8a54a84a9f5b4d48afe18bace6a9aadc
+      position:
+        x: -322.439
+        y: 185.2745
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_a6cbc09f1d6b4e44b5a5344b4eabd886
+      position:
+        x: -218.3451
+        y: 221.7399
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_70bf98f4505144efa49d6673887ffde5
+      position:
+        x: -282.2522
+        y: 223.1284
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_c30cbfd764624fccb6b11fddbaf17902
+      position:
+        x: -225.5751
+        y: 214.7598
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_0366d225ef3642fdadf67898aca6b73a
+      position:
+        x: -227.9851
+        y: 212.4331
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.32323
+    - id: registed_joy_64be493423b7416d8148b582694b1292
+      position:
+        x: -230.5289
+        y: 209.7159
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.30544
+    - id: registed_joy_7aa86448da974bbfa4f4cd75f880f7e0
+      position:
+        x: -235.215
+        y: 205.4531
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_20aa349799614895afe5fb8b4640bbb0
+      position:
+        x: -37.92334
+        y: -50.47942
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8666471
+    - id: registed_joy_0c04c7184f66454db863d9e0819a590b
+      position:
+        x: -330.3578
+        y: 38.85947
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_8656904430c14fca90de52d72d7fce35
+      position:
+        x: -341.7016
+        y: 51.87255
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_7950bf564afc45c396aa9dd45704a7cc
+      position:
+        x: 98.65395
+        y: -109.1237
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.9566472
+    - id: registed_joy_c68dde26b63f4b5aab3017d0b7e4a100
+      position:
+        x: -240.035
+        y: 200.7997
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_1572b5eedf924102ad41ae319fb5be36
+      position:
+        x: -247.265
+        y: 193.8196
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_5d9fc47c633446049322101b930a12e6
+      position:
+        x: -252.0849
+        y: 189.1663
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_da15a97d310f44de9ad448e28224f1c4
+      position:
+        x: -277.7771
+        y: -17.47786
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.054747
+    - id: registed_joy_b7efbd9a2eac431aae887812fae0efd9
+      position:
+        x: -254.4949
+        y: 186.8396
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_6e7c54efd26b4a5ea1c15bd7ea00a95c
+      position:
+        x: -239.0322
+        y: -26.04445
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_55b2c5a30d3a4137841ffa48e879760f
+      position:
+        x: -256.9049
+        y: 184.5129
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.373779
+    - id: registed_joy_644b6651980b445b99b352a2266473b9
+      position:
+        x: -316.3758
+        y: 189.4536
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_620700b76523413d94de37803e82aebc
+      position:
+        x: -264.3266
+        y: 181.4764
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.4715
+    - id: registed_joy_cd138f569a464745907ec7684ba84d2a
+      position:
+        x: -280.0354
+        y: 197.8659
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_b32fc5ac580644dfb3c2dfbeace19d11
+      position:
+        x: -365.3773
+        y: 77.55789
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_7f373644839d4b3795a44e480371ac06
+      position:
+        x: -289.4606
+        y: 207.6997
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_87f30ebcf05549009ddaed95dd757a04
+      position:
+        x: -40.06122
+        y: -49.07874
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.294605
+    - id: registed_joy_720140c49db4456f824e918367714e52
+      position:
+        x: -294.3502
+        y: 0.5018734
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_e814cdadef9f453da8b045b81b5a66dd
+      position:
+        x: -292.6024
+        y: 210.9776
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: -2.405813
+    - id: registed_joy_2c181d1a529a4f6db29d4ca219f204e4
+      position:
+        x: -296.5646
+        y: 207.3902
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_092711ffbd084af08280b2b0bf00ef95
+      position:
+        x: -312.4136
+        y: 193.0409
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_e1179f40fc474507be04e752a7142e26
+      position:
+        x: -378.2429
+        y: 133.1269
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.427268
+    - id: registed_joy_5fe225e4866647e0af091ab7e3833331
+      position:
+        x: -324.3003
+        y: 182.279
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_08c60fc3d22a4b63a1d2178e676df2bb
+      position:
+        x: -332.2721
+        y: 175.3764
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.428094
+    - id: registed_joy_436442eb2f2443fa98137df2dcb6fe38
+      position:
+        x: -336.3456
+        y: 171.8502
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.341057
+    - id: registed_joy_85071eac2da944a8b26cbffb84af4c0c
+      position:
+        x: -76.42858
+        y: -5.886568
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_bfde19a74cf4435caa02a214625859d8
+      position:
+        x: 29.71826
+        y: -175.0693
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_94d85878975c4697949a9c297025dcd3
+      position:
+        x: -344.1115
+        y: 164.3423
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_7980c14d41044ee2969e3fec1dfa4d21
+      position:
+        x: -189.4283
+        y: 258.9803
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7889005
+    - id: registed_joy_982886c8f2f840e5b8a6e8112c4b6285
+      position:
+        x: -348.0737
+        y: 160.755
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.400662
+    - id: registed_joy_3316a5d9c29e449b834c3058ae0c8ceb
+      position:
+        x: -358.2746
+        y: 69.85229
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_41b525f769ef421badb02c9873bfdce0
+      position:
+        x: -297.7086
+        y: 208.5692
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_12c46c4b2f594320b97a684b204c7316
+      position:
+        x: -186.1714
+        y: 19.50754
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.9690834
+    - id: registed_joy_427825973390432c8b2f5d3ffb20ce99
+      position:
+        x: 100.9015
+        y: -186.2646
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434132
+    - id: registed_joy_76bec7311f90496ba01b1dbaa173e02b
+      position:
+        x: -270.6101
+        y: 188.0322
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.334989
+    - id: registed_joy_531a8ef452ef4008a984c1a681d9e57f
+      position:
+        x: -349.958
+        y: 158.8488
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.163943
+    - id: registed_joy_7b25245472874d14aa797dde87f37af6
+      position:
+        x: -67.64643
+        y: -15.60981
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_080b29cd7c2f4dc99e4fc572df01844b
+      position:
+        x: -350.2807
+        y: 158.1451
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.681385
+    - id: registed_joy_26cbd3fc55814ac79fbb20c5ddc0e8d8
+      position:
+        x: -72.91572
+        y: -9.775866
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_575190d2772f4d36b8b7eca14556252d
+      position:
+        x: -350.0856
+        y: 156.7737
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.106805
+    - id: registed_joy_5a2678ce1a654647a30f85c4c5150810
+      position:
+        x: -350.2822
+        y: 154.501
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.416112
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_aba5cbd3072e42d8940a3fa76a9c079c
+      position:
+        x: -357.1135
+        y: 148.2742
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.59473
+    - id: registed_joy_50ef6311b5f443c9b47bd034996103c7
+      position:
+        x: 27.94054
+        y: -105.6638
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7494121
+    - id: registed_joy_2cd790d6fdd5499286298dabb5b1d40e
+      position:
+        x: -359.7289
+        y: 147.8022
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.971543
+    - id: registed_joy_c46abaf6b83949afa0bda1279d90551a
+      position:
+        x: -360.4248
+        y: 147.841
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -3.063633
+    - id: registed_joy_d7823a620b564d9e82e7f740af485fa7
+      position:
+        x: -362.0113
+        y: 147.591
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.784458
+    - id: registed_joy_b7415453a21143d9ba1d0c5b8855c9cb
+      position:
+        x: -367.2356
+        y: 143.2608
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.407056
+    - id: registed_joy_6b8674c5841b41d686c648a64754393b
+      position:
+        x: -368.8997
+        y: 141.9388
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7776438
+    - id: registed_joy_5214a416e3224f9592489d863ace78b7
+      position:
+        x: -375.4123
+        y: 135.8374
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429012
+    - id: registed_joy_24bfb190f78d4720a7b3931ea0c938d0
+      position:
+        x: -386.6632
+        y: 125.325
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.238527
+    - id: registed_joy_1dfff8157f6b4907be67bf562c738981
+      position:
+        x: -80.72218
+        y: -3.632141
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.237098
+    - id: registed_joy_ffaa473a18e440c19e962f344cd11b2b
+      position:
+        x: -388.7174
+        y: 120.6822
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.843484
+    - id: registed_joy_5137e94480244d3eb7795eb327e6ddac
+      position:
+        x: -389.0238
+        y: 119.3733
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.755603
+    - id: registed_joy_4e7e166ccede47fb997995c074053de2
+      position:
+        x: -253.9253
+        y: -32.56737
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7278559
+    - id: registed_joy_2dc18d2c2e1d4bc5870235741688e1dd
+      position:
+        x: -299.5607
+        y: 5.157049
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.256965
+    - id: registed_joy_62996cfa8bb5416b89f1f25f79184be1
+      position:
+        x: -389.652
+        y: 116.0139
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.687298
+    - id: registed_joy_4c9bace6becb4adb83f98c407124c488
+      position:
+        x: -263.8462
+        y: -24.12543
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.2874222
+    - id: registed_joy_4430c5557bfe4b298bfe666395db1944
+      position:
+        x: -389.8295
+        y: 114.4469
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.886635
+    - id: registed_joy_186ec232c60d44c29614da48a94e1535
+      position:
+        x: -388.9329
+        y: 103.6796
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.9286357
+    - id: registed_joy_6d21c3c3052c4f0fad47f0d1f1b0081e
+      position:
+        x: -381.9504
+        y: 95.53763
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_302fde08f2944dfc84bd9db69d1e705f
+      position:
+        x: -249.3656
+        y: -35.89943
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.5320555
+    - id: registed_joy_8d1ff563b3a342f48dd957ce6d73f583
+      position:
+        x: -379.5828
+        y: 92.9691
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_e4857e1e0fbd4dcab2588525692124d5
+      position:
+        x: -372.4801
+        y: 85.2635
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_852a089214e4413f9c7e0023c482ca50
+      position:
+        x: -23.15405
+        y: -67.94273
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8890241
+    - id: registed_joy_ca326f3aae314aa580a952da0570f497
+      position:
+        x: -370.1125
+        y: 82.69496
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_bb1dc3b03a614c078efa2c135377f630
+      position:
+        x: -351.1719
+        y: 62.14669
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_7d61430c67894c10a8c1a6aa4f363d55
+      position:
+        x: -367.7449
+        y: 80.12643
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_42b7b1ba1fdf424ba83746a55ae6fd0f
+      position:
+        x: -363.0098
+        y: 74.98936
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_cd59ea1042054e17821347025729bc32
+      position:
+        x: 100.0871
+        y: -111.6403
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.237044
+    - id: registed_joy_ae1bdae403724291b41bfab1df23271c
+      position:
+        x: -360.6422
+        y: 72.42083
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_667c3ce2b820427dadf8afe42f644732
+      position:
+        x: -355.9071
+        y: 67.28376
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_b05e33527f34491d8cf2ca220c9f1497
+      position:
+        x: -353.5395
+        y: 64.71522
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_967ee4dd3e0d488ba5ef6af1e4f1d0aa
+      position:
+        x: -69.40286
+        y: -13.66516
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_ca25ba265ba7447a9623982e2069be03
+      position:
+        x: -346.4368
+        y: 57.00962
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_47dbbfc66ae44b45ad50ae4a8cd1a2a5
+      position:
+        x: 110.6232
+        y: -164.4151
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.6020647
+    - id: registed_joy_8e6dc402ca564fb68fd99c0aa6538fff
+      position:
+        x: -344.0692
+        y: 54.44109
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_d1ded69c71df459e93f3143fa76767b5
+      position:
+        x: -332.2313
+        y: 41.59842
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_1be12c3b8b9043e590e9bf7eabe43118
+      position:
+        x: -339.334
+        y: 49.30402
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_2fcabbad3b84454596813c95a5360e1c
+      position:
+        x: -181.5134
+        y: 24.60464
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7052953
+    - id: registed_joy_6cba451a47e94c288794224c95205f5c
+      position:
+        x: -245.1566
+        y: 258.0705
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_defcf4b84d4046efac0eb767e4bbbff7
+      position:
+        x: -175.6863
+        y: 29.84277
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.429859
+    - id: registed_joy_675c575cf2f54e64a98e7570af776782
+      position:
+        x: -176.1233
+        y: 29.41838
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7240492
+    - id: registed_joy_08a8aab807af4ba5854237ea83d2b0f2
+      position:
+        x: -336.9665
+        y: 46.73549
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_70ba9ee46bda40dca79912c5a5acc6c6
+      position:
+        x: -329.8637
+        y: 39.02988
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_f5fa1c7c9e0d490c80b516bc488db669
+      position:
+        x: -340.1492
+        y: 167.9297
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.405813
+    - id: registed_joy_deed8205eab1433c9220fc2eb24a5966
+      position:
+        x: -327.4962
+        y: 36.46135
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_3ee3f87cab794a42a9b5d94eea674324
+      position:
+        x: -322.761
+        y: 31.32428
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_25b74bfb41da41d5a5e21321a066a72e
+      position:
+        x: -318.0259
+        y: 26.18721
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_893da1cc73394c3a91b9ee3bcdc9d0d0
+      position:
+        x: -235.8828
+        y: 266.806
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_0d750d61980041f794e52e8f2f6dab17
+      position:
+        x: -279.1609
+        y: 226.0403
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7555135
+    - id: registed_joy_d9a9f9b423e04f9eace5e3935e6e9985
+      position:
+        x: -315.6583
+        y: 23.61868
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_4fd7f453cbdd45c08b8b0bb395a0db9f
+      position:
+        x: -313.2907
+        y: 21.05015
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_e7c529d666674e31960bb4ee72eb7fb7
+      position:
+        x: -175.4823
+        y: 235.3404
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.285833
+    - id: registed_joy_fdfba47f819c4264b8aec466fe0b928b
+      position:
+        x: -299.0853
+        y: 5.638941
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_6dfb596210af42fcb24d56d788f91de6
+      position:
+        x: 101.7596
+        y: -143.9362
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.612225
+    - id: registed_joy_37319ec9bba44baf80cba87166dbb64b
+      position:
+        x: -296.7177
+        y: 3.070407
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_94fbfeba91c94c8d9d308a1906dab27d
+      position:
+        x: -74.67215
+        y: -7.831217
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8362091
+    - id: registed_joy_37d35362dda048ce971441710944bf87
+      position:
+        x: -282.5123
+        y: -12.3408
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.8260881
+    - id: registed_joy_d36e2fc45c244e5e8001e776a1334b66
+      position:
+        x: -267.0715
+        y: -23.4841
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.2352396
+    - id: registed_joy_fc24d9ca13134e2fa4d7f709a19fb5f5
+      position:
+        x: -263.0938
+        y: -24.39764
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.4020827
+      properties:
+        - key: stop
+          value: true
+    - id: registed_joy_a178a81a35d14d1e90a293986fdbde92
+      position:
+        x: 100.6832
+        y: -115.7783
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -1.612291
+    - id: registed_joy_b105bd02c66a41298f6f7fbe6c44ad4f
+      position:
+        x: -201.8125
+        y: 7.114697
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.4947852
+    - id: registed_joy_2fa63f0a9510446aa25c0e98e446385d
+      position:
+        x: -261.2601
+        y: -26.03159
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7278559
+    - id: registed_joy_7bfb9b3ab70043e194b296cbfc151592
+      position:
+        x: -195.978
+        y: 11.31549
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.793481
+    - id: registed_joy_61512fc58fab43f08ee60f9d9f00abe8
+      position:
+        x: -259.4264
+        y: -27.66553
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7278559
+    - id: registed_joy_c42e012bf0994dbd913ba3ccd2576aaa
+      position:
+        x: 24.40428
+        y: -168.7176
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_c702d476b17e49bc9d8da96504870f82
+      position:
+        x: -255.759
+        y: -30.93342
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7278559
+    - id: registed_joy_cd92d09e2620457491541bbc4fd3637c
+      position:
+        x: -252.0916
+        y: -34.20131
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.7278559
+    - id: registed_joy_ca808e265ded46148a964a42f601dd47
+      position:
+        x: -245.8627
+        y: -33.93732
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.8048804
+    - id: registed_joy_8e80bdd60dd64f9e8577b70aab95be15
+      position:
+        x: -23.42705
+        y: -69.19797
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.291825
+    - id: registed_joy_863ffd021ca14bd789e76fabcb03e26d
+      position:
+        x: 3.17851
+        y: -132.7804
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7211782
+    - id: registed_joy_0719075a5a5347fe89fa7afdf8f1e8f5
+      position:
+        x: -245.0201
+        y: -32.21541
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 1.396196
+    - id: registed_joy_259c8360d52c4f1f89e5f5f24943f3f2
+      position:
+        x: -241.3584
+        y: -28.1169
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_04918f5b6f574b9d9d813f1093869f40
+      position:
+        x: -232.0535
+        y: -19.82711
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_0dd750147b1c4bc9869d95c332e515ca
+      position:
+        x: 57.80295
+        y: -213.6002
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.28846
+    - id: registed_joy_efa8895dab1a41abb8c986da66eb1963
+      position:
+        x: -229.7272
+        y: -17.75466
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_ddb148ff1b264644bf8eab9416b32966
+      position:
+        x: -227.401
+        y: -15.68222
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_a4e800924b604c7397c5c9003374f6f6
+      position:
+        x: -218.0961
+        y: -7.392431
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_afc8c2eb465a456595053fc0f158a560
+      position:
+        x: -213.4436
+        y: -3.247537
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_133edb46c4a142669d2e94a840728d28
+      position:
+        x: 40.3462
+        y: -187.7726
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.267477
+    - id: registed_joy_e484c8a11f344a91bf73511ef81e47c8
+      position:
+        x: -208.7912
+        y: 0.8973567
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7277666
+    - id: registed_joy_53ca27089786466da86c996ee2d51ac4
+      position:
+        x: -197.0217
+        y: 10.95053
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7061203
+    - id: registed_joy_5c345deca7f84355ad28beb12b089be5
+      position:
+        x: -188.6236
+        y: 17.14719
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7175155
+    - id: registed_joy_a72a24edb4ec4d9c9a92a324c975bcf5
+      position:
+        x: -368.2621
+        y: 80.33937
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_0c435552e1384fbc805ab785879ced08
+      position:
+        x: -187.3817
+        y: 18.35158
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6321298
+    - id: registed_joy_4ba2eafd91ce4e0983ee43b4ec5de988
+      position:
+        x: -177.9971
+        y: 27.75131
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7441156
+    - id: registed_joy_4ddc40b290f04aa6bd5757c48c08a889
+      position:
+        x: -174.3269
+        y: 31.01974
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6803313
+    - id: registed_joy_b35537dab34b46e49348cca5090c32c8
+      position:
+        x: -132.2394
+        y: 56.54209
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -0.842732
+    - id: registed_joy_cc6089558582412d86e065a423f36925
+      position:
+        x: -242.2242
+        y: -29.93438
+        z: -3
+      euler_angles:
+        x: 0
+        y: 0
+        z: -2.434683
+    - id: registed_joy_b58fcdac9b204bceaddb6cf9ba5639dd
+      position:
+        x: -172.4811
+        y: 32.54929
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.6948106
+    - id: registed_joy_45c1055f98f749778690975ccb53790c
+      position:
+        x: -170.3156
+        y: 34.4198
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7342053
+    - id: registed_joy_00e3f45cacb0427faec5f9cf8a6631a7
+      position:
+        x: -361.155
+        y: 72.56189
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.311182
+    - id: registed_joy_d6f1590ffc0a421eb5ca96518ff5799f
+      position:
+        x: -68.93004
+        y: -16.21157
+        z: -3
+      euler_angles:
+        x: -0
+        y: -0
+        z: 2.280495
+    - id: registed_joy_71a1b0dbf7164c2a961c3313e9c508cb
+      position:
+        x: -168.3363
+        y: 36.26247
+        z: -3
+      euler_angles:
+        x: -0
+        y: 0
+        z: 0.7174993
