@@ -32,4 +32,4 @@ waypoint_server:
       - registed_joy_6e7c54efd26b4a5ea1c15bd7ea00a95c
       - registed_joy_20e6be90fc564d86b163d87a8d10ebec
       - registed_joy_96204e3aed1f4cf4b5c70e0c40863e01
-    count_of_skip_ids: 0
+    count_of_skip_ids: 1

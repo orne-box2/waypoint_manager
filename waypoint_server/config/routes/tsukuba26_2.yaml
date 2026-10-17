@@ -24,4 +24,4 @@ waypoint_server:
       - registed_joy_a3e5e258564c43dc8a932223f16f6891
       - registed_joy_780375008f0c43229e02c6dabddd2752
       - registed_joy_7bc422093cbe45f9895d7ada806735e4
-    count_of_skip_ids: 0
+    count_of_skip_ids: 1
