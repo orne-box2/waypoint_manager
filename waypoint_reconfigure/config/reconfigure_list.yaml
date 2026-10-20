@@ -14,7 +14,7 @@ waypoint_reconfigure_config:
   # waypoint_server.yamlで選択したルートだけtrueにする。
   queue_wait_profiles:
     tsukuba26_1: &queue_tsukuba26_1 false
-    tsukuba26_2: &queue_tsukuba26_2 true
+    tsukuba26_2: &queue_tsukuba26_2 false
     tsukuba26_3: &queue_tsukuba26_3 false
   areas:
    - name: crossing_queue_tsukuba2
@@ -25,7 +25,7 @@ waypoint_reconfigure_config:
    - name: crossing_queue_3F
      start_id: registed_0_1791692525785207549
      end_id: registed_0_1791688376624122478
-     queue_wait: false
+     queue_wait: true
      properties: []
    - name: "2to6_saka"
      start_id: registed_0_1773749190996855168
