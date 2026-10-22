@@ -21,7 +21,32 @@ Point transform(Point p,Pose t) {
     return {t.x+std::cos(t.yaw)*p.x-std::sin(t.yaw)*p.y,
             t.y+std::sin(t.yaw)*p.x+std::cos(t.yaw)*p.y};
 }
-struct Projection { double lateral,along; };
+struct ScanView {
+    Pose origin{};
+    double angle_min=0,angle_increment=0,range_min=0,range_max=0;
+    std::vector<float> ranges;
+    bool clears(Point point,double margin=.05) const {
+        if (!finite(origin)||!finite(point)||ranges.size()<2||!std::isfinite(angle_min)||
+            !std::isfinite(angle_increment)||angle_increment<=0||!std::isfinite(range_min)||
+            !std::isfinite(range_max)||range_min<0||range_max<=range_min||!std::isfinite(margin)||margin<=0) return false;
+        double span=angle_increment*(ranges.size()-1);
+        if (span>2*M_PI+.001) return false;
+        double dx=point.x-origin.x,dy=point.y-origin.y,distance=std::hypot(dx,dy);
+        if (distance<=range_min+margin||distance+margin>=range_max) return false;
+        if (distance*angle_increment>2*margin) return false;
+        double center=angle_min+.5*span;
+        double angle=center+wrap(std::atan2(dy,dx)-origin.yaw-center),half=std::atan2(margin,distance);
+        double first=(angle-half-angle_min)/angle_increment,last=(angle+half-angle_min)/angle_increment;
+        if (first<0||last>ranges.size()-1) return false;
+        for (size_t i=std::floor(first);i<=static_cast<size_t>(std::ceil(last));++i) {
+            double range=ranges[i];
+            if (std::isinf(range)&&range>0) range=range_max;
+            if (!std::isfinite(range)||range<range_min||range>range_max||range<=distance+margin) return false;
+        }
+        return true;
+    }
+};
+struct Projection { double lateral,along,signed_lateral=0; };
 struct Path {
     struct Segment { Point a,b; double length,offset; };
     std::vector<Segment> segments;
@@ -42,7 +67,8 @@ struct Path {
             if (i!=0) t=std::max(0.0,t);
             if (i+1!=segments.size()) t=std::min(1.0,t);
             double d=std::hypot(p.x-s.a.x-t*dx,p.y-s.a.y-t*dy);
-            if (d<best.lateral) best={d,s.offset+t*s.length};
+            if (d<best.lateral) best={d,s.offset+t*s.length,
+                (dx*(p.y-s.a.y)-dy*(p.x-s.a.x))/s.length};
         }
         return best;
     }
@@ -52,6 +78,18 @@ struct Path {
             return {s.a.x+t*(s.b.x-s.a.x),s.a.y+t*(s.b.y-s.a.y)};
         }
         return segments.back().b;
+    }
+    Pose poseAt(double distance,double lateral=0) const {
+        for (size_t i=0;i<segments.size();++i) {
+            const auto& s=segments[i];
+            if (distance<=s.offset+s.length||i+1==segments.size()) {
+                double t=std::max(0.0,std::min(1.0,(distance-s.offset)/s.length));
+                double dx=(s.b.x-s.a.x)/s.length,dy=(s.b.y-s.a.y)/s.length;
+                return {s.a.x+t*(s.b.x-s.a.x)-dy*lateral,
+                        s.a.y+t*(s.b.y-s.a.y)+dx*lateral,std::atan2(dy,dx)};
+            }
+        }
+        throw std::logic_error("Empty path");
     }
 };
 struct Waypoint { Point position; bool stop; };
@@ -84,7 +122,7 @@ std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::stri
         }
         if (!waypoints.at(end).stop) throw std::invalid_argument("Queue end waypoint needs stop: true");
         std::vector<Point> points;
-        for (auto i=std::max<decltype(begin)>(0,begin-1);i<=finish;++i)
+        for (auto i=std::max<decltype(begin)>(0,begin-2);i<=finish;++i)
             points.push_back(waypoints.at(route[i]).position);
         const auto line=area["stop_line"];
         bool has_stop_line=line&&!line.IsNull();
@@ -96,7 +134,8 @@ std::vector<Zone> loadZones(const YAML::Node& config,const std::vector<std::stri
             p={point[0].as<double>(),point[1].as<double>()}; yaw=line["yaw"].as<double>();
             if (!finite(p)||!std::isfinite(yaw)) throw std::invalid_argument("Non-finite stop line");
             auto signedDistance=[&](Point v) { return (v.x-p.x)*std::cos(yaw)+(v.y-p.y)*std::sin(yaw); };
-            if (signedDistance(points.front())>=0||signedDistance(goal)>=0)
+            auto approach=waypoints.at(route[std::max<decltype(begin)>(0,begin-1)]).position;
+            if (signedDistance(approach)>=0||signedDistance(goal)>=0)
                 throw std::invalid_argument("Approach and stop goal must be before the stop line");
         }
         zones.push_back({area["name"].as<std::string>(),end,ids,Path(points),p,goal,yaw,std::move(stops),has_stop_line});
@@ -110,6 +149,33 @@ struct Grid {
         :width(w),height(h),resolution(r),origin(o),data(d),inflated_costmap(inflated) {
         if (w<=0||h<=0||!std::isfinite(r)||r<=0||!finite(o)||d.size()!=static_cast<size_t>(w)*h)
             throw std::invalid_argument("Invalid occupancy grid");
+    }
+    bool occupiedNear(Point point,double margin) const {
+        double dx=point.x-origin.x,dy=point.y-origin.y,c=std::cos(origin.yaw),s=std::sin(origin.yaw);
+        double x=(c*dx+s*dy)/resolution,y=(-s*dx+c*dy)/resolution,radius=margin/resolution;
+        int left=std::max(0,static_cast<int>(std::floor(x-radius))),right=std::min(width-1,static_cast<int>(std::floor(x+radius)));
+        int bottom=std::max(0,static_cast<int>(std::floor(y-radius))),top=std::min(height-1,static_cast<int>(std::floor(y+radius)));
+        for (int row=bottom;row<=top;++row) for (int col=left;col<=right;++col) {
+            if (data[row*width+col]<99) continue;
+            double ax=std::max(0.0,std::max(col-x,x-col-1)),ay=std::max(0.0,std::max(row-y,y-row-1));
+            if (ax*ax+ay*ay<=radius*radius) return true;
+        }
+        return false;
+    }
+    bool observedFree(Point point,double margin=.05) const {
+        if (!finite(point)||!std::isfinite(margin)||margin<=0) return false;
+        double dx=point.x-origin.x,dy=point.y-origin.y,c=std::cos(origin.yaw),s=std::sin(origin.yaw);
+        double x=(c*dx+s*dy)/resolution,y=(-s*dx+c*dy)/resolution,radius=margin/resolution;
+        if (!std::isfinite(x)||!std::isfinite(y)||!std::isfinite(radius)) return false;
+        if (x-radius<0||y-radius<0||x+radius>=width||y+radius>=height) return false;
+        for (int row=std::floor(y-radius);row<=std::floor(y+radius);++row)
+            for (int col=std::floor(x-radius);col<=std::floor(x+radius);++col) {
+                double ax=std::max(0.0,std::max(col-x,x-col-1)),ay=std::max(0.0,std::max(row-y,y-row-1));
+                if (ax*ax+ay*ay>radius*radius) continue;
+                auto cost=data[row*width+col];
+                if (cost<0||cost>=99) return false;
+            }
+        return true;
     }
     bool free(Pose pose,const std::vector<Point>& footprint) const {
         double minx=INFINITY,miny=INFINITY,maxx=-INFINITY,maxy=-INFINITY;
@@ -149,8 +215,17 @@ struct Grid {
     }
 };
 struct Decision { std::string state; bool active=false,hold=false; double linear=0,angular=0; };
+struct ObstacleTrackingSettings {
+    double avoidance_stationary_duration=1.0;
+    double obstacle_stationary_max_speed=0.08;
+    double obstacle_cluster_distance=0.18;
+    double obstacle_association_distance=0.35;
+    double obstacle_stationary_distance=0.08;
+    double obstacle_motion_interval=0.5;
+};
 class Controller {
 public:
+    const ObstacleTrackingSettings obstacle_tracking{};
     std::map<std::string,double> p{
         {"max_speed",.3},{"max_angular",.4},{"lookahead",.7},
         {"detection_distance",1},{"detection_half_width",.8},
@@ -158,13 +233,43 @@ public:
         {"scan_timeout",.5},{"pose_timeout",.5},{"map_timeout",1.5},
         {"max_lateral_deviation",.25},{"corridor_half_width",.65},
         {"deceleration",.3},{"stop_margin",.2},{"stop_goal_radius",.2},
-        {"prediction_time",1}};
+        {"prediction_time",1},{"avoidance_wait",90},
+        {"avoidance_max_offset",0},
+        {"avoidance_obstacle_max_diagonal",.3},{"queue_center_half_width",.12}};
     static constexpr double control_rate=10;
     std::vector<Zone> zones; std::vector<Point> footprint;
+    std::vector<Point> avoidance_footprint;
+    std::function<bool(Point)> static_obstacle;
+    std::function<bool(Point)> observed_free;
     int zone=-1;
     bool fault=false,released=false,waiting=true,line_reached=false,waypoint_reached=false;
     double clear_since=NAN,last_time=NAN;
     std::string identity; Decision last{"NORMAL"};
+    struct Track {
+        size_t id;
+        Point center,velocity,anchor;
+        std::vector<Point> points;
+        double first_seen,last_seen,still_since,outside_since;
+        unsigned observations;
+        Point motion_center{};
+        std::vector<Point> motion_points;
+        double motion_stamp=NAN;
+    };
+    struct Bounds { double first,last,left,right; };
+    std::vector<Track> tracks;
+    std::map<size_t,double> queue_limits;
+    struct QueueMemory {
+        std::vector<Point> points;
+        double occupied_stamp=NAN,clear_since=NAN,last_scan=NAN,last_map=NAN;
+    };
+    std::map<size_t,QueueMemory> queue_memory;
+    std::unique_ptr<Path> detour;
+    size_t next_track=1,blocked_track=0,detour_track=0;
+    double observed_scan=NAN,blocked_since=NAN,blocked_tick=NAN,avoidance_clear=NAN;
+    Point blocked_position{};
+    double detour_end=0;
+    double next_avoidance_try=NAN;
+    bool oncoming_seen=false;
     Controller(std::vector<Zone> z,const YAML::Node& parameters,std::vector<Point> f):zones(std::move(z)),footprint(std::move(f)) {
         if (parameters&&!parameters.IsNull()&&!parameters.IsMap()) throw std::invalid_argument("queue_wait parameters must be a map");
         for (const auto& value:parameters) {
@@ -172,40 +277,77 @@ public:
             if (!p.count(key)) throw std::invalid_argument("Unknown queue parameter: "+key);
             p[key]=value.second.as<double>();
         }
-        for (const auto& value:p) if (!std::isfinite(value.second)||value.second<=0)
+        for (const auto& value:p) if (!std::isfinite(value.second)||value.second<0||
+            (value.second==0&&value.first!="avoidance_max_offset"))
             throw std::invalid_argument("Queue parameters must be finite and positive");
+        for (double value:{obstacle_tracking.avoidance_stationary_duration,obstacle_tracking.obstacle_stationary_max_speed,
+                           obstacle_tracking.obstacle_cluster_distance,obstacle_tracking.obstacle_association_distance,
+                           obstacle_tracking.obstacle_stationary_distance,obstacle_tracking.obstacle_motion_interval})
+            if (!std::isfinite(value)||value<=0)
+                throw std::invalid_argument("Obstacle tracking settings must be finite and positive");
         if (p["resume_distance"]<=p["detection_distance"]) throw std::invalid_argument("resume_distance must exceed detection_distance");
         if (footprint.size()<3) throw std::invalid_argument("Footprint needs at least three vertices");
         for (auto v:footprint) if (!finite(v)) throw std::invalid_argument("Non-finite footprint");
+        double min_x=INFINITY,max_x=-INFINITY,min_y=INFINITY,max_y=-INFINITY;
+        for (auto v:footprint) {
+            min_x=std::min(min_x,v.x); max_x=std::max(max_x,v.x);
+            min_y=std::min(min_y,v.y); max_y=std::max(max_y,v.y);
+        }
+        avoidance_footprint={{max_x+.05,max_y+.05},{min_x-.05,max_y+.05},
+                             {min_x-.05,min_y-.05},{max_x+.05,min_y-.05}};
+        if (p["avoidance_max_offset"]>=p["corridor_half_width"])
+            throw std::invalid_argument("avoidance_max_offset must be smaller than corridor_half_width");
+        if (p["avoidance_max_offset"]>0&&p["queue_center_half_width"]>=p["corridor_half_width"])
+            throw std::invalid_argument("queue_center_half_width must be smaller than corridor_half_width when avoidance is enabled");
+    }
+    void resetBlocked() { blocked_since=blocked_tick=next_avoidance_try=NAN; blocked_track=0; oncoming_seen=false; }
+    void resetAvoidance() {
+        resetBlocked(); detour.reset(); detour_track=0; tracks.clear(); queue_limits.clear(); queue_memory.clear();
+        observed_scan=avoidance_clear=NAN;
     }
     void waypoint(const std::string& id) {
         if (zone>=0&&!zones[zone].ids.count(id)) {
             if (!released) { fault=true; return; }
-            zone=-1; released=false; line_reached=false;
+            zone=-1; released=false; line_reached=false; resetAvoidance();
         }
         if (zone<0) {
             for (size_t i=0;i<zones.size();++i) if (zones[i].ids.count(id)) { zone=i; break; }
-            waiting=false; clear_since=NAN; last_time=NAN;
+            waiting=false; clear_since=NAN; last_time=NAN; resetAvoidance();
         }
-        if (id!=identity) waypoint_reached=false;
+        if (id!=identity) { waypoint_reached=false; resetBlocked(); }
         identity=id;
     }
-    void pause() { waiting=true; clear_since=NAN; }
+    void resetClearProofs() {
+        for (auto& memory:queue_memory) memory.second.clear_since=memory.second.last_scan=memory.second.last_map=NAN;
+    }
+    void pause() { waiting=true; clear_since=avoidance_clear=NAN; resetBlocked(); resetClearProofs(); }
+    const Path& drivingPath() const { return detour?*detour:zones.at(zone).path; }
+    bool entryReady(const Zone& area,Pose pose) const {
+        if (!finite(pose)||area.path.project({pose.x,pose.y}).lateral>.8*p.at("max_lateral_deviation")) return false;
+        for (auto vertex:footprint)
+            if (area.path.project(transform(vertex,pose)).lateral>p.at("corridor_half_width")) return false;
+        return true;
+    }
     double approachTime() const {
         return p.at("prediction_time")+p.at("max_speed")/p.at("deceleration")+.1;
     }
     struct ObstacleWindow { double start,front,end,stop_end,half_width; };
     ObstacleWindow obstacleWindow(Pose pose) const {
-        const auto& path=zones[zone].path;
+        const auto& path=drivingPath();
         double start=path.project({pose.x,pose.y}).along,front=-INFINITY;
         for (auto v:footprint) front=std::max(front,path.project(transform(v,pose)).along);
         double stop_end=front+p.at("detection_distance");
         double preview=std::max(p.at("resume_distance"),p.at("detection_distance")+p.at("max_speed")*approachTime());
         preview+=p.at("max_speed")*(p.at("scan_timeout")+1/control_rate);
-        return {start,front,front+preview,stop_end,p.at("detection_half_width")};
+        double width=p.at("detection_half_width");
+        if (detour) {
+            width=.05;
+            for (auto v:footprint) width=std::max(width,std::abs(v.y)+.05);
+        }
+        return {start,front,front+preview,stop_end,width};
     }
     double clearance(Pose pose,const std::vector<Point>& points) const {
-        const auto& path=zones[zone].path;
+        const auto& path=drivingPath();
         const auto window=obstacleWindow(pose); double closest=INFINITY;
         for (auto point:points) {
             auto q=path.project(point);
@@ -223,11 +365,364 @@ public:
         }
         return closest;
     }
+    Bounds bounds(const Track& track) const {
+        Bounds result{INFINITY,-INFINITY,INFINITY,-INFINITY};
+        for (auto point:track.points) {
+            auto q=zones[zone].path.project(point);
+            result.first=std::min(result.first,q.along); result.last=std::max(result.last,q.along);
+            result.left=std::min(result.left,q.signed_lateral); result.right=std::max(result.right,q.signed_lateral);
+        }
+        return result;
+    }
+    static double radius(const std::vector<Point>& points,Point center) {
+        double value=0;
+        for (auto point:points) value=std::max(value,std::hypot(point.x-center.x,point.y-center.y));
+        return value;
+    }
+    void updateMotion(Track& track,Point center,const std::vector<Point>& points,double stamp) {
+        double elapsed=stamp-track.motion_stamp;
+        if (elapsed<obstacle_tracking.obstacle_motion_interval) return;
+        Point measured{};
+        double old_radius=radius(track.motion_points,track.motion_center),new_radius=radius(points,center);
+        bool stable=points.size()>=3&&track.motion_points.size()>=3&&
+            points.size()>=.4*track.motion_points.size()&&points.size()<=2.5*track.motion_points.size()&&
+            std::max(old_radius,new_radius)<=.75&&std::abs(new_radius-old_radius)<.05+.3*old_radius;
+        if (stable) {
+            Point shift{center.x-track.motion_center.x,center.y-track.motion_center.y};
+            std::vector<double> original_errors,shifted_errors;
+            for (auto point:points) {
+                double nearest=INFINITY,shifted=INFINITY;
+                for (auto before:track.motion_points) {
+                    double dx=point.x-before.x,dy=point.y-before.y;
+                    nearest=std::min(nearest,dx*dx+dy*dy);
+                    shifted=std::min(shifted,(dx-shift.x)*(dx-shift.x)+(dy-shift.y)*(dy-shift.y));
+                }
+                original_errors.push_back(std::sqrt(nearest)); shifted_errors.push_back(std::sqrt(shifted));
+            }
+            auto upperError=[](std::vector<double>& values) {
+                auto sample=values.begin()+3*values.size()/4;
+                std::nth_element(values.begin(),sample,values.end()); return *sample;
+            };
+            double before=upperError(original_errors),after=upperError(shifted_errors);
+            if (std::hypot(shift.x,shift.y)>=.035&&after<=.04&&before-after>=.02)
+                measured={shift.x/elapsed,shift.y/elapsed};
+        }
+        track.velocity=measured;
+        track.motion_center=center; track.motion_points=points; track.motion_stamp=stamp;
+    }
+    void rememberLimit(size_t id,double limit,const std::vector<Point>& points,double stamp) {
+        queue_limits[id]=limit;
+        auto& memory=queue_memory[id]; memory=QueueMemory{}; memory.occupied_stamp=stamp;
+        for (auto point:points)
+            if (zones[zone].path.project(point).lateral<=p.at("queue_center_half_width")) memory.points.push_back(point);
+        if (memory.points.empty()) memory.points=points;
+    }
+    void releaseClearedLimits(double scan_stamp,double map_stamp) {
+        for (auto it=queue_memory.begin();it!=queue_memory.end();) {
+            if (!queue_limits.count(it->first)) { it=queue_memory.erase(it); continue; }
+            auto& memory=it->second;
+            bool clear=observed_free&&!memory.points.empty()&&scan_stamp>memory.occupied_stamp&&map_stamp>memory.occupied_stamp;
+            if (clear) for (auto point:memory.points) if (!observed_free(point)) { clear=false; break; }
+            if (!clear) memory.clear_since=memory.last_scan=memory.last_map=NAN;
+            else {
+                double stamp=std::min(scan_stamp,map_stamp);
+                if (!std::isfinite(memory.clear_since)||scan_stamp<memory.last_scan||map_stamp<memory.last_map||
+                    scan_stamp-memory.last_scan>p.at("scan_timeout")||map_stamp-memory.last_map>p.at("map_timeout"))
+                    memory.clear_since=stamp;
+                memory.last_scan=scan_stamp; memory.last_map=map_stamp;
+                if (stamp-memory.clear_since>=p.at("clear_duration")) {
+                    queue_limits.erase(it->first); it=queue_memory.erase(it); continue;
+                }
+            }
+            ++it;
+        }
+    }
+    void observe(const std::vector<Point>& points,double stamp,Pose pose) {
+        if (std::isfinite(observed_scan)&&stamp<=observed_scan) return;
+        observed_scan=stamp;
+        const auto& reference=zones[zone].path;
+        const double core=p.at("queue_center_half_width");
+        double start=reference.project({pose.x,pose.y}).along,front=-INFINITY,rear=INFINITY;
+        for (auto vertex:footprint) {
+            double along=reference.project(transform(vertex,pose)).along;
+            front=std::max(front,along); rear=std::min(rear,along);
+        }
+        std::vector<std::vector<Point>> clusters;
+        for (auto point:points) {
+            if (!finite(point)) continue;
+            if (static_obstacle&&static_obstacle(point)) {
+                auto q=reference.project(point);
+                if (std::abs(q.signed_lateral)<=core&&q.along>=front&&q.along<=front+6) {
+                    auto found=queue_limits.find(0);
+                    double limit=q.along-p.at("stop_margin");
+                    if (found==queue_limits.end()||limit<=found->second) rememberLimit(0,limit,{point},stamp);
+                }
+                continue;
+            }
+            if (clusters.empty()||std::hypot(point.x-clusters.back().back().x,point.y-clusters.back().back().y)>obstacle_tracking.obstacle_cluster_distance)
+                clusters.push_back({});
+            clusters.back().push_back(point);
+        }
+        std::set<size_t> matched;
+        for (auto& cluster:clusters) {
+            Point center{};
+            for (auto point:cluster) { center.x+=point.x; center.y+=point.y; }
+            center.x/=cluster.size(); center.y/=cluster.size();
+            size_t selected=tracks.size(); double nearest=obstacle_tracking.obstacle_association_distance;
+            for (size_t i=0;i<tracks.size();++i) {
+                const auto& t=tracks[i]; double dt=stamp-t.last_seen;
+                if (matched.count(t.id)||dt<=0||dt>2) continue;
+                double d=std::hypot(center.x-t.center.x-t.velocity.x*dt,center.y-t.center.y-t.velocity.y*dt);
+                if (d<nearest) { nearest=d; selected=i; }
+            }
+            if (selected==tracks.size()) {
+                tracks.push_back({next_track++,center,{0,0},center,std::move(cluster),stamp,stamp,stamp,NAN,1,center,{},stamp});
+                auto& created=tracks.back();
+                created.motion_center=center; created.motion_points=created.points; created.motion_stamp=stamp;
+                matched.insert(tracks.back().id);
+            } else {
+                auto& t=tracks[selected];
+                updateMotion(t,center,cluster,stamp);
+                if (std::hypot(center.x-t.anchor.x,center.y-t.anchor.y)>obstacle_tracking.obstacle_stationary_distance) {
+                    t.still_since=stamp; t.anchor=center;
+                }
+                t.center=center; t.points=std::move(cluster); t.last_seen=stamp; ++t.observations;
+                matched.insert(t.id);
+            }
+        }
+        for (auto& t:tracks) if (t.last_seen==stamp) {
+            auto b=bounds(t);
+            bool outside=b.left>p.at("corridor_half_width")||b.right<-p.at("corridor_half_width");
+            if (!outside) t.outside_since=NAN;
+            else if (!std::isfinite(t.outside_since)) t.outside_since=stamp;
+            if (b.left<=core&&b.right>=-core&&b.last>=front&&b.first<=front+6)
+                rememberLimit(t.id,b.first-p.at("stop_margin"),t.points,stamp);
+            else if (b.last<rear-.1||
+                (std::isfinite(t.outside_since)&&stamp-t.outside_since>=p.at("clear_duration")))
+                queue_limits.erase(t.id);
+        }
+        for (auto i=queue_limits.begin();i!=queue_limits.end();)
+            if (i->second<start-.5) i=queue_limits.erase(i); else ++i;
+        tracks.erase(std::remove_if(tracks.begin(),tracks.end(),[&](const Track& t) {
+            return stamp-t.last_seen>2;
+        }),tracks.end());
+    }
+    bool pointClear(Pose pose,Point point,double margin) const {
+        double dx=point.x-pose.x,dy=point.y-pose.y,c=std::cos(pose.yaw),s=std::sin(pose.yaw);
+        Point local{c*dx+s*dy,-s*dx+c*dy};
+        bool inside=false; double distance=INFINITY;
+        for (size_t i=0,j=footprint.size()-1;i<footprint.size();j=i++) {
+            auto a=footprint[j],b=footprint[i];
+            if ((a.y>local.y)!=(b.y>local.y)&&local.x<(b.x-a.x)*(local.y-a.y)/(b.y-a.y)+a.x) inside=!inside;
+            double ax=b.x-a.x,ay=b.y-a.y,length=ax*ax+ay*ay;
+            double k=length>0?std::max(0.0,std::min(1.0,((local.x-a.x)*ax+(local.y-a.y)*ay)/length)):0;
+            distance=std::min(distance,std::hypot(local.x-a.x-k*ax,local.y-a.y-k*ay));
+        }
+        return !inside&&distance>margin;
+    }
+    bool poseClear(Pose pose,const std::vector<Point>& scan,
+                   const std::function<bool(Pose,const std::vector<Point>&)>& collision) const {
+        const auto& path=zones[zone].path;
+        auto q=path.project({pose.x,pose.y});
+        if (q.lateral>std::max(p.at("max_lateral_deviation"),p.at("avoidance_max_offset")+.02)||
+            q.along>path.length||boundary(pose)<p.at("stop_margin")||!collision(pose,avoidance_footprint)) return false;
+        double limit=INFINITY;
+        for (const auto& value:queue_limits) limit=std::min(limit,value.second);
+        for (auto vertex:avoidance_footprint) {
+            auto v=path.project(transform(vertex,pose));
+            if (v.lateral>p.at("corridor_half_width")||v.along>limit) return false;
+        }
+        for (auto point:scan) if (!pointClear(pose,point,.05)) return false;
+        return true;
+    }
+    bool movingClear(Pose pose,double seconds,double now) const {
+        for (const auto& t:tracks) {
+            double speed=std::hypot(t.velocity.x,t.velocity.y);
+            if (t.observations<3||speed<obstacle_tracking.obstacle_stationary_max_speed||now-t.last_seen>2) continue;
+            double extent=radius(t.points,t.center);
+            if (extent>.75) continue;
+            double dt=std::min(4.0,seconds)+std::max(0.0,now-t.last_seen);
+            Point future{t.center.x+t.velocity.x*dt,t.center.y+t.velocity.y*dt};
+            if (!pointClear(pose,future,std::max(.25,extent)+.05+.03*dt)) return false;
+        }
+        return true;
+    }
+    const Track* blocker(Pose pose,double gap) const {
+        auto window=obstacleWindow(pose);
+        for (const auto& t:tracks) {
+            if (observed_scan-t.last_seen>.05) continue;
+            auto b=bounds(t);
+            if (b.right<-window.half_width||b.left>window.half_width||b.last<window.start) continue;
+            if (std::abs(b.first-window.front-gap)<.03) return &t;
+        }
+        return nullptr;
+    }
+    bool makeDetour(Pose pose,const Track& obstacle,double target_end,double now,
+                    const std::vector<Point>& scan,
+                    const std::function<bool(Pose,const std::vector<Point>&)>& collision) {
+        oncoming_seen=false;
+        auto b=bounds(obstacle);
+        if (now-obstacle.last_seen>p.at("scan_timeout")||now-obstacle.still_since<obstacle_tracking.avoidance_stationary_duration||
+            std::hypot(obstacle.velocity.x,obstacle.velocity.y)>obstacle_tracking.obstacle_stationary_max_speed||
+            std::hypot(b.last-b.first,b.right-b.left)>p.at("avoidance_obstacle_max_diagonal")||
+            !(b.left>p.at("queue_center_half_width")||b.right<-p.at("queue_center_half_width"))) return false;
+        const auto& reference=zones[zone].path; auto start=reference.project({pose.x,pose.y});
+        double rear=0;
+        for (auto v:footprint) rear=std::max(rear,-v.x);
+        double pass=std::max(start.along+.8,b.last+rear+.15),finish=pass+.8;
+        for (const auto& stop:zones[zone].stop_waypoints) {
+            double along=reference.project(stop.second).along;
+            if (along>start.along+.05) target_end=std::min(target_end,along);
+        }
+        if (finish>target_end-.3) return false;
+        for (double scale:{1.0,.5}) {
+            double offset=(b.left>0?-1:1)*scale*p.at("avoidance_max_offset");
+            std::vector<Point> points;
+            auto smooth=[](double t) { t=std::max(0.0,std::min(1.0,t)); return t*t*(3-2*t); };
+            for (double along=start.along;along<finish+.02;along+=.04) {
+                double s=std::min(along,finish),lateral=offset;
+                if (s<start.along+.8) lateral=start.signed_lateral+(offset-start.signed_lateral)*smooth((s-start.along)/.8);
+                else if (s>pass) lateral=offset*(1-smooth((s-pass)/.8));
+                auto point=reference.poseAt(s,lateral); points.push_back({point.x,point.y});
+            }
+            auto end=reference.poseAt(finish); points.push_back({end.x,end.y});
+            auto candidate=std::unique_ptr<Path>(new Path(points));
+            bool valid=true;
+            for (double s=0;s<=candidate->length+.02;s+=.04) {
+                auto prediction=candidate->poseAt(std::min(s,candidate->length));
+                if (!movingClear(prediction,s/p.at("max_speed"),now)) { oncoming_seen=true; valid=false; break; }
+                if (!poseClear(prediction,scan,collision)) { valid=false; break; }
+            }
+            if (valid) {
+                detour=std::move(candidate); detour_end=finish; detour_track=obstacle.id; waiting=false;
+                avoidance_clear=now-p.at("clear_duration"); return true;
+            }
+        }
+        return false;
+    }
+    Decision blockedDetour(double now,Pose pose,const std::vector<Point>& scan,
+                           const std::function<bool(Pose,const std::vector<Point>&)>& collision,double target_end) {
+        avoidance_clear=NAN; waiting=true;
+        if (!std::isfinite(next_avoidance_try)||now>=next_avoidance_try) {
+            next_avoidance_try=now+.5;
+            for (const auto& track:tracks) if (track.id==detour_track&&now-track.last_seen<=p.at("scan_timeout")) {
+                if (makeDetour(pose,track,target_end,now,scan,collision)) {
+                    waiting=true; avoidance_clear=NAN; return hold("AVOIDANCE_WAIT_CLEAR");
+                }
+                break;
+            }
+        }
+        return hold(oncoming_seen?"ONCOMING_YIELD":"AVOIDANCE_BLOCKED");
+    }
+    Decision followDetour(double now,Pose pose,const std::vector<Point>& scan,
+                          const std::function<bool(Pose,const std::vector<Point>&)>& collision,double target_end) {
+        auto projection=detour->project({pose.x,pose.y});
+        for (double s=std::max(0.0,projection.along);s<=detour->length+.02;s+=.04) {
+            auto prediction=detour->poseAt(std::min(s,detour->length));
+            if (!poseClear(prediction,scan,collision)) return blockedDetour(now,pose,scan,collision,target_end);
+            if (!movingClear(prediction,(s-projection.along)/p.at("max_speed"),now)) {
+                avoidance_clear=NAN; waiting=true; return hold("ONCOMING_YIELD");
+            }
+        }
+        if (waiting) {
+            if (!std::isfinite(avoidance_clear)) avoidance_clear=now;
+            if (now-avoidance_clear<p.at("clear_duration")) return hold("AVOIDANCE_WAIT_CLEAR");
+            waiting=false;
+        }
+        auto target=detour->pointAt(std::min(detour->length,projection.along+.35));
+        double error=wrap(std::atan2(target.y-pose.y,target.x-pose.x)-pose.yaw);
+        double speed=p.at("max_speed")*std::max(0.0,std::cos(error));
+        double remaining=detour->length-projection.along;
+        speed=std::min(speed,std::sqrt(2*p.at("deceleration")*std::max(0.0,remaining)));
+        if (std::abs(error)>.6) speed=0;
+        double angular=0;
+        bool moving_conflict=false;
+        auto feasible=[&](double candidate) {
+            if (candidate<1e-5&&std::abs(error)<.05) return false;
+            double rotation=std::max(-p.at("max_angular"),std::min(p.at("max_angular"),
+                2*std::max(candidate,.03)*std::sin(error)/std::max(.1,std::hypot(target.x-pose.x,target.y-pose.y))));
+            Pose prediction=pose;
+            double horizon=std::max(p.at("prediction_time"),candidate/p.at("deceleration")+.1);
+            for (double t=0;t<=horizon;t+=.05) {
+                if (!poseClear(prediction,scan,collision)) return false;
+                if (!movingClear(prediction,t,now)) { moving_conflict=true; return false; }
+                prediction.x+=candidate*std::cos(prediction.yaw)*.05;
+                prediction.y+=candidate*std::sin(prediction.yaw)*.05;
+                prediction.yaw=wrap(prediction.yaw+rotation*.05);
+            }
+            if (candidate>1e-5) for (double s=std::max(0.0,projection.along);s<=detour->length+.02;s+=.04) {
+                auto future=detour->poseAt(std::min(s,detour->length));
+                if (!movingClear(future,(s-projection.along)/candidate,now)) { moving_conflict=true; return false; }
+            }
+            angular=rotation;
+            return true;
+        };
+        bool safe=false;
+        for (int attempt=0;attempt<5;++attempt) {
+            if (feasible(speed)) { safe=true; break; }
+            if (moving_conflict) { avoidance_clear=NAN; waiting=true; return hold("ONCOMING_YIELD"); }
+            speed=attempt<3?speed*.5:0;
+        }
+        if (!safe) return blockedDetour(now,pose,scan,collision,target_end);
+        last={"QUEUE_AVOID",true,false,speed,angular}; return last;
+    }
+    Decision waitForDetour(double now,Pose pose,const std::vector<Point>& scan,
+                           const std::function<bool(Pose,const std::vector<Point>&)>& collision,
+                           double target_end,double gap,const std::string& reason) {
+        const Track* obstacle=nullptr;
+        const auto window=obstacleWindow(pose);
+        double c=std::cos(pose.yaw),s=std::sin(pose.yaw);
+        auto relative=[&](Point point) {
+            double dx=point.x-pose.x,dy=point.y-pose.y;
+            return Point{c*dx+s*dy,-s*dx+c*dy};
+        };
+        if (p["avoidance_max_offset"]>0) {
+            for (const auto& t:tracks) if (t.id==blocked_track&&std::isfinite(blocked_since)) {
+                auto b=bounds(t); auto position=relative(t.center);
+                if (observed_scan-t.last_seen<=.05&&now-t.last_seen<=p["scan_timeout"]&&
+                    b.last>=window.start&&b.first<=window.front+p["resume_distance"]&&
+                    b.right>=-p["corridor_half_width"]&&b.left<=p["corridor_half_width"]&&
+                    std::hypot(position.x-blocked_position.x,position.y-blocked_position.y)<=.05)
+                    obstacle=&t;
+                break;
+            }
+            if (!obstacle) obstacle=blocker(pose,gap);
+        }
+        if (!obstacle&&p["avoidance_max_offset"]>0) {
+            double nearest=INFINITY;
+            for (const auto& t:tracks) {
+                auto b=bounds(t);
+                if (observed_scan-t.last_seen>.05||b.last<window.start||
+                    b.first>window.front+p["resume_distance"]||
+                    b.right<-p["corridor_half_width"]||b.left>p["corridor_half_width"]) continue;
+                if (b.first<nearest) { nearest=b.first; obstacle=&t; }
+            }
+        }
+        if (obstacle&&!waypoint_reached) {
+            auto position=relative(obstacle->center);
+            if (blocked_track!=obstacle->id||!std::isfinite(blocked_since)||now-blocked_tick>.5||
+                std::hypot(position.x-blocked_position.x,position.y-blocked_position.y)>.05) {
+                resetBlocked(); blocked_since=now; blocked_track=obstacle->id;
+                blocked_position=position;
+            }
+            blocked_tick=now;
+            if (now-blocked_since>=p["avoidance_wait"]&&
+                (!std::isfinite(next_avoidance_try)||now>=next_avoidance_try)) {
+                next_avoidance_try=now+.5;
+                if (makeDetour(pose,*obstacle,target_end,now,scan,collision))
+                    return followDetour(now,pose,scan,collision,target_end);
+            }
+        } else resetBlocked();
+        return hold(oncoming_seen?"ONCOMING_YIELD":reason);
+    }
     Decision hold(const std::string& reason) { last={reason,true,true}; return last; }
     Decision step(double now,const Pose* pose,double pose_stamp,const std::vector<Point>* scan,double scan_stamp,
                   double map_stamp,const std::function<bool(Pose,const std::vector<Point>&)>& collision) {
         if (zone<0) { last={"NORMAL"}; return last; }
-        if (std::isfinite(last_time)&&now<last_time) pause();
+        if (std::isfinite(last_time)&&now<last_time) {
+            pause(); observed_scan=NAN; tracks.clear();
+            for (auto& memory:queue_memory) memory.second.occupied_stamp=now;
+        }
         last_time=now;
         if (fault) return hold("WAYPOINT_CHANGED_WHILE_WAITING");
         auto fresh=[&](double stamp,double timeout) { return std::isfinite(stamp)&&now-stamp>=-.05&&now-stamp<=timeout; };
@@ -236,19 +731,30 @@ public:
         if (!collision||!fresh(map_stamp,p["map_timeout"])) { pause(); return hold("MAP_UNAVAILABLE"); }
         if (!collision(*pose,footprint)) { pause(); return hold("CURRENT_POSE_BLOCKED"); }
         const auto& z=zones[zone]; auto q=z.path.project({pose->x,pose->y});
-        if (q.lateral>p["max_lateral_deviation"]) { pause(); return hold("OUTSIDE_CORRIDOR"); }
-        double gap=clearance(*pose,*scan);
-        if (gap<=p["detection_distance"]) pause();
-        else if (gap>=p["resume_distance"]) {
-            if (!std::isfinite(clear_since)) clear_since=now;
-            if (now-clear_since>=p["clear_duration"]) waiting=false;
-        } else clear_since=NAN;
+        double lateral_limit=detour?std::max(p["max_lateral_deviation"],p["avoidance_max_offset"]+.02):p["max_lateral_deviation"];
+        if (q.lateral>lateral_limit) { pause(); return hold("OUTSIDE_CORRIDOR"); }
+        if (p["avoidance_max_offset"]>0) {
+            observe(*scan,scan_stamp,*pose);
+            releaseClearedLimits(scan_stamp,map_stamp);
+        }
+        if (detour&&q.along>=detour_end-.05&&std::hypot(pose->x-detour->segments.back().b.x,
+            pose->y-detour->segments.back().b.y)<.08) {
+            detour.reset(); resetBlocked(); waiting=false; clear_since=NAN;
+        }
+        double gap=detour?INFINITY:clearance(*pose,*scan);
+        if (!detour) {
+            if (gap<=p["detection_distance"]) { waiting=true; clear_since=NAN; }
+            else if (gap>=p["resume_distance"]) {
+                if (!std::isfinite(clear_since)) clear_since=now;
+                if (now-clear_since>=p["clear_duration"]) waiting=false;
+            } else clear_since=NAN;
+        }
         double remaining=boundary(*pose);
         if (remaining<=p["stop_margin"]+.03||
             (!z.has_stop_line&&q.along>=z.path.length)||
             (identity==z.stop_id&&std::hypot(pose->x-z.stop_goal.x,pose->y-z.stop_goal.y)<=p["stop_goal_radius"]))
             line_reached=true;
-        if (!released&&line_reached) return hold("STOP_LINE");
+        if (!released&&line_reached) { detour.reset(); resetBlocked(); return hold("STOP_LINE"); }
         double target_end=z.path.length,stop_remaining=z.has_stop_line?INFINITY:z.path.length-q.along;
         auto stop=z.stop_waypoints.find(identity);
         if (identity!=z.stop_id&&stop!=z.stop_waypoints.end()) {
@@ -257,32 +763,52 @@ public:
             if (stop_remaining<=0||std::hypot(pose->x-stop->second.x,pose->y-stop->second.y)<=p["stop_goal_radius"])
                 waypoint_reached=true;
         }
-        if (waiting) return hold("QUEUE_WAIT");
-        if (released) { last={"RELEASED_WAITING_FOR_NEXT_WAYPOINT",true,false}; return last; }
-        if (waypoint_reached) { last={"STOP_WAYPOINT",true,false}; return last; }
+        if (released) {
+            detour.reset(); resetBlocked();
+            if (waiting) return hold("QUEUE_WAIT");
+            last={"RELEASED_WAITING_FOR_NEXT_WAYPOINT",true,false}; return last;
+        }
+        if (waypoint_reached&&!waiting) { detour.reset(); resetBlocked(); last={"STOP_WAYPOINT",true,false}; return last; }
+        if (detour) return followDetour(now,*pose,*scan,collision,target_end);
+        if (waiting) return waitForDetour(now,*pose,*scan,collision,target_end,gap,"QUEUE_WAIT");
         auto target=z.path.pointAt(std::min(q.along+p["lookahead"],target_end));
         double error=wrap(std::atan2(target.y-pose->y,target.x-pose->x)-pose->yaw);
         double angular=std::max(-p["max_angular"],std::min(p["max_angular"],1.5*error));
         double available=std::max(0.0,std::min(remaining-p["stop_margin"],gap-p["detection_distance"]));
         available=std::max(0.0,std::min(available,stop_remaining));
+        double queue_limit=INFINITY;
+        for (const auto& limit:queue_limits) queue_limit=std::min(queue_limit,limit.second);
+        available=std::max(0.0,std::min(available,queue_limit-obstacleWindow(*pose).front));
         double speed=std::min(p["max_speed"],std::sqrt(2*p["deceleration"]*available));
         speed=std::min(speed,available/approachTime());
         speed*=std::max(0.0,std::cos(error)); if (std::abs(error)>.6) speed=0;
-        Pose prediction=*pose;
-        double horizon=std::max(p["prediction_time"],speed/p["deceleration"]+1/control_rate);
-        double dt=std::min(.05,.5*p["max_lateral_deviation"]/std::max(speed,.01));
-        for (int i=0;i<=std::ceil(horizon/dt);++i) {
-            auto projected=z.path.project({prediction.x,prediction.y});
-            if (projected.lateral>p["max_lateral_deviation"]||
-                (!z.has_stop_line&&projected.along>z.path.length)||
-                boundary(prediction)<p["stop_margin"]||!collision(prediction,footprint)) return hold("TRAJECTORY_BLOCKED");
-            for (auto v:footprint) if (z.path.project(transform(v,prediction)).lateral>p["corridor_half_width"])
-                return hold("TRAJECTORY_BLOCKED");
-            prediction.x+=speed*std::cos(prediction.yaw)*dt;
-            prediction.y+=speed*std::sin(prediction.yaw)*dt;
-            prediction.yaw=wrap(prediction.yaw+angular*dt);
+        auto feasible=[&](double candidate) {
+            if (candidate<1e-5&&std::abs(error)<.05) return false;
+            Pose prediction=*pose;
+            double horizon=std::max(p["prediction_time"],candidate/p["deceleration"]+1/control_rate);
+            double dt=std::min(.05,.5*p["max_lateral_deviation"]/std::max(candidate,.01));
+            for (int i=0;i<=std::ceil(horizon/dt);++i) {
+                auto projected=z.path.project({prediction.x,prediction.y});
+                if (projected.lateral>p["max_lateral_deviation"]||
+                    (!z.has_stop_line&&projected.along>z.path.length)||
+                    boundary(prediction)<p["stop_margin"]||!collision(prediction,footprint)) return false;
+                for (auto v:footprint) {
+                    auto vertex=z.path.project(transform(v,prediction));
+                    if (vertex.lateral>p["corridor_half_width"]||vertex.along>queue_limit) return false;
+                }
+                prediction.x+=candidate*std::cos(prediction.yaw)*dt;
+                prediction.y+=candidate*std::sin(prediction.yaw)*dt;
+                prediction.yaw=wrap(prediction.yaw+angular*dt);
+            }
+            return true;
+        };
+        bool safe=false;
+        for (int attempt=0;attempt<5;++attempt) {
+            if (feasible(speed)) { safe=true; break; }
+            speed=attempt<3?speed*.5:0;
         }
-        last={"QUEUE_ADVANCE",true,false,speed,angular}; return last;
+        if (!safe) return waitForDetour(now,*pose,*scan,collision,target_end,gap,"TRAJECTORY_BLOCKED");
+        resetBlocked(); last={"QUEUE_ADVANCE",true,false,speed,angular}; return last;
     }
     bool release(double now,std::string& message) {
         if (!std::isfinite(last_time)||now-last_time>2/control_rate||last.state!="STOP_LINE") {
@@ -332,6 +858,7 @@ class Node {
     std::map<std::string,queue_wait::Waypoint> waypoints;
     waypoint_manager_msgs::Waypoint current_waypoint;
     std::vector<queue_wait::Point> scan;
+    std::shared_ptr<queue_wait::ScanView> scan_view;
     sensor_msgs::LaserScan::ConstPtr latest_scan;
     std::set<uint64_t> goal_requests;
     double scan_stamp=NAN;
@@ -382,6 +909,22 @@ class Node {
                 if (std::find(begin,end+1,current_waypoint.identity)!=end+1) return true;
             }
         } catch (const std::exception&) { return true; }
+        return false;
+    }
+    bool entryHold() {
+        if (!controller||!waypoint_ready) return false;
+        auto current=std::find(route.begin(),route.end(),current_waypoint.identity);
+        if (current==route.end()||current+1==route.end()) return false;
+        for (const auto& area:controller->zones) {
+            if (area.ids.count(*current)||!area.ids.count(*(current+1))) continue;
+            try {
+                tf::StampedTransform pose;
+                tf.lookupTransform(frame,base,ros::Time(0),pose);
+                double age=(ros::Time::now()-pose.stamp_).toSec();
+                if (age<-.05||age>controller->p.at("pose_timeout")) return true;
+                return !controller->entryReady(area,{pose.getOrigin().x(),pose.getOrigin().y(),tf::getYaw(pose.getRotation())});
+            } catch (const std::exception&) { return true; }
+        }
         return false;
     }
     void publishGoal(bool target_changed=true) {
@@ -541,6 +1084,9 @@ class Node {
             std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
             published_active=published_hold=true;
         }
+        if (!queueTarget()&&entryHold()&&!published_hold) {
+            std_msgs::Bool held; held.data=true; hold_pub.publish(held); published_hold=true;
+        }
         if (running&&!queueTarget()) publishGoal(goal_changed);
     }
     void onRunning(const std_msgs::Bool::ConstPtr& msg) {
@@ -567,15 +1113,25 @@ class Node {
         try {
             if (!std::isfinite(msg->angle_min)||!std::isfinite(msg->angle_increment)||msg->angle_increment<=0)
                 throw std::runtime_error("Invalid scan angles");
+            if (!std::isfinite(msg->range_min)||!std::isfinite(msg->range_max)||
+                msg->range_min<0||msg->range_max<=msg->range_min)
+                throw std::runtime_error("Invalid scan range bounds");
             auto t=transform(frame,msg->header.frame_id,msg->header.stamp);
+            auto view=std::make_shared<queue_wait::ScanView>();
+            view->origin=t; view->angle_min=msg->angle_min; view->angle_increment=msg->angle_increment;
+            view->range_min=msg->range_min; view->range_max=msg->range_max; view->ranges=msg->ranges;
             std::vector<queue_wait::Point> updated;
+            bool valid_measurement=false;
             for (size_t i=0;i<msg->ranges.size();++i) {
                 double r=msg->ranges[i],a=msg->angle_min+i*msg->angle_increment;
-                if (std::isfinite(r)&&r>=msg->range_min&&r<=msg->range_max)
+                if (std::isfinite(r)&&r>=msg->range_min&&r<=msg->range_max) {
                     updated.push_back(queue_wait::transform({r*std::cos(a),r*std::sin(a)},t));
+                    valid_measurement=true;
+                } else if (std::isinf(r)&&r>0) valid_measurement=true;
             }
             scan=std::move(updated); scan_stamp=stamp;
-            scan_valid=!scan.empty();
+            scan_view=std::move(view);
+            scan_valid=valid_measurement;
         } catch (const tf::TransformException& e) {
             ROS_WARN_THROTTLE(2,"queue_wait scan: %s",e.what());
         } catch (const std::exception& e) {
@@ -585,6 +1141,13 @@ class Node {
     }
     void onMap(const std::string& key,const nav_msgs::OccupancyGrid::ConstPtr& msg) {
         try {
+            if (key=="constraint") {
+                const double now=ros::Time::now().toSec();
+                if (msg->header.stamp.toSec()>now+.05) return;
+                auto current=maps.find(key);
+                if (current!=maps.end()&&current->second.stamp<=now+.05&&
+                    msg->header.stamp.toSec()<current->second.stamp) return;
+            }
             const auto& o=msg->info.origin;
             auto grid=std::make_shared<queue_wait::Grid>(msg->info.width,msg->info.height,msg->info.resolution,
                 queue_wait::Pose{o.position.x,o.position.y,tf::getYaw(o.orientation)},msg->data,key=="local");
@@ -610,6 +1173,8 @@ class Node {
     }
     queue_wait::Decision decision(double now) {
         if (controller->zone<0) return controller->step(now,nullptr,NAN,nullptr,NAN,NAN,{});
+        controller->static_obstacle={};
+        controller->observed_free={};
         queue_wait::Pose pose{}; bool pose_valid=false; double pose_stamp=NAN,map_stamp=NAN;
         try {
             tf::StampedTransform t; tf.lookupTransform(frame,base,ros::Time(0),t);
@@ -618,8 +1183,26 @@ class Node {
         std::function<bool(queue_wait::Pose,const std::vector<queue_wait::Point>&)> collision;
         if (maps.count("local")&&maps.count("constraint")) try {
             std::vector<std::pair<std::shared_ptr<queue_wait::Grid>,queue_wait::Pose>> grids;
-            for (const auto& m:maps) grids.push_back({m.second.grid,transform(m.second.frame,frame,ros::Time(0))});
+            for (const auto& m:maps) {
+                auto offset=transform(m.second.frame,frame,ros::Time(0));
+                grids.push_back({m.second.grid,offset});
+                if (m.first=="constraint") {
+                    auto grid=m.second.grid;
+                    controller->static_obstacle=[grid,offset](queue_wait::Point point) {
+                        return grid->occupiedNear(queue_wait::transform(point,offset),.05);
+                    };
+                }
+            }
             map_stamp=maps.at("local").stamp;
+            if (scan_valid&&scan_view) {
+                auto view=scan_view;
+                controller->observed_free=[view,grids](queue_wait::Point point) {
+                    if (!view->clears(point)) return false;
+                    for (const auto& grid:grids)
+                        if (!grid.first->observedFree(queue_wait::transform(point,grid.second))) return false;
+                    return true;
+                };
+            }
             collision=[grids](queue_wait::Pose predicted,const std::vector<queue_wait::Point>& f) {
                 for (const auto& g:grids) {
                     auto p=queue_wait::transform({predicted.x,predicted.y},g.second);
@@ -645,7 +1228,7 @@ class Node {
             queue_wait::Pose pose{t.getOrigin().x(),t.getOrigin().y(),tf::getYaw(t.getRotation())};
             double age=(now-t.stamp_).toSec();
             if (queue_wait::finite(pose)&&age>=-.05&&age<=controller->p.at("pose_timeout")) {
-                const auto& path=controller->zones[controller->zone].path;
+                const auto& path=controller->drivingPath();
                 const auto window=controller->obstacleWindow(pose);
                 const double start=window.start,end=window.stop_end,width=window.half_width;
                 auto offset=[](queue_wait::Point p,queue_wait::Point n,double d) {
@@ -700,6 +1283,23 @@ class Node {
             }
         } catch (const tf::TransformException&) {}
         detection_pub.publish(marker);
+        visualization_msgs::Marker avoidance;
+        avoidance.header=marker.header; avoidance.ns="queue_wait_avoidance"; avoidance.id=1;
+        avoidance.type=visualization_msgs::Marker::LINE_STRIP;
+        avoidance.action=visualization_msgs::Marker::DELETE;
+        avoidance.pose.orientation.w=1; avoidance.scale.x=.035;
+        avoidance.color.r=1; avoidance.color.g=.6; avoidance.color.a=1;
+        if (controller&&controller->zone>=0&&controller->detour) {
+            for (const auto& segment:controller->detour->segments) {
+                geometry_msgs::Point point; point.x=segment.a.x; point.y=segment.a.y; point.z=.1;
+                avoidance.points.push_back(point);
+            }
+            auto end=controller->detour->segments.back().b;
+            geometry_msgs::Point point; point.x=end.x; point.y=end.y; point.z=.1;
+            avoidance.points.push_back(point);
+            avoidance.action=visualization_msgs::Marker::ADD;
+        }
+        detection_pub.publish(avoidance);
     }
     void tick(const ros::TimerEvent&) {
         if (!controller&&!fault&&ros::WallTime::now()>=next_initialization) {
@@ -710,6 +1310,7 @@ class Node {
         if (!fault) {
             if (!queueTarget()) {
                 result={"NORMAL"};
+                if (entryHold()) { result.state="QUEUE_ENTRY_ALIGNMENT"; result.hold=true; }
                 if (running&&!normal_goal_sent) publishGoal();
             }
             else if (controller) result=decision(now);

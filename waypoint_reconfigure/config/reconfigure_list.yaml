@@ -11,6 +11,10 @@ waypoint_reconfigure_config:
     detection_half_width: 0.4
     resume_distance: 0.8
     clear_duration: 2.0
+    avoidance_wait: 90.0
+    avoidance_max_offset: 0.2
+    avoidance_obstacle_max_diagonal: 0.3
+    queue_center_half_width: 0.12
   # waypoint_server.yamlで選択したルートだけtrueにする。
   queue_wait_profiles:
     tsukuba26_1: &queue_tsukuba26_1 false
