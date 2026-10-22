@@ -25,23 +25,44 @@ struct ScanView {
     Pose origin{};
     double angle_min=0,angle_increment=0,range_min=0,range_max=0;
     std::vector<float> ranges;
+    Point axis_x{1,0},axis_y{0,1};
+    bool projection=false;
+    std::pair<Point,Point> axes() const {
+        if (projection) return {axis_x,axis_y};
+        double c=std::cos(origin.yaw),s=std::sin(origin.yaw);
+        return {{c,s},{-s,c}};
+    }
+    Point pointAt(double range,double angle) const {
+        auto basis=axes(); double x=range*std::cos(angle),y=range*std::sin(angle);
+        return {origin.x+basis.first.x*x+basis.second.x*y,
+                origin.y+basis.first.y*x+basis.second.y*y};
+    }
     bool clears(Point point,double margin=.05) const {
         if (!finite(origin)||!finite(point)||ranges.size()<2||!std::isfinite(angle_min)||
             !std::isfinite(angle_increment)||angle_increment<=0||!std::isfinite(range_min)||
             !std::isfinite(range_max)||range_min<0||range_max<=range_min||!std::isfinite(margin)||margin<=0) return false;
         double span=angle_increment*(ranges.size()-1);
         if (span>2*M_PI+.001) return false;
-        double dx=point.x-origin.x,dy=point.y-origin.y,distance=std::hypot(dx,dy);
-        if (distance<=range_min+margin||distance+margin>=range_max) return false;
-        if (distance*angle_increment>2*margin) return false;
+        auto basis=axes(); auto x=basis.first,y=basis.second;
+        if (!finite(x)||!finite(y)) return false;
+        double det=x.x*y.y-y.x*x.y;
+        if (!std::isfinite(det)||std::abs(det)<1e-8) return false;
+        double norm=x.x*x.x+x.y*x.y+y.x*y.x+y.y*y.y;
+        double scale=std::sqrt(.5*(norm+std::sqrt(std::max(0.0,norm*norm-4*det*det))));
+        double scan_margin=margin*scale/std::abs(det);
+        double dx=point.x-origin.x,dy=point.y-origin.y;
+        double local_x=(y.y*dx-y.x*dy)/det,local_y=(x.x*dy-x.y*dx)/det;
+        double distance=std::hypot(local_x,local_y);
+        if (distance<=range_min+scan_margin||distance+scan_margin>=range_max) return false;
+        if (distance*angle_increment*scale>2*margin) return false;
         double center=angle_min+.5*span;
-        double angle=center+wrap(std::atan2(dy,dx)-origin.yaw-center),half=std::atan2(margin,distance);
+        double angle=center+wrap(std::atan2(local_y,local_x)-center),half=std::atan2(scan_margin,distance);
         double first=(angle-half-angle_min)/angle_increment,last=(angle+half-angle_min)/angle_increment;
         if (first<0||last>ranges.size()-1) return false;
         for (size_t i=std::floor(first);i<=static_cast<size_t>(std::ceil(last));++i) {
             double range=ranges[i];
             if (std::isinf(range)&&range>0) range=range_max;
-            if (!std::isfinite(range)||range<range_min||range>range_max||range<=distance+margin) return false;
+            if (!std::isfinite(range)||range<range_min||range>range_max||range<=distance+scan_margin) return false;
         }
         return true;
     }
@@ -437,6 +458,36 @@ public:
             ++it;
         }
     }
+    std::vector<Point> queueSupport(const Track& track,double front) const {
+        const auto& path=zones[zone].path;
+        const double core=p.at("queue_center_half_width");
+        std::vector<Point> support;
+        auto add=[&](Point point) {
+            auto q=path.project(point);
+            if (std::abs(q.signed_lateral)<=core+1e-9&&q.along>=front-1e-9&&q.along<=front+6+1e-9)
+                support.push_back(point);
+        };
+        for (size_t i=0;i<track.points.size();++i) {
+            add(track.points[i]);
+            if (!i) continue;
+            const auto a=track.points[i-1],b=track.points[i];
+            auto qa=path.project(a),qb=path.project(b);
+            double first=0,last=1;
+            auto clip=[&](double from,double to,double low,double high) {
+                double delta=to-from;
+                if (std::abs(delta)<1e-12) return from>=low&&from<=high;
+                double begin=(low-from)/delta,end=(high-from)/delta;
+                if (begin>end) std::swap(begin,end);
+                first=std::max(first,begin); last=std::min(last,end);
+                return first<=last;
+            };
+            if (clip(qa.signed_lateral,qb.signed_lateral,-core,core)&&clip(qa.along,qb.along,front,front+6)) {
+                if (first>1e-9&&first<1-1e-9) add({a.x+first*(b.x-a.x),a.y+first*(b.y-a.y)});
+                if (last>first+1e-9&&last>1e-9&&last<1-1e-9) add({a.x+last*(b.x-a.x),a.y+last*(b.y-a.y)});
+            }
+        }
+        return support;
+    }
     void observe(const std::vector<Point>& points,double stamp,Pose pose) {
         if (std::isfinite(observed_scan)&&stamp<=observed_scan) return;
         observed_scan=stamp;
@@ -495,8 +546,12 @@ public:
             bool outside=b.left>p.at("corridor_half_width")||b.right<-p.at("corridor_half_width");
             if (!outside) t.outside_since=NAN;
             else if (!std::isfinite(t.outside_since)) t.outside_since=stamp;
-            if (b.left<=core&&b.right>=-core&&b.last>=front&&b.first<=front+6)
-                rememberLimit(t.id,b.first-p.at("stop_margin"),t.points,stamp);
+            auto support=queueSupport(t,front);
+            if (!support.empty()) {
+                double first=INFINITY;
+                for (auto point:support) first=std::min(first,reference.project(point).along);
+                rememberLimit(t.id,first-p.at("stop_margin"),support,stamp);
+            }
             else if (b.last<rear-.1||
                 (std::isfinite(t.outside_since)&&stamp-t.outside_since>=p.at("clear_duration")))
                 queue_limits.erase(t.id);
@@ -1116,16 +1171,22 @@ class Node {
             if (!std::isfinite(msg->range_min)||!std::isfinite(msg->range_max)||
                 msg->range_min<0||msg->range_max<=msg->range_min)
                 throw std::runtime_error("Invalid scan range bounds");
-            auto t=transform(frame,msg->header.frame_id,msg->header.stamp);
+            tf.waitForTransform(frame,msg->header.frame_id,msg->header.stamp,ros::Duration(.02));
+            tf::StampedTransform t; tf.lookupTransform(frame,msg->header.frame_id,msg->header.stamp,t);
             auto view=std::make_shared<queue_wait::ScanView>();
-            view->origin=t; view->angle_min=msg->angle_min; view->angle_increment=msg->angle_increment;
+            view->origin={t.getOrigin().x(),t.getOrigin().y(),tf::getYaw(t.getRotation())};
+            const auto& basis=t.getBasis();
+            view->axis_x={basis[0][0],basis[1][0]}; view->axis_y={basis[0][1],basis[1][1]}; view->projection=true;
+            if (!queue_wait::finite(view->origin)||!queue_wait::finite(view->axis_x)||!queue_wait::finite(view->axis_y))
+                throw std::runtime_error("Non-finite scan transform");
+            view->angle_min=msg->angle_min; view->angle_increment=msg->angle_increment;
             view->range_min=msg->range_min; view->range_max=msg->range_max; view->ranges=msg->ranges;
             std::vector<queue_wait::Point> updated;
             bool valid_measurement=false;
             for (size_t i=0;i<msg->ranges.size();++i) {
                 double r=msg->ranges[i],a=msg->angle_min+i*msg->angle_increment;
                 if (std::isfinite(r)&&r>=msg->range_min&&r<=msg->range_max) {
-                    updated.push_back(queue_wait::transform({r*std::cos(a),r*std::sin(a)},t));
+                    updated.push_back(view->pointAt(r,a));
                     valid_measurement=true;
                 } else if (std::isinf(r)&&r>0) valid_measurement=true;
             }
