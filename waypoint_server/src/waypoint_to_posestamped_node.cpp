@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <functional>
@@ -69,7 +70,13 @@ struct ScanView {
 };
 struct Projection { double lateral,along,signed_lateral=0; };
 struct Path {
-    struct Segment { Point a,b; double length,offset; };
+    struct Segment {
+        Point a,b; double length,offset,dx,dy,length_squared;
+        Point direction; double yaw;
+        Segment(Point from,Point to,double size,double start)
+            :a(from),b(to),length(size),offset(start),dx(to.x-from.x),dy(to.y-from.y),
+             length_squared(size*size),direction{dx/size,dy/size},yaw(std::atan2(direction.y,direction.x)) {}
+    };
     std::vector<Segment> segments;
     double length=0;
     explicit Path(const std::vector<Point>& points) {
@@ -83,8 +90,8 @@ struct Path {
     Projection project(Point p) const {
         Projection best{INFINITY,0};
         for (size_t i=0;i<segments.size();++i) {
-            const auto& s=segments[i]; double dx=s.b.x-s.a.x,dy=s.b.y-s.a.y;
-            double t=((p.x-s.a.x)*dx+(p.y-s.a.y)*dy)/(s.length*s.length);
+            const auto& s=segments[i]; double dx=s.dx,dy=s.dy;
+            double t=((p.x-s.a.x)*dx+(p.y-s.a.y)*dy)/s.length_squared;
             if (i!=0) t=std::max(0.0,t);
             if (i+1!=segments.size()) t=std::min(1.0,t);
             double d=std::hypot(p.x-s.a.x-t*dx,p.y-s.a.y-t*dy);
@@ -96,7 +103,7 @@ struct Path {
     Point pointAt(double distance) const {
         for (const auto& s:segments) if (distance<=s.offset+s.length) {
             double t=std::max(0.0,std::min(1.0,(distance-s.offset)/s.length));
-            return {s.a.x+t*(s.b.x-s.a.x),s.a.y+t*(s.b.y-s.a.y)};
+            return {s.a.x+t*s.dx,s.a.y+t*s.dy};
         }
         return segments.back().b;
     }
@@ -105,9 +112,9 @@ struct Path {
             const auto& s=segments[i];
             if (distance<=s.offset+s.length||i+1==segments.size()) {
                 double t=std::max(0.0,std::min(1.0,(distance-s.offset)/s.length));
-                double dx=(s.b.x-s.a.x)/s.length,dy=(s.b.y-s.a.y)/s.length;
+                double dx=s.direction.x,dy=s.direction.y;
                 return {s.a.x+t*(s.b.x-s.a.x)-dy*lateral,
-                        s.a.y+t*(s.b.y-s.a.y)+dx*lateral,std::atan2(dy,dx)};
+                        s.a.y+t*(s.b.y-s.a.y)+dx*lateral,s.yaw};
             }
         }
         throw std::logic_error("Empty path");
@@ -201,6 +208,7 @@ struct Grid {
     bool free(Pose pose,const std::vector<Point>& footprint) const {
         double minx=INFINITY,miny=INFINITY,maxx=-INFINITY,maxy=-INFINITY;
         std::vector<Point> polygon;
+        polygon.reserve(footprint.size());
         for (auto vertex:footprint) {
             auto p=transform(vertex,pose); double dx=p.x-origin.x,dy=p.y-origin.y;
             double x=(std::cos(origin.yaw)*dx+std::sin(origin.yaw)*dy)/resolution;
@@ -210,7 +218,9 @@ struct Grid {
         }
         if (minx<0||miny<0||maxx>=width||maxy>=height) return false;
         struct Axis { double x,y,low,high; };
-        std::vector<Axis> axes{{1,0,minx,maxx},{0,1,miny,maxy}};
+        std::vector<Axis> axes;
+        axes.reserve(footprint.size()+2);
+        axes.push_back({1,0,minx,maxx}); axes.push_back({0,1,miny,maxy});
         for (size_t i=0;i<polygon.size();++i) {
             auto a=polygon[i],b=polygon[(i+1)%polygon.size()];
             double ax=a.y-b.y,ay=b.x-a.x,low=INFINITY,high=-INFINITY;
@@ -352,29 +362,53 @@ public:
     double approachTime() const {
         return p.at("prediction_time")+p.at("max_speed")/p.at("deceleration")+.1;
     }
-    struct ObstacleWindow { double start,front,end,stop_end,half_width; };
-    ObstacleWindow obstacleWindow(Pose pose) const {
-        const auto& path=drivingPath();
-        double start=path.project({pose.x,pose.y}).along,front=-INFINITY;
-        for (auto v:footprint) front=std::max(front,path.project(transform(v,pose)).along);
-        double stop_end=front+p.at("detection_distance");
+    double detectionPreview() const {
         double preview=std::max(p.at("resume_distance"),p.at("detection_distance")+p.at("max_speed")*approachTime());
         preview+=p.at("max_speed")*(p.at("scan_timeout")+1/control_rate);
+        return preview;
+    }
+    double detectionHalfWidth() const {
         double width=p.at("detection_half_width");
         if (detour) {
             width=.05;
             for (auto v:footprint) width=std::max(width,std::abs(v.y)+.05);
         }
-        return {start,front,front+preview,stop_end,width};
+        return width;
+    }
+    struct ObstacleWindow { double start,front,end,stop_end,half_width; };
+    ObstacleWindow obstacleWindow(Pose pose) const {
+        const auto& path=drivingPath();
+        double start=path.project({pose.x,pose.y}).along,front=-INFINITY;
+        for (auto v:footprint) front=std::max(front,path.project(transform(v,pose)).along);
+        return {start,front,front+detectionPreview(),front+p.at("detection_distance"),detectionHalfWidth()};
+    }
+    struct DetectionWindow {
+        Pose pose;
+        double front,end,stop_end,half_width,c,s;
+        Point relative(Point point) const {
+            double dx=point.x-pose.x,dy=point.y-pose.y;
+            return {c*dx+s*dy,-s*dx+c*dy};
+        }
+        double gap(Point point,double limit) const {
+            auto q=relative(point);
+            if (q.x>=-1e-9&&q.x<=limit+1e-9&&std::abs(q.y)<=half_width+1e-9)
+                return q.x-front;
+            return INFINITY;
+        }
+        std::array<Point,4> corners() const {
+            return {{transform({0,half_width},pose),transform({stop_end,half_width},pose),
+                     transform({stop_end,-half_width},pose),transform({0,-half_width},pose)}};
+        }
+    };
+    DetectionWindow detectionWindow(Pose pose) const {
+        double front=-INFINITY;
+        for (auto vertex:footprint) front=std::max(front,vertex.x);
+        return {pose,front,front+detectionPreview(),front+p.at("detection_distance"),
+                detectionHalfWidth(),std::cos(pose.yaw),std::sin(pose.yaw)};
     }
     double clearance(Pose pose,const std::vector<Point>& points) const {
-        const auto& path=drivingPath();
-        const auto window=obstacleWindow(pose); double closest=INFINITY;
-        for (auto point:points) {
-            auto q=path.project(point);
-            if (q.lateral<=window.half_width&&q.along>=window.start&&q.along<=window.end)
-                closest=std::min(closest,q.along-window.front);
-        }
+        const auto window=detectionWindow(pose); double closest=INFINITY;
+        for (auto point:points) closest=std::min(closest,window.gap(point,window.end));
         return closest;
     }
     double boundary(Pose pose) const {
@@ -462,16 +496,17 @@ public:
         const auto& path=zones[zone].path;
         const double core=p.at("queue_center_half_width");
         std::vector<Point> support;
-        auto add=[&](Point point) {
-            auto q=path.project(point);
+        auto add=[&](Point point,const Projection& q) {
             if (std::abs(q.signed_lateral)<=core+1e-9&&q.along>=front-1e-9&&q.along<=front+6+1e-9)
                 support.push_back(point);
         };
+        Projection previous{};
         for (size_t i=0;i<track.points.size();++i) {
-            add(track.points[i]);
-            if (!i) continue;
+            auto current=path.project(track.points[i]);
+            add(track.points[i],current);
+            if (!i) { previous=current; continue; }
             const auto a=track.points[i-1],b=track.points[i];
-            auto qa=path.project(a),qb=path.project(b);
+            const auto qa=previous,qb=current;
             double first=0,last=1;
             auto clip=[&](double from,double to,double low,double high) {
                 double delta=to-from;
@@ -482,9 +517,14 @@ public:
                 return first<=last;
             };
             if (clip(qa.signed_lateral,qb.signed_lateral,-core,core)&&clip(qa.along,qb.along,front,front+6)) {
-                if (first>1e-9&&first<1-1e-9) add({a.x+first*(b.x-a.x),a.y+first*(b.y-a.y)});
-                if (last>first+1e-9&&last>1e-9&&last<1-1e-9) add({a.x+last*(b.x-a.x),a.y+last*(b.y-a.y)});
+                auto crossing=[&](double position) {
+                    Point point{a.x+position*(b.x-a.x),a.y+position*(b.y-a.y)};
+                    add(point,path.project(point));
+                };
+                if (first>1e-9&&first<1-1e-9) crossing(first);
+                if (last>first+1e-9&&last>1e-9&&last<1-1e-9) crossing(last);
             }
+            previous=current;
         }
         return support;
     }
@@ -603,12 +643,12 @@ public:
         return true;
     }
     const Track* blocker(Pose pose,double gap) const {
-        auto window=obstacleWindow(pose);
+        auto window=detectionWindow(pose);
         for (const auto& t:tracks) {
             if (observed_scan-t.last_seen>.05) continue;
-            auto b=bounds(t);
-            if (b.right<-window.half_width||b.left>window.half_width||b.last<window.start) continue;
-            if (std::abs(b.first-window.front-gap)<.03) return &t;
+            double closest=INFINITY;
+            for (auto point:t.points) closest=std::min(closest,window.gap(point,window.end));
+            if (std::isfinite(closest)&&std::abs(closest-gap)<.03) return &t;
         }
         return nullptr;
     }
@@ -725,18 +765,19 @@ public:
                            const std::function<bool(Pose,const std::vector<Point>&)>& collision,
                            double target_end,double gap,const std::string& reason) {
         const Track* obstacle=nullptr;
-        const auto window=obstacleWindow(pose);
-        double c=std::cos(pose.yaw),s=std::sin(pose.yaw);
-        auto relative=[&](Point point) {
-            double dx=point.x-pose.x,dy=point.y-pose.y;
-            return Point{c*dx+s*dy,-s*dx+c*dy};
+        auto window=detectionWindow(pose);
+        window.half_width=p["corridor_half_width"];
+        auto nearby=[&](const Track& track) {
+            double nearest=INFINITY;
+            for (auto point:track.points)
+                nearest=std::min(nearest,window.gap(point,window.front+p["resume_distance"]));
+            return nearest;
         };
         if (p["avoidance_max_offset"]>0) {
             for (const auto& t:tracks) if (t.id==blocked_track&&std::isfinite(blocked_since)) {
-                auto b=bounds(t); auto position=relative(t.center);
+                auto position=window.relative(t.center);
                 if (observed_scan-t.last_seen<=.05&&now-t.last_seen<=p["scan_timeout"]&&
-                    b.last>=window.start&&b.first<=window.front+p["resume_distance"]&&
-                    b.right>=-p["corridor_half_width"]&&b.left<=p["corridor_half_width"]&&
+                    std::isfinite(nearby(t))&&
                     std::hypot(position.x-blocked_position.x,position.y-blocked_position.y)<=.05)
                     obstacle=&t;
                 break;
@@ -746,15 +787,13 @@ public:
         if (!obstacle&&p["avoidance_max_offset"]>0) {
             double nearest=INFINITY;
             for (const auto& t:tracks) {
-                auto b=bounds(t);
-                if (observed_scan-t.last_seen>.05||b.last<window.start||
-                    b.first>window.front+p["resume_distance"]||
-                    b.right<-p["corridor_half_width"]||b.left>p["corridor_half_width"]) continue;
-                if (b.first<nearest) { nearest=b.first; obstacle=&t; }
+                if (observed_scan-t.last_seen>.05) continue;
+                double distance=nearby(t);
+                if (distance<nearest) { nearest=distance; obstacle=&t; }
             }
         }
         if (obstacle&&!waypoint_reached) {
-            auto position=relative(obstacle->center);
+            auto position=window.relative(obstacle->center);
             if (blocked_track!=obstacle->id||!std::isfinite(blocked_since)||now-blocked_tick>.5||
                 std::hypot(position.x-blocked_position.x,position.y-blocked_position.y)>.05) {
                 resetBlocked(); blocked_since=now; blocked_track=obstacle->id;
@@ -798,7 +837,7 @@ public:
         }
         double gap=detour?INFINITY:clearance(*pose,*scan);
         if (!detour) {
-            if (gap<=p["detection_distance"]) { waiting=true; clear_since=NAN; }
+            if (gap<=p["detection_distance"]+1e-9) { waiting=true; clear_since=NAN; }
             else if (gap>=p["resume_distance"]) {
                 if (!std::isfinite(clear_since)) clear_since=now;
                 if (now-clear_since>=p["clear_duration"]) waiting=false;
@@ -1289,57 +1328,15 @@ class Node {
             queue_wait::Pose pose{t.getOrigin().x(),t.getOrigin().y(),tf::getYaw(t.getRotation())};
             double age=(now-t.stamp_).toSec();
             if (queue_wait::finite(pose)&&age>=-.05&&age<=controller->p.at("pose_timeout")) {
-                const auto& path=controller->drivingPath();
-                const auto window=controller->obstacleWindow(pose);
-                const double start=window.start,end=window.stop_end,width=window.half_width;
-                auto offset=[](queue_wait::Point p,queue_wait::Point n,double d) {
-                    return queue_wait::Point{p.x+n.x*d,p.y+n.y*d};
-                };
-                auto append=[&](queue_wait::Point p) {
-                    geometry_msgs::Point point; point.x=p.x; point.y=p.y; point.z=.08;
-                    marker.points.push_back(point);
-                };
-                auto edge=[&](queue_wait::Point a,queue_wait::Point b,bool cap=false,double along=NAN) {
-                    int steps=std::max(1,static_cast<int>(std::ceil(std::hypot(b.x-a.x,b.y-a.y)/.05)));
-                    auto point=[&](double k) {
-                        return queue_wait::Point{a.x+(b.x-a.x)*k/steps,a.y+(b.y-a.y)*k/steps};
-                    };
-                    bool drawing=false; queue_wait::Point first{};
-                    for (int k=0;k<=steps;++k) {
-                        bool visible=false;
-                        if (k<steps) {
-                            auto q=path.project(point(k+.5));
-                            visible=q.along>=start-1e-6&&q.along<=end+1e-6&&
-                                (!std::isfinite(along)||std::abs(q.along-along)<1e-6)&&
-                                (cap ? q.lateral<=width+1e-6
-                                     : std::abs(q.lateral-width)<.002);
-                        }
-                        if (visible&&!drawing) { first=point(k); drawing=true; }
-                        if (drawing&&!visible) { append(first); append(point(k)); drawing=false; }
-                    }
-                };
-                for (size_t i=0;i<path.segments.size();++i) {
-                    const auto& s=path.segments[i];
-                    double low=i==0?start:std::max(start,s.offset);
-                    double high=i+1==path.segments.size()?end:std::min(end,s.offset+s.length);
-                    if (high<=low) continue;
-                    queue_wait::Point direction{(s.b.x-s.a.x)/s.length,(s.b.y-s.a.y)/s.length};
-                    queue_wait::Point normal{-direction.y,direction.x};
-                    auto a=offset(s.a,direction,low-s.offset),b=offset(s.a,direction,high-s.offset);
-                    edge(offset(a,normal,width),offset(b,normal,width));
-                    edge(offset(a,normal,-width),offset(b,normal,-width));
-                    if (low==start) edge(offset(a,normal,width),offset(a,normal,-width),true,start);
-                    if (high==end) edge(offset(b,normal,width),offset(b,normal,-width),true,end);
-                }
-                for (size_t i=1;i<path.segments.size();++i) {
-                    const auto& s=path.segments[i];
-                    if (s.offset<start||s.offset>end) continue;
-                    for (int k=0;k<72;++k) {
-                        double a=2*std::acos(-1.0)*k/72,b=2*std::acos(-1.0)*(k+1)/72;
-                        edge(offset(s.a,{std::cos(a),std::sin(a)},width),
-                             offset(s.a,{std::cos(b),std::sin(b)},width),false,s.offset);
+                const auto corners=controller->detectionWindow(pose).corners();
+                marker.points.reserve(8);
+                for (size_t i=0;i<corners.size();++i) {
+                    for (auto p:{corners[i],corners[(i+1)%corners.size()]}) {
+                        geometry_msgs::Point point; point.x=p.x; point.y=p.y; point.z=.08;
+                        marker.points.push_back(point);
                     }
                 }
+                if (controller->detour) marker.color.g=.6;
                 if (!marker.points.empty()) marker.action=visualization_msgs::Marker::ADD;
             }
         } catch (const tf::TransformException&) {}
@@ -1427,7 +1424,7 @@ public:
         active_pub=nh.advertise<std_msgs::Bool>("/queue_wait/active",1,true);
         hold_pub=nh.advertise<std_msgs::Bool>("/queue_wait/hold",1,true);
         state_pub=nh.advertise<std_msgs::String>("/queue_wait/state",1,true);
-        detection_pub=nh.advertise<visualization_msgs::Marker>("/queue_wait/detection_range",1);
+        detection_pub=nh.advertise<visualization_msgs::Marker>("/queue_wait/detection_range",10);
         std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
         subscribers.push_back(nh.subscribe("/waypoint_manager/queue_wait/config",1,&Node::onConfig,this));
         subscribers.push_back(nh.subscribe("route",1,&Node::onRoute,this));
