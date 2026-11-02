@@ -8,28 +8,88 @@ waypoint_reconfigure_config:
   queue_wait:
     max_speed: 0.5
     detection_distance: 0.5
-    detection_half_width: 0.4
+    detection_half_width: 0.35
     resume_distance: 0.8
     clear_duration: 2.0
     avoidance_wait: 90.0
     avoidance_max_offset: 0.45
     avoidance_obstacle_max_diagonal: 0.45
-    queue_center_half_width: 0.3
-  # waypoint_server.yamlで選択したルートだけtrueにする。
-  queue_wait_profiles:
-    tsukuba26_1: &queue_tsukuba26_1 false
-    tsukuba26_2: &queue_tsukuba26_2 false
-    tsukuba26_3: &queue_tsukuba26_3 false
+    queue_center_half_width: 0.01
   areas:
-   - name: crossing_queue_tsukuba2
+   - name: crossing_queue_tsukuba1  # ルート 85 - 88
+     start_id: registed_joy_af27c57cca3b430b8bc10bd522683620
+     end_id: registed_joy_78cd0bad55484df9aadc5a646aca5c5f
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba2  # ルート 92 - 95
+     start_id: registed_joy_80495a2600f54b0bb6e6bbf23186eba1
+     end_id: registed_joy_c60f0137436c49f6bdf5a928f56f2c1f
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba3  # ルート 111 - 112
+     start_id: registed_joy_0f357d35e3964c25adafcaea3d6821d7
+     end_id: registed_joy_773b78802d1b4f14a6f5bd9ab6b82c29
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba4  # ルート 116 - 117
+     start_id: registed_joy_11372133e9824744a49b584a20cc9b8c
+     end_id: registed_joy_7d9383594237459daadf44ffe0b4b2f2
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba5  # ルート 161 - 164
+     start_id: registed_joy_089290fecde94066b6c6057aa12bd43c
+     end_id: registed_joy_c2e4dd1a1d0e48a784cc77c536336ed2
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba6  # ルート 180 - 186
      start_id: registed_joy_5871c6275225465c9f7e37d8577cee9b
-     end_id: registed_joy_fcf7b2ffb46649318b3c5dfa7ea8a491
-     queue_wait: *queue_tsukuba26_2
+     end_id: registed_joy_240864bc046a493497d763e6233036f9
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba7  # ルート 261 - 264
+     start_id: registed_joy_5f7d923e50bb46dcb4a2d7fb5a9a3a12
+     end_id: registed_joy_1031af97a5c84a5396e86f26698661fd
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba8  # ルート 398 - 405
+     start_id: registed_joy_94d85878975c4697949a9c297025dcd3
+     end_id: registed_joy_5a2678ce1a654647a30f85c4c5150810
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba9  # ルート 478 - 482
+     start_id: registed_joy_9a6e9e3b4bbe4eb987cc9b4a8ec3adaa
+     end_id: registed_joy_7da8afb9051b488ab83c538c1f0cd95d
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba10  # ルート 520 - 523
+     start_id: registed_joy_ade27a2b0a0b4212941545d12b82658c
+     end_id: registed_joy_5d4fccdfa5d54352a2451f2791ada825
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba11  # ルート 585 - 586
+     start_id: registed_joy_c2a20d936fbd498c8f3fd07faffb6342
+     end_id: registed_joy_b7231d58aac54a39b5f7807f830c1eb7
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba12  # ルート 594 - 595
+     start_id: registed_joy_7b25245472874d14aa797dde87f37af6
+     end_id: registed_joy_9136de1c641942bcb50ad49e1eaf9586
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba13  # ルート 622 - 625
+     start_id: registed_joy_fbd5a536838343e691fb44049355e4eb
+     end_id: registed_joy_fc2381e2eda943a8945cdf5a597f424c
+     queue_wait: true
+     properties: []
+   - name: crossing_queue_tsukuba14  # ルート 634 - 637
+     start_id: registed_joy_27bb8367688e4edd974eef9a1be140f2
+     end_id: registed_joy_82e69d058d2c4274824675f4439bfc0e
+     queue_wait: true
      properties: []
    - name: crossing_queue_3F
      start_id: registed_0_1791692525785207549
      end_id: registed_0_1791688376624122478
-     queue_wait: true
+     queue_wait: false
      properties: []
    - name: "2to6_saka"
      start_id: registed_0_1773749190996855168
@@ -55,28 +115,3 @@ waypoint_reconfigure_config:
      properties:
         - key: trajectory_limit_vel
           value: 0.7
-   - name: crossing_queue_tsukuba1  # 元ルート85〜88
-     start_id: registed_joy_af27c57cca3b430b8bc10bd522683620
-     end_id: registed_joy_78cd0bad55484df9aadc5a646aca5c5f
-     queue_wait: *queue_tsukuba26_1
-     properties: []
-   - name: crossing_queue_tsukuba1  # 元ルート92〜95
-     start_id: registed_joy_80495a2600f54b0bb6e6bbf23186eba1
-     end_id: registed_joy_c60f0137436c49f6bdf5a928f56f2c1f
-     queue_wait: *queue_tsukuba26_1
-     properties: []
-   - name: crossing_queue_tsukuba1  # 元ルート111〜112
-     start_id: registed_joy_0f357d35e3964c25adafcaea3d6821d7
-     end_id: registed_joy_773b78802d1b4f14a6f5bd9ab6b82c29
-     queue_wait: *queue_tsukuba26_1
-     properties: []
-   - name: crossing_queue_tsukuba1  # 元ルート116〜117
-     start_id: registed_joy_11372133e9824744a49b584a20cc9b8c
-     end_id: registed_joy_7d9383594237459daadf44ffe0b4b2f2
-     queue_wait: *queue_tsukuba26_1
-     properties: []
-   - name: crossing_queue_tsukuba3  # 元ルート478〜488
-     start_id: registed_joy_9a6e9e3b4bbe4eb987cc9b4a8ec3adaa
-     end_id: registed_joy_fc24d9ca13134e2fa4d7f709a19fb5f5
-     queue_wait: *queue_tsukuba26_3
-     properties: []
