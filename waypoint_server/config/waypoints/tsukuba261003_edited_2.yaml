@@ -338,13 +338,13 @@ waypoint_server:
         z: -0.2352396
     - id: registed_joy_37d35362dda048ce971441710944bf87
       position:
-        x: -282.5122
-        y: -12.34079
+        x: -282.7808
+        y: -12.56569
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_94fbfeba91c94c8d9d308a1906dab27d
       position:
         x: -74.67213
@@ -356,13 +356,13 @@ waypoint_server:
         z: -0.8362092
     - id: registed_joy_37319ec9bba44baf80cba87166dbb64b
       position:
-        x: -296.7177
-        y: 3.070404
+        x: -296.8719
+        y: 2.933549
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_6dfb596210af42fcb24d56d788f91de6
       position:
         x: 101.7596
@@ -374,13 +374,13 @@ waypoint_server:
         z: -1.612225
     - id: registed_joy_fdfba47f819c4264b8aec466fe0b928b
       position:
-        x: -299.0853
-        y: 5.638947
+        x: -299.2204
+        y: 5.516769
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_e7c529d666674e31960bb4ee72eb7fb7
       position:
         x: -175.4823
@@ -392,22 +392,22 @@ waypoint_server:
         z: -2.285833
     - id: registed_joy_4fd7f453cbdd45c08b8b0bb395a0db9f
       position:
-        x: -313.2907
-        y: 21.05017
+        x: -313.4542
+        y: 20.89685
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_d9a9f9b423e04f9eace5e3935e6e9985
       position:
-        x: -315.6583
-        y: 23.61871
+        x: -315.8308
+        y: 23.45579
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_0d750d61980041f794e52e8f2f6dab17
       position:
         x: -279.1609
@@ -428,31 +428,31 @@ waypoint_server:
         z: 0.7555134
     - id: registed_joy_25b74bfb41da41d5a5e21321a066a72e
       position:
-        x: -318.0258
-        y: 26.18719
+        x: -317.9573
+        y: 25.74536
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_3ee3f87cab794a42a9b5d94eea674324
       position:
-        x: -322.761
-        y: 31.32431
+        x: -322.96
+        y: 31.13176
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_deed8205eab1433c9220fc2eb24a5966
       position:
-        x: -327.4962
-        y: 36.46136
+        x: -327.7125
+        y: 36.24884
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_f5fa1c7c9e0d490c80b516bc488db669
       position:
         x: -340.1492
@@ -464,22 +464,22 @@ waypoint_server:
         z: -2.405813
     - id: registed_joy_70ba9ee46bda40dca79912c5a5acc6c6
       position:
-        x: -329.8637
-        y: 39.02991
+        x: -330.0888
+        y: 38.80734
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_08a8aab807af4ba5854237ea83d2b0f2
       position:
-        x: -336.9665
-        y: 46.7355
+        x: -337.0579
+        y: 46.64489
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_675c575cf2f54e64a98e7570af776782
       position:
         x: -176.3076
@@ -518,31 +518,31 @@ waypoint_server:
         z: 0.7220176
     - id: registed_joy_1be12c3b8b9043e590e9bf7eabe43118
       position:
-        x: -339.334
-        y: 49.30399
+        x: -339.4369
+        y: 49.20203
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_d1ded69c71df459e93f3143fa76767b5
       position:
-        x: -332.2313
-        y: 41.59842
+        x: -332.4014
+        y: 41.2974
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_8e6dc402ca564fb68fd99c0aa6538fff
       position:
-        x: -344.0692
-        y: 54.44107
+        x: -344.1949
+        y: 54.31647
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_47dbbfc66ae44b45ad50ae4a8cd1a2a5
       position:
         x: 110.6232
@@ -554,13 +554,13 @@ waypoint_server:
         z: -0.6020647
     - id: registed_joy_ca25ba265ba7447a9623982e2069be03
       position:
-        x: -346.4368
-        y: 57.00961
+        x: -346.574
+        y: 56.87369
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_967ee4dd3e0d488ba5ef6af1e4f1d0aa
       position:
         x: -69.40286
@@ -572,8 +572,8 @@ waypoint_server:
         z: -0.8362092
     - id: registed_joy_b05e33527f34491d8cf2ca220c9f1497
       position:
-        x: -353.5395
-        y: 64.71524
+        x: -353.6016
+        y: 64.42775
         z: -3
       euler_angles:
         x: 0
@@ -626,13 +626,13 @@ waypoint_server:
         z: -0.8260881
     - id: registed_joy_bb1dc3b03a614c078efa2c135377f630
       position:
-        x: -351.1719
-        y: 62.1467
+        x: -351.332
+        y: 61.98809
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_ca326f3aae314aa580a952da0570f497
       position:
         x: -370.1125
@@ -1061,13 +1061,13 @@ waypoint_server:
         z: -2.405813
     - id: registed_joy_720140c49db4456f824e918367714e52
       position:
-        x: -294.3502
-        y: 0.5018616
+        x: -294.5234
+        y: 0.3503792
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_87f30ebcf05549009ddaed95dd757a04
       position:
         x: -40.06121
@@ -1151,8 +1151,8 @@ waypoint_server:
         z: -2.373779
     - id: registed_joy_da15a97d310f44de9ad448e28224f1c4
       position:
-        x: -277.7771
-        y: -17.47784
+        x: -278.115
+        y: -18.03073
         z: -3
       euler_angles:
         x: 0
@@ -1637,13 +1637,13 @@ waypoint_server:
         z: 2.292708
     - id: registed_joy_30631f7db6fc45c6b5069866a637b043
       position:
-        x: -310.9232
-        y: 18.4816
+        x: -311.0776
+        y: 18.33793
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_3510998971cd41ca8507ceb6841e6cfa
       position:
         x: -354.048
@@ -2018,8 +2018,8 @@ waypoint_server:
         z: -2.373779
     - id: registed_joy_0e138d90041346cbb5c5c4e9564517d0
       position:
-        x: -280.1447
-        y: -14.90933
+        x: -280.2779
+        y: -15.31872
         z: -3
       euler_angles:
         x: 0
@@ -2291,13 +2291,13 @@ waypoint_server:
         z: -0.8260881
     - id: registed_joy_fe445d7414a14c4da46a44030598c645
       position:
-        x: -320.3935
-        y: 28.75577
+        x: -320.5837
+        y: 28.57327
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_0183520cae4b4f9492ea0e36d55884f9
       position:
         x: -143.3729
@@ -3251,13 +3251,13 @@ waypoint_server:
         z: -2.452115
     - id: registed_joy_575838dba62c491088946fbc9c3ef42d
       position:
-        x: -301.4529
-        y: 8.207458
+        x: -301.5689
+        y: 8.099972
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_a2b30bd0e97c428a8bf94e1a1034ca01
       position:
         x: -282.9775
@@ -3557,13 +3557,13 @@ waypoint_server:
         z: 0.7220176
     - id: registed_joy_009803a21907476cbbb2fdcb58ce6f9a
       position:
-        x: -325.1285
-        y: 33.89285
+        x: -325.3362
+        y: 33.69026
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_05624aa57fce439f8d77d3745a747c18
       position:
         x: -155.6469
@@ -3926,13 +3926,13 @@ waypoint_server:
         z: 2.294605
     - id: registed_joy_7c52bcbb2bcc4e86b62ea113097e6f75
       position:
-        x: -291.9826
-        y: -2.06665
+        x: -292.1749
+        y: -2.232824
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_39e45377547443a0af34fad12c9de824
       position:
         x: -263.0942
@@ -4016,13 +4016,13 @@ waypoint_server:
         z: -2.427486
     - id: registed_joy_39309b5c07d842a8b65882b223ff63dc
       position:
-        x: -287.2474
-        y: -7.203735
+        x: -287.4779
+        y: -7.399264
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_8087c4a56fe440268e0e950247c431ce
       position:
         x: 110.1301
@@ -4514,13 +4514,13 @@ waypoint_server:
         z: 2.267477
     - id: registed_joy_9a6e9e3b4bbe4eb987cc9b4a8ec3adaa
       position:
-        x: -284.8799
-        y: -9.772247
+        x: -285.1294
+        y: -9.982418
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_26b8e4ef8b354d29b3cbf751fe1d0137
       position:
         x: 101.6141
@@ -4559,13 +4559,13 @@ waypoint_server:
         z: -1.440402
     - id: registed_joy_87452a3785af4c06b6f489e7989d0316
       position:
-        x: -303.8204
-        y: 10.776
+        x: -303.9666
+        y: 10.68151
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_f60455e7e0a5434ab27bc9d3d88894bc
       position:
         x: -378.9097
@@ -4670,13 +4670,13 @@ waypoint_server:
         z: -2.427486
     - id: registed_joy_a6cf2a01022d426585a5d5e43843ec30
       position:
-        x: -348.8043
-        y: 59.57816
+        x: -348.9529
+        y: 59.43087
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_38179b75decf42fbb77437762bba6d94
       position:
         x: 10.05616
@@ -5114,13 +5114,13 @@ waypoint_server:
         z: -2.427486
     - id: registed_joy_8e4ee43a49b94f0898376022585a22a4
       position:
-        x: -306.188
-        y: 13.34454
+        x: -306.3243
+        y: 13.22006
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_10d2852e88ea4c16b5c64c5ebfe80292
       position:
         x: -247.499
@@ -5708,13 +5708,13 @@ waypoint_server:
         z: -0.7889003
     - id: registed_joy_109ab7a492a84b7bab5f7ed7fdda9836
       position:
-        x: -308.5555
-        y: 15.91309
+        x: -308.7009
+        y: 15.77896
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8223162
     - id: registed_joy_780375008f0c43229e02c6dabddd2752
       position:
         x: -278.2395
@@ -5906,13 +5906,13 @@ waypoint_server:
         z: -2.373779
     - id: registed_joy_482c04ec8b12451aa6a0beb14f505a57
       position:
-        x: -289.615
-        y: -4.635193
+        x: -289.8264
+        y: -4.816044
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.8329512
     - id: registed_joy_9a8338cc948644cb8f6c6ce9e3774457
       position:
         x: -213.5251
@@ -5942,13 +5942,13 @@ waypoint_server:
         z: -2.373779
     - id: registed_joy_54ba8440577140e2967f3d6800ce5269
       position:
-        x: -334.5989
-        y: 44.16696
+        x: -334.6789
+        y: 44.08767
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_691aec8d2200445abd66930acec4598a
       position:
         x: -200.9834
@@ -6032,13 +6032,13 @@ waypoint_server:
         z: 2.311182
     - id: registed_joy_8656904430c14fca90de52d72d7fce35
       position:
-        x: -341.7016
-        y: 51.87253
+        x: -341.8159
+        y: 51.75925
         z: -3
       euler_angles:
         x: 0
         y: 0
-        z: -0.8260881
+        z: -0.821482
     - id: registed_joy_7950bf564afc45c396aa9dd45704a7cc
       position:
         x: 98.65395
