@@ -78,6 +78,7 @@ namespace waypoint_server {
             ros::Publisher running_publisher;
 
             ros::Subscriber is_reached_goal_subscriber,
+                            reached_stop_subscriber,
                             regist_goal_pose_subscriber,
                             regist_goal_point_subscriber,
                             erase_goal_subscriber,
@@ -92,10 +93,12 @@ namespace waypoint_server {
                                reset_route_service,
                                switch_cancel_service,
                                next_waypoint_service,
+                               resume_at_stop_service,
                                prev_waypoint_service;
 
             ros::ServiceClient clear_costmap_service,
-                               queue_release_service;
+                               queue_release_service,
+                               queue_check_stop_service;
 
             NodeParameters param;
 
@@ -108,6 +111,7 @@ namespace waypoint_server {
             std::atomic_bool queue_active{false};
             ros::Subscriber queue_hold_subscriber;
             ros::Subscriber queue_active_subscriber;
+            std::string reached_stop_waypoint;
 
             // TODO Change message type
             void isReachedGoal(const std_msgs::Bool::ConstPtr &),
@@ -140,6 +144,10 @@ namespace waypoint_server {
                 std_srvs::TriggerResponse &response
             );
             bool nextWaypoint(
+                std_srvs::TriggerRequest &request,
+                std_srvs::TriggerResponse &response
+            );
+            bool resumeAtStop(
                 std_srvs::TriggerRequest &request,
                 std_srvs::TriggerResponse &response
             );
@@ -318,6 +326,8 @@ namespace waypoint_server {
             [this](const std_msgs::Bool::ConstPtr &msg) { queue_hold.store(msg->data); });
         queue_active_subscriber = nh.subscribe<std_msgs::Bool>("/queue_wait/active", 1,
             [this](const std_msgs::Bool::ConstPtr &msg) { queue_active.store(msg->data); });
+        reached_stop_subscriber = nh.subscribe<std_msgs::String>("waypoint/reached_stop", 1,
+            [this](const std_msgs::String::ConstPtr &msg) { reached_stop_waypoint = msg->data; });
         regist_goal_pose_subscriber
             = nh.subscribe<geometry_msgs::PoseStamped>(
                 param.regist_goal_pose_topic,
@@ -404,6 +414,7 @@ namespace waypoint_server {
                 &Node::nextWaypoint,
                 this
               );
+        resume_at_stop_service = private_nh.advertiseService("resume_at_stop", &Node::resumeAtStop, this);
         prev_waypoint_service 
             = private_nh.advertiseService(
                 "prev_waypoint",
@@ -413,6 +424,7 @@ namespace waypoint_server {
 
         clear_costmap_service = private_nh.serviceClient<std_srvs::Empty>(param.clear_costmap_srv);
         queue_release_service = nh.serviceClient<std_srvs::Trigger>("/queue_wait/release");
+        queue_check_stop_service = nh.serviceClient<std_srvs::Trigger>("/queue_wait/check_waypoint_stop");
 
         is_cancel.store(true);
         running_publisher = private_nh.advertise<std_msgs::Bool>("running", 1, true);
@@ -659,6 +671,40 @@ namespace waypoint_server {
         return true;
     }
 
+    bool Node::resumeAtStop(
+        std_srvs::TriggerRequest &request,
+        std_srvs::TriggerResponse &response
+    ) {
+        response.success = false;
+        if (is_cancel.load() || router.isEmpty()) {
+            response.message = "Autonomous navigation is paused or has no route";
+            return true;
+        }
+        const auto identity = router.getIndex();
+        if (!waypoint_map.hasKey(identity) || waypoint_map[identity].properties["stop"] != "true") {
+            response.message = "Current waypoint is not a stop waypoint";
+            return true;
+        }
+        if (!param.enable_loop && identity == router.data().back()) {
+            response.message = "No next waypoint";
+            return true;
+        }
+        if (queue_hold.load()) {
+            return nextWaypoint(request, response);
+        }
+        if (queue_active.load()) {
+            std_srvs::Trigger check;
+            if (!queue_check_stop_service.call(check) || !check.response.success || check.response.message != identity) {
+                response.message = "Waiting for arrival at the queue stop waypoint";
+                return true;
+            }
+        } else if (reached_stop_waypoint != identity) {
+            response.message = "Waiting for arrival at the stop waypoint";
+            return true;
+        }
+        return nextWaypoint(request, response);
+    }
+
     bool Node::nextWaypoint(
         std_srvs::TriggerRequest &request,
         std_srvs::TriggerResponse &response
@@ -687,6 +733,7 @@ namespace waypoint_server {
             response.message = "No next waypoint";
             return true;
         }
+        reached_stop_waypoint.clear();
         publishGoal();
 
         if (!queue_active.load()) {

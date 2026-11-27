@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <exception>
+#include <cmath>
 
 #include <Eigen/Dense>
 
@@ -12,6 +13,7 @@
 #include <tf/transform_listener.h>
 
 #include <std_msgs/Bool.h>
+#include <std_msgs/String.h>
 #include <waypoint_manager_msgs/Waypoint.h>
 
 namespace {
@@ -19,6 +21,7 @@ namespace {
     static float default_goal_radius = 1;
     static float current_goal_radius = default_goal_radius;
     static Eigen::Vector2f goal_position = Eigen::Vector2f::Zero();
+    static std::string stop_waypoint;
 }
 
 void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
@@ -28,10 +31,13 @@ void waypointCallback(const waypoint_manager_msgs::Waypoint::ConstPtr &msg) {
 
         bool found_goal_radius = false;
 
-        for(unsigned int i = 0; i < msg->properties.size(); i ++) {
-            if(msg->properties[i].name == "goal_radius") {
-                current_goal_radius = std::stof(msg->properties[i].data);
+        stop_waypoint.clear();
+        for (const auto& property : msg->properties) {
+            if (property.name == "goal_radius") {
+                current_goal_radius = std::stof(property.data);
                 found_goal_radius = true;
+            } else if (property.name == "stop" && property.data == "true") {
+                stop_waypoint = msg->identity;
             }
         }
         if(!found_goal_radius) {
@@ -119,6 +125,17 @@ auto main(int argc, char **argv) -> int {
         1,
         waypointCallback
     );
+    auto reached_stop_publisher = nh.advertise<std_msgs::String>("waypoint/reached_stop", 1, true);
+    std::string last_reached_stop;
+    auto publish_reached_stop = [&](const std::string& identity) {
+        if (identity == last_reached_stop) return;
+        std_msgs::String state;
+        state.data = identity;
+        reached_stop_publisher.publish(state);
+        last_reached_stop = identity;
+    };
+    tf::StampedTransform previous_stop_pose;
+    std::string previous_stop_waypoint;
 
     ROS_INFO("Start radius_node");
     ROS_INFO("robot_base_frame is %s", robot_base_frame.c_str());
@@ -133,6 +150,8 @@ auto main(int argc, char **argv) -> int {
         ros::spinOnce();
 
         if(!recived_waypoint.load()) {
+            previous_stop_waypoint.clear();
+            publish_reached_stop("");
             ROS_INFO("Waiting waypoint radius_node");
             ros::Duration(wait_no_waypoint_time).sleep();
             continue;
@@ -160,9 +179,27 @@ auto main(int argc, char **argv) -> int {
                 msg.data = false;
             }
 
+            bool stationary = false;
+            if (msg.data && !stop_waypoint.empty()) {
+                if (stop_waypoint == previous_stop_waypoint) {
+                    const double elapsed = (tf_transform.stamp_ - previous_stop_pose.stamp_).toSec();
+                    const auto displacement = tf_transform.getOrigin() - previous_stop_pose.getOrigin();
+                    const double rotation = tf_transform.getRotation().angleShortestPath(previous_stop_pose.getRotation());
+                    stationary = elapsed > 0 && elapsed <= 2.0 / goal_check_frequency &&
+                        std::hypot(displacement.x(), displacement.y()) <= 0.03 * elapsed &&
+                        rotation <= 0.05 * elapsed;
+                }
+                previous_stop_pose = tf_transform;
+                previous_stop_waypoint = stop_waypoint;
+            } else {
+                previous_stop_waypoint.clear();
+            }
+            publish_reached_stop(stationary ? stop_waypoint : "");
             is_reached_goal_publisher.publish(msg);
         }
         catch(const tf::TransformException &e) {
+            previous_stop_waypoint.clear();
+            publish_reached_stop("");
             ROS_WARN("Transform failed %s to %s", global_frame.c_str(), robot_base_frame.c_str());
             ros::Duration(1.0).sleep();
         }

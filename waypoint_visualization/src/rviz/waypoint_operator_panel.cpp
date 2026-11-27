@@ -1,6 +1,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QShortcut>
 
 #include <ros/ros.h>
 #include <rviz/panel.h>
@@ -61,6 +62,18 @@ namespace waypoint_visualization
         next_waypoint_client = nh.serviceClient<std_srvs::Trigger>("waypoint_manager/waypoint_server/next_waypoint");
         waypoint_save_client = nh.serviceClient<std_srvs::Trigger>("waypoint_manager/waypoint_server/save");
         prev_waypoint_client = nh.serviceClient<std_srvs::Trigger>("waypoint_manager/waypoint_server/prev_waypoint");
+
+        auto resume = new QShortcut(QKeySequence(Qt::Key_Space), this);
+        resume->setAutoRepeat(false);
+        auto resume_client = nh.serviceClient<std_srvs::Trigger>("waypoint_manager/waypoint_server/resume_at_stop");
+        connect(resume, &QShortcut::activated, this, [resume_client]() mutable {
+            std_srvs::Trigger trigger;
+            if (!resume_client.call(trigger)) {
+                ROS_WARN("Space: stop waypoint resume service is unavailable");
+            } else if (!trigger.response.success) {
+                ROS_INFO("Space: %s", trigger.response.message.c_str());
+            }
+        });
     }
 
     WaypointOperatorPanel::~WaypointOperatorPanel()

@@ -940,7 +940,7 @@ class Node {
     ros::Publisher goal_pub,cmd_pub,cancel_pub,active_pub,hold_pub,state_pub,detection_pub;
     std::vector<ros::Subscriber> subscribers;
     ros::Subscriber accepted_goal_sub;
-    ros::Timer timer; ros::ServiceServer release_service;
+    ros::Timer timer; ros::ServiceServer release_service,check_waypoint_stop_service;
     bool queue_enabled=false,running=false,was_active=false,config_ready=false;
     bool route_ready=false,waypoints_ready=false,waypoint_ready=false,scan_valid=false,fault=false;
     bool normal_goal_sent=false,goal_pending=true,front_stop=false,waypoint_frame_valid=false,running_known=false;
@@ -1404,6 +1404,14 @@ class Node {
         if (response.success) { std_msgs::Bool held; held.data=false; hold_pub.publish(held); published_hold=false; }
         return true;
     }
+    bool checkWaypointStop(std_srvs::Trigger::Request&,std_srvs::Trigger::Response& response) {
+        if (controller&&!fault&&running&&!front_stop&&navigation_ready&&queueTarget()&&
+            decision(ros::Time::now().toSec()).state=="STOP_WAYPOINT") {
+            response.success=true;
+            response.message=current_waypoint.identity;
+        }
+        return true;
+    }
 public:
     Node() {
         bool latch=false; std::string goal_topic,waypoint_topic;
@@ -1449,6 +1457,7 @@ public:
         subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/map_for_costmap",1,
             [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("constraint",m); }));
         release_service=nh.advertiseService("/queue_wait/release",&Node::release,this);
+        check_waypoint_stop_service=nh.advertiseService("/queue_wait/check_waypoint_stop",&Node::checkWaypointStop,this);
         timer=nh.createTimer(ros::Duration(1/queue_wait::Controller::control_rate),&Node::tick,this);
     }
     ~Node() { if (queue_enabled) stop(); }
