@@ -7,6 +7,8 @@ waypoint_reconfigure_config:
   default_trajectory_limit_theta: 2.0
   queue_wait:
     max_speed: 0.5
+    rejoin_speed: 0.1
+    rejoin_max_lateral_deviation: 0.38
     detection_distance: 0.5
     detection_half_width: 0.35
     resume_distance: 0.8

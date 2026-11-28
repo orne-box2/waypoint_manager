@@ -6,6 +6,7 @@
 #include <limits>
 #include <map>
 #include <memory>
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <string>
@@ -263,17 +264,19 @@ public:
         {"resume_distance",1.3},{"clear_duration",2},
         {"scan_timeout",.5},{"pose_timeout",.5},{"map_timeout",1.5},
         {"max_lateral_deviation",.25},{"corridor_half_width",.65},
+        {"rejoin_max_lateral_deviation",.38},{"rejoin_speed",.10},
         {"deceleration",.3},{"stop_margin",.2},{"stop_goal_radius",.2},
         {"prediction_time",1},{"avoidance_wait",90},
         {"avoidance_max_offset",0},
         {"avoidance_obstacle_max_diagonal",.3},{"queue_center_half_width",.12}};
-    static constexpr double control_rate=10;
+    static constexpr double control_rate=5;
+    static constexpr double control_period=1/control_rate;
     std::vector<Zone> zones; std::vector<Point> footprint;
     std::vector<Point> avoidance_footprint;
     std::function<bool(Point)> static_obstacle;
     std::function<bool(Point)> observed_free;
     int zone=-1;
-    bool fault=false,released=false,waiting=true,line_reached=false,waypoint_reached=false;
+    bool fault=false,released=false,waiting=true,line_reached=false,waypoint_reached=false,rejoining=false;
     double clear_since=NAN,last_time=NAN;
     std::string identity; Decision last{"NORMAL"};
     struct Track {
@@ -339,7 +342,7 @@ public:
     void waypoint(const std::string& id) {
         if (zone>=0&&!zones[zone].ids.count(id)) {
             if (!released) { fault=true; return; }
-            zone=-1; released=false; line_reached=false; resetAvoidance();
+            zone=-1; released=false; line_reached=false; rejoining=false; resetAvoidance();
         }
         if (zone<0) {
             for (size_t i=0;i<zones.size();++i) if (zones[i].ids.count(id)) { zone=i; break; }
@@ -352,6 +355,7 @@ public:
         for (auto& memory:queue_memory) memory.second.clear_since=memory.second.last_scan=memory.second.last_map=NAN;
     }
     void pause() { waiting=true; clear_since=avoidance_clear=NAN; resetBlocked(); resetClearProofs(); }
+    void operatorPause() { pause(); detour.reset(); }
     const Path& drivingPath() const { return detour?*detour:zones.at(zone).path; }
     bool entryReady(const Zone& area,Pose pose) const {
         if (!finite(pose)||area.path.project({pose.x,pose.y}).lateral>.8*p.at("max_lateral_deviation")) return false;
@@ -360,11 +364,11 @@ public:
         return true;
     }
     double approachTime() const {
-        return p.at("prediction_time")+p.at("max_speed")/p.at("deceleration")+.1;
+        return p.at("prediction_time")+p.at("max_speed")/p.at("deceleration")+control_period;
     }
     double detectionPreview() const {
         double preview=std::max(p.at("resume_distance"),p.at("detection_distance")+p.at("max_speed")*approachTime());
-        preview+=p.at("max_speed")*(p.at("scan_timeout")+1/control_rate);
+        preview+=p.at("max_speed")*(p.at("scan_timeout")+control_period);
         return preview;
     }
     double detectionHalfWidth() const {
@@ -737,7 +741,7 @@ public:
             double rotation=std::max(-p.at("max_angular"),std::min(p.at("max_angular"),
                 2*std::max(candidate,.03)*std::sin(error)/std::max(.1,std::hypot(target.x-pose.x,target.y-pose.y))));
             Pose prediction=pose;
-            double horizon=std::max(p.at("prediction_time"),candidate/p.at("deceleration")+.1);
+            double horizon=std::max(p.at("prediction_time"),candidate/p.at("deceleration")+control_period);
             for (double t=0;t<=horizon;t+=.05) {
                 if (!poseClear(prediction,scan,collision)) return false;
                 if (!movingClear(prediction,t,now)) { moving_conflict=true; return false; }
@@ -811,7 +815,8 @@ public:
     }
     Decision hold(const std::string& reason) { last={reason,true,true}; return last; }
     Decision step(double now,const Pose* pose,double pose_stamp,const std::vector<Point>* scan,double scan_stamp,
-                  double map_stamp,const std::function<bool(Pose,const std::vector<Point>&)>& collision) {
+                  double map_stamp,const std::function<bool(Pose,const std::vector<Point>&)>& collision,
+                  std::vector<Point>* rejoin_trajectory=nullptr) {
         if (zone<0) { last={"NORMAL"}; return last; }
         if (std::isfinite(last_time)&&now<last_time) {
             pause(); observed_scan=NAN; tracks.clear();
@@ -825,8 +830,17 @@ public:
         if (!collision||!fresh(map_stamp,p["map_timeout"])) { pause(); return hold("MAP_UNAVAILABLE"); }
         if (!collision(*pose,footprint)) { pause(); return hold("CURRENT_POSE_BLOCKED"); }
         const auto& z=zones[zone]; auto q=z.path.project({pose->x,pose->y});
-        double lateral_limit=detour?std::max(p["max_lateral_deviation"],p["avoidance_max_offset"]+.02):p["max_lateral_deviation"];
+        const double normal_lateral=p["max_lateral_deviation"];
+        const double rejoin_limit=std::max(normal_lateral,p["rejoin_max_lateral_deviation"]);
+        const double lateral_limit=detour?std::max(normal_lateral,p["avoidance_max_offset"]+.02):rejoin_limit;
         if (q.lateral>lateral_limit) { pause(); return hold("OUTSIDE_CORRIDOR"); }
+        if (rejoining&&q.lateral<=.8*normal_lateral) rejoining=false;
+        if (!detour&&!rejoining&&q.lateral>normal_lateral) {
+            if (q.along<0||q.along>=z.path.length) { pause(); return hold("OUTSIDE_CORRIDOR"); }
+            rejoining=true;
+            pause();
+        }
+        if (rejoining&&q.along<0) { pause(); return hold("OUTSIDE_CORRIDOR"); }
         if (p["avoidance_max_offset"]>0) {
             observe(*scan,scan_stamp,*pose);
             releaseClearedLimits(scan_stamp,map_stamp);
@@ -836,6 +850,17 @@ public:
             detour.reset(); resetBlocked(); waiting=false; clear_since=NAN;
         }
         double gap=detour?INFINITY:clearance(*pose,*scan);
+        if (rejoining) {
+            const auto along=obstacleWindow(*pose);
+            const double search_radius=along.front-along.start+p["resume_distance"]+
+                rejoin_limit+p["detection_half_width"];
+            for (auto point:*scan) {
+                if (std::hypot(point.x-pose->x,point.y-pose->y)>search_radius) continue;
+                auto projected=z.path.project(point);
+                if (projected.along>=along.start&&projected.lateral<=p["detection_half_width"])
+                    gap=std::min(gap,projected.along-along.front);
+            }
+        }
         if (!detour) {
             if (gap<=p["detection_distance"]+1e-9) { waiting=true; clear_since=NAN; }
             else if (gap>=p["resume_distance"]) {
@@ -848,7 +873,11 @@ public:
             (!z.has_stop_line&&q.along>=z.path.length)||
             (identity==z.stop_id&&std::hypot(pose->x-z.stop_goal.x,pose->y-z.stop_goal.y)<=p["stop_goal_radius"]))
             line_reached=true;
-        if (!released&&line_reached) { detour.reset(); resetBlocked(); return hold("STOP_LINE"); }
+        if (!released&&line_reached) {
+            detour.reset(); resetBlocked();
+            if (rejoining&&q.lateral>normal_lateral) return hold("OUTSIDE_CORRIDOR");
+            return hold("STOP_LINE");
+        }
         double target_end=z.path.length,stop_remaining=z.has_stop_line?INFINITY:z.path.length-q.along;
         auto stop=z.stop_waypoints.find(identity);
         if (identity!=z.stop_id&&stop!=z.stop_waypoints.end()) {
@@ -862,8 +891,14 @@ public:
             if (waiting) return hold("QUEUE_WAIT");
             last={"RELEASED_WAITING_FOR_NEXT_WAYPOINT",true,false}; return last;
         }
-        if (waypoint_reached&&!waiting) { detour.reset(); resetBlocked(); last={"STOP_WAYPOINT",true,false}; return last; }
+        if (waypoint_reached&&!waiting) {
+            detour.reset(); resetBlocked();
+            if (rejoining&&q.lateral>normal_lateral) return hold("OUTSIDE_CORRIDOR");
+            last={"STOP_WAYPOINT",true,false}; return last;
+        }
         if (detour) return followDetour(now,*pose,*scan,collision,target_end);
+        if (rejoining&&gap<p["resume_distance"]) pause();
+        if (rejoining&&waiting) return hold("QUEUE_WAIT");
         if (waiting) return waitForDetour(now,*pose,*scan,collision,target_end,gap,"QUEUE_WAIT");
         auto target=z.path.pointAt(std::min(q.along+p["lookahead"],target_end));
         double error=wrap(std::atan2(target.y-pose->y,target.x-pose->x)-pose->yaw);
@@ -876,36 +911,60 @@ public:
         double speed=std::min(p["max_speed"],std::sqrt(2*p["deceleration"]*available));
         speed=std::min(speed,available/approachTime());
         speed*=std::max(0.0,std::cos(error)); if (std::abs(error)>.6) speed=0;
+        const double allowed_lateral=rejoining?std::max(normal_lateral,q.lateral):normal_lateral;
+        std::vector<Point> nearby_scan;
+        if (rejoining) {
+            speed=std::min(speed,p["rejoin_speed"]);
+            if (std::abs(error)>.3) speed=0;
+            angular=std::max(-.25,std::min(.25,angular));
+            double scan_radius=0;
+            for (auto v:footprint) scan_radius=std::max(scan_radius,std::hypot(v.x,v.y));
+            scan_radius+=speed*(std::max(p["prediction_time"],speed/p["deceleration"]+control_period)+.05)+.05;
+            for (auto point:*scan) if (std::hypot(point.x-pose->x,point.y-pose->y)<=scan_radius)
+                nearby_scan.push_back(point);
+        }
         auto feasible=[&](double candidate) {
+            if (rejoin_trajectory) rejoin_trajectory->clear();
             if (candidate<1e-5&&std::abs(error)<.05) return false;
             Pose prediction=*pose;
-            double horizon=std::max(p["prediction_time"],candidate/p["deceleration"]+1/control_rate);
+            double horizon=std::max(p["prediction_time"],candidate/p["deceleration"]+control_period);
             double dt=std::min(.05,.5*p["max_lateral_deviation"]/std::max(candidate,.01));
             for (int i=0;i<=std::ceil(horizon/dt);++i) {
                 auto projected=z.path.project({prediction.x,prediction.y});
-                if (projected.lateral>p["max_lateral_deviation"]||
+                if (projected.lateral>allowed_lateral+1e-8||
                     (!z.has_stop_line&&projected.along>z.path.length)||
                     boundary(prediction)<p["stop_margin"]||!collision(prediction,footprint)) return false;
+                if (rejoining) {
+                    if (projected.along<q.along-.005||projected.along>target_end||
+                        !movingClear(prediction,i*dt,now)) return false;
+                    for (auto point:nearby_scan) if (!pointClear(prediction,point,.05)) return false;
+                }
                 for (auto v:footprint) {
                     auto vertex=z.path.project(transform(v,prediction));
                     if (vertex.lateral>p["corridor_half_width"]||vertex.along>queue_limit) return false;
                 }
+                if (rejoining&&rejoin_trajectory&&candidate>=1e-5)
+                    rejoin_trajectory->push_back({prediction.x,prediction.y});
                 prediction.x+=candidate*std::cos(prediction.yaw)*dt;
                 prediction.y+=candidate*std::sin(prediction.yaw)*dt;
                 prediction.yaw=wrap(prediction.yaw+angular*dt);
             }
-            return true;
+            return !rejoining||candidate<1e-5||
+                z.path.project({prediction.x,prediction.y}).lateral+1e-3<q.lateral;
         };
         bool safe=false;
         for (int attempt=0;attempt<5;++attempt) {
             if (feasible(speed)) { safe=true; break; }
             speed=attempt<3?speed*.5:0;
         }
-        if (!safe) return waitForDetour(now,*pose,*scan,collision,target_end,gap,"TRAJECTORY_BLOCKED");
-        resetBlocked(); last={"QUEUE_ADVANCE",true,false,speed,angular}; return last;
+        if (!safe) {
+            if (rejoining) return hold("REJOIN_BLOCKED");
+            return waitForDetour(now,*pose,*scan,collision,target_end,gap,"TRAJECTORY_BLOCKED");
+        }
+        resetBlocked(); last={rejoining?"QUEUE_REJOIN":"QUEUE_ADVANCE",true,rejoining,speed,angular}; return last;
     }
     bool release(double now,std::string& message) {
-        if (!std::isfinite(last_time)||now-last_time>2/control_rate||last.state!="STOP_LINE") {
+        if (!std::isfinite(last_time)||now-last_time>2*control_period||last.state!="STOP_LINE") {
             message="Release requires fresh data and a stop at the end of the queue area"; return false;
         }
         if (!std::isfinite(clear_since)||now-clear_since<p["clear_duration"]||waiting) {
@@ -923,6 +982,7 @@ public:
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/Path.h>
 #include <map_msgs/OccupancyGridUpdate.h>
 #include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Bool.h>
@@ -937,14 +997,15 @@ class Node {
     ros::NodeHandle nh,private_nh{"~"};
     tf::TransformListener tf;
     std::unique_ptr<tf::MessageFilter<sensor_msgs::LaserScan>> scan_filter;
-    ros::Publisher goal_pub,cmd_pub,cancel_pub,active_pub,hold_pub,state_pub,detection_pub;
+    ros::Publisher goal_pub,cmd_pub,cancel_pub,active_pub,hold_pub,state_pub,detection_pub,path_pub;
     std::vector<ros::Subscriber> subscribers;
-    ros::Subscriber accepted_goal_sub;
+    ros::Subscriber accepted_goal_sub,local_map_sub;
     ros::Timer timer; ros::ServiceServer release_service,check_waypoint_stop_service;
     bool queue_enabled=false,running=false,was_active=false,config_ready=false;
     bool route_ready=false,waypoints_ready=false,waypoint_ready=false,scan_valid=false,fault=false;
     bool normal_goal_sent=false,goal_pending=true,front_stop=false,waypoint_frame_valid=false,running_known=false;
     bool navigation_ready=false,published_active=true,published_hold=true;
+    bool path_visible=false;
     std::string frame,base,input_topic,output_topic,previous_state,queue_error;
     YAML::Node config;
     std::unique_ptr<queue_wait::Controller> controller;
@@ -957,6 +1018,11 @@ class Node {
     std::set<uint64_t> goal_requests;
     double scan_stamp=NAN;
     ros::WallTime next_initialization;
+    ros::WallTime next_local_snapshot;
+    std::optional<uint32_t> local_patch_sequence;
+    double local_snapshot_after=NAN,blocked_since=NAN;
+    bool snapshot_requested_for_block=false,waiting_for_live_local_update=false;
+    std::string current_collision_grid;
     struct Map { std::shared_ptr<queue_wait::Grid> grid; std::string frame; double stamp; };
     std::map<std::string,Map> maps;
     queue_wait::Pose transform(const std::string& target,const std::string& source,ros::Time stamp) {
@@ -1186,7 +1252,7 @@ class Node {
     void onRunning(const std_msgs::Bool::ConstPtr& msg) {
         if (running_known&&running==msg->data) return;
         const bool was_running=running; running_known=true; running=msg->data;
-        if (!running) { cancel(); if (was_running) stop(); if (controller) controller->pause(); }
+        if (!running) { cancel(); if (was_running) stop(); if (controller) controller->operatorPause(); }
         else if (waypoint_ready&&!fault&&!queueTarget()) publishGoal();
     }
     void onCommand(const geometry_msgs::Twist::ConstPtr& msg) {
@@ -1240,18 +1306,24 @@ class Node {
         }
     }
     void onMap(const std::string& key,const nav_msgs::OccupancyGrid::ConstPtr& msg) {
+        const double stamp=msg->header.stamp.toSec(),now=ros::Time::now().toSec();
         try {
-            if (key=="constraint") {
-                const double now=ros::Time::now().toSec();
-                if (msg->header.stamp.toSec()>now+.05) return;
-                auto current=maps.find(key);
-                if (current!=maps.end()&&current->second.stamp<=now+.05&&
-                    msg->header.stamp.toSec()<current->second.stamp) return;
+            if (stamp>now+.05) return;
+            auto current=maps.find(key);
+            if (current!=maps.end()&&current->second.stamp<=now+.05&&stamp<current->second.stamp) return;
+            if (key=="local") {
+                if (msg->header.stamp.isZero()) return;
+                if (std::isfinite(local_snapshot_after)&&local_snapshot_after<=now+.05&&stamp<local_snapshot_after)
+                    return;
+                local_snapshot_after=NAN;
+                local_patch_sequence.reset();
             }
             const auto& o=msg->info.origin;
             auto grid=std::make_shared<queue_wait::Grid>(msg->info.width,msg->info.height,msg->info.resolution,
                 queue_wait::Pose{o.position.x,o.position.y,tf::getYaw(o.orientation)},msg->data,key=="local");
-            maps[key]={grid,msg->header.frame_id,msg->header.stamp.toSec()};
+            if (key=="local"&&current!=maps.end()&&stamp>current->second.stamp)
+                waiting_for_live_local_update=false;
+            maps[key]={grid,msg->header.frame_id,stamp};
         } catch (const std::exception& e) { maps.erase(key); ROS_ERROR("queue_wait grid: %s",e.what()); }
     }
     void onMapUpdate(const map_msgs::OccupancyGridUpdate::ConstPtr& msg) {
@@ -1260,7 +1332,10 @@ class Node {
         auto& map=found->second; auto& grid=*map.grid;
         const double stamp=msg->header.stamp.toSec(),now=ros::Time::now().toSec();
         if (msg->header.stamp.isZero()||stamp>now+.05||(map.stamp<=now+.05&&stamp<map.stamp)) return;
-        if (msg->header.frame_id!=map.frame||msg->x<0||msg->y<0||
+        const uint32_t seq=msg->header.seq;
+        const bool missing_patch=local_patch_sequence&&(seq!=0||*local_patch_sequence!=0)&&
+            seq!=static_cast<uint32_t>(*local_patch_sequence+1);
+        if (missing_patch||msg->header.frame_id!=map.frame||msg->x<0||msg->y<0||
             static_cast<uint64_t>(msg->x)+msg->width>static_cast<uint64_t>(grid.width)||
             static_cast<uint64_t>(msg->y)+msg->height>static_cast<uint64_t>(grid.height)||
             msg->data.size()!=static_cast<size_t>(msg->width)*msg->height) {
@@ -1269,9 +1344,50 @@ class Node {
         for (size_t y=0;y<msg->height;++y)
             std::copy_n(msg->data.begin()+y*msg->width,msg->width,
                         grid.data.begin()+(msg->y+y)*grid.width+msg->x);
-        map.stamp=msg->header.stamp.toSec();
+        if (stamp>map.stamp) waiting_for_live_local_update=false;
+        map.stamp=stamp;
+        local_patch_sequence=seq;
     }
-    queue_wait::Decision decision(double now) {
+    void subscribeLocalMap() {
+        local_map_sub=nh.subscribe<nav_msgs::OccupancyGrid>("/move_base/local_costmap/costmap",1,
+            [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("local",m); });
+    }
+    bool requestLocalSnapshot(double now) {
+        const auto wall_now=ros::WallTime::now();
+        if (wall_now<next_local_snapshot) return false;
+        next_local_snapshot=wall_now+ros::WallDuration(2);
+        maps.erase("local");
+        local_snapshot_after=now;
+        // A reconnect stamps the cached grid again. Wait for a regular update before moving.
+        waiting_for_live_local_update=true;
+        local_patch_sequence.reset();
+        local_map_sub.shutdown();
+        subscribeLocalMap();
+        ROS_INFO("queue_wait: requesting a full local costmap snapshot");
+        return true;
+    }
+    void recoverLocalMap(const queue_wait::Decision& result,double now) {
+        if (!running||front_stop||!controller||controller->zone<0||fault) {
+            blocked_since=NAN; snapshot_requested_for_block=false; return;
+        }
+        auto local=maps.find("local");
+        if (local==maps.end()||local->second.stamp>now+.05||
+            now-local->second.stamp>controller->p.at("map_timeout")) {
+            requestLocalSnapshot(now); return;
+        }
+        const bool blocked=result.state=="TRAJECTORY_BLOCKED"||result.state=="REJOIN_BLOCKED"||
+            (result.state=="CURRENT_POSE_BLOCKED"&&current_collision_grid=="local");
+        if (blocked) {
+            if (!std::isfinite(blocked_since)||now<blocked_since) blocked_since=now;
+            if (!snapshot_requested_for_block&&now-blocked_since>=1)
+                snapshot_requested_for_block=requestLocalSnapshot(now);
+        } else if (result.linear!=0||result.angular!=0||result.state=="STOP_LINE"||result.state=="STOP_WAYPOINT") {
+            blocked_since=NAN;
+            snapshot_requested_for_block=false;
+        }
+    }
+    queue_wait::Decision decision(double now,std::vector<queue_wait::Point>* rejoin_trajectory=nullptr) {
+        current_collision_grid.clear();
         if (controller->zone<0) return controller->step(now,nullptr,NAN,nullptr,NAN,NAN,{});
         controller->static_obstacle={};
         controller->observed_free={};
@@ -1281,11 +1397,12 @@ class Node {
             pose={t.getOrigin().x(),t.getOrigin().y(),tf::getYaw(t.getRotation())}; pose_stamp=t.stamp_.toSec(); pose_valid=true;
         } catch (const std::exception&) {}
         std::function<bool(queue_wait::Pose,const std::vector<queue_wait::Point>&)> collision;
-        if (maps.count("local")&&maps.count("constraint")) try {
-            std::vector<std::pair<std::shared_ptr<queue_wait::Grid>,queue_wait::Pose>> grids;
+        if (!waiting_for_live_local_update&&maps.count("local")&&maps.count("constraint")) try {
+            struct CollisionGrid { std::string name; std::shared_ptr<queue_wait::Grid> grid; queue_wait::Pose offset; };
+            std::vector<CollisionGrid> grids;
             for (const auto& m:maps) {
                 auto offset=transform(m.second.frame,frame,ros::Time(0));
-                grids.push_back({m.second.grid,offset});
+                grids.push_back({m.first,m.second.grid,offset});
                 if (m.first=="constraint") {
                     auto grid=m.second.grid;
                     controller->static_obstacle=[grid,offset](queue_wait::Point point) {
@@ -1299,65 +1416,99 @@ class Node {
                 controller->observed_free=[view,grids](queue_wait::Point point) {
                     if (!view->clears(point)) return false;
                     for (const auto& grid:grids)
-                        if (!grid.first->observedFree(queue_wait::transform(point,grid.second))) return false;
+                        if (!grid.grid->observedFree(queue_wait::transform(point,grid.offset))) return false;
                     return true;
                 };
             }
-            collision=[grids](queue_wait::Pose predicted,const std::vector<queue_wait::Point>& f) {
+            collision=[this,grids](queue_wait::Pose predicted,const std::vector<queue_wait::Point>& f) {
                 for (const auto& g:grids) {
-                    auto p=queue_wait::transform({predicted.x,predicted.y},g.second);
-                    if (!g.first->free({p.x,p.y,predicted.yaw+g.second.yaw},f)) return false;
+                    auto p=queue_wait::transform({predicted.x,predicted.y},g.offset);
+                    if (!g.grid->free({p.x,p.y,predicted.yaw+g.offset.yaw},f)) {
+                        current_collision_grid=g.name;
+                        return false;
+                    }
                 }
                 return true;
             };
         } catch (const std::exception&) {}
-        return controller->step(now,pose_valid?&pose:nullptr,pose_stamp,scan_valid?&scan:nullptr,scan_stamp,map_stamp,collision);
+        return controller->step(now,pose_valid?&pose:nullptr,pose_stamp,scan_valid?&scan:nullptr,scan_stamp,map_stamp,
+                                collision,rejoin_trajectory);
     }
-    void publishDetectionRange(ros::Time now) {
-        if (!detection_pub.getNumSubscribers()) return;
+    void publishQueuePath(const std_msgs::Header& header,const std::optional<queue_wait::Pose>& pose,
+                          const std::vector<queue_wait::Point>& rejoin_trajectory) {
+        nav_msgs::Path path;
+        path.header=header;
+        auto append=[&](queue_wait::Point p,double height=0.0) {
+            geometry_msgs::PoseStamped point;
+            point.header=header;
+            point.pose.position.x=p.x; point.pose.position.y=p.y;
+            point.pose.position.z=height;
+            point.pose.orientation.w=1;
+            path.poses.push_back(point);
+        };
+        if (pose) {
+            if (!rejoin_trajectory.empty()) {
+                constexpr double rejoin_display_height=1.0;
+                path.poses.reserve(rejoin_trajectory.size());
+                for (auto p:rejoin_trajectory) append(p,rejoin_display_height);
+            } else {
+                const auto& zone=controller->zones.at(controller->zone);
+                const auto& driving=controller->drivingPath();
+                const double start=std::clamp(driving.project({pose->x,pose->y}).along,0.0,driving.length);
+                double end=driving.length;
+                if (!controller->detour) for (const auto& stop:zone.stop_waypoints) {
+                    double along=driving.project(stop.second).along;
+                    if (along>=start||stop.first==controller->identity) end=std::min(end,along);
+                }
+                if (end>start+1e-6) {
+                    append(driving.pointAt(start));
+                    for (const auto& segment:driving.segments) {
+                        double along=segment.offset+segment.length;
+                        if (along>start&&along<end) append(segment.b);
+                    }
+                    append(driving.pointAt(end));
+                }
+            }
+        }
+        if (!path.poses.empty()||path_visible) path_pub.publish(path);
+        path_visible=!path.poses.empty();
+    }
+    void publishVisualization(ros::Time now,bool in_queue,const std::vector<queue_wait::Point>& rejoin_trajectory) {
+        const bool show_range=detection_pub.getNumSubscribers()>0;
+        const bool show_path=path_pub.getNumSubscribers()>0;
+        if (!show_range&&!show_path) return;
+        std_msgs::Header header;
+        header.frame_id=frame; header.stamp=now;
+        std::optional<queue_wait::Pose> pose;
+        if (in_queue&&controller&&!fault&&controller->zone>=0) try {
+            tf::StampedTransform t; tf.lookupTransform(frame,base,ros::Time(0),t);
+            queue_wait::Pose current{t.getOrigin().x(),t.getOrigin().y(),tf::getYaw(t.getRotation())};
+            double age=(now-t.stamp_).toSec();
+            if (queue_wait::finite(current)&&age>=-.05&&age<=controller->p.at("pose_timeout")) pose=current;
+        } catch (const tf::TransformException&) {}
+        if (show_path) publishQueuePath(header,pose,rejoin_trajectory);
+        if (!show_range) return;
         visualization_msgs::Marker marker;
-        marker.header.frame_id=frame; marker.header.stamp=now;
+        marker.header=header;
         marker.ns="queue_wait_detection"; marker.id=0;
         marker.type=visualization_msgs::Marker::LINE_LIST;
         marker.action=visualization_msgs::Marker::DELETE;
         marker.pose.orientation.w=1;
         marker.scale.x=.03; marker.color.r=1; marker.color.a=1;
-        marker.lifetime=ros::Duration(.3);
-        if (controller&&!fault&&controller->zone>=0) try {
-            tf::StampedTransform t; tf.lookupTransform(frame,base,ros::Time(0),t);
-            queue_wait::Pose pose{t.getOrigin().x(),t.getOrigin().y(),tf::getYaw(t.getRotation())};
-            double age=(now-t.stamp_).toSec();
-            if (queue_wait::finite(pose)&&age>=-.05&&age<=controller->p.at("pose_timeout")) {
-                const auto corners=controller->detectionWindow(pose).corners();
-                marker.points.reserve(8);
-                for (size_t i=0;i<corners.size();++i) {
-                    for (auto p:{corners[i],corners[(i+1)%corners.size()]}) {
-                        geometry_msgs::Point point; point.x=p.x; point.y=p.y; point.z=.08;
-                        marker.points.push_back(point);
-                    }
+        marker.lifetime=ros::Duration(3*queue_wait::Controller::control_period);
+        if (pose) {
+            const auto corners=controller->detectionWindow(*pose).corners();
+            marker.points.reserve(8);
+            for (size_t i=0;i<corners.size();++i) {
+                for (auto p:{corners[i],corners[(i+1)%corners.size()]}) {
+                    geometry_msgs::Point point; point.x=p.x; point.y=p.y; point.z=.08;
+                    marker.points.push_back(point);
                 }
-                if (controller->detour) marker.color.g=.6;
-                if (!marker.points.empty()) marker.action=visualization_msgs::Marker::ADD;
             }
-        } catch (const tf::TransformException&) {}
-        detection_pub.publish(marker);
-        visualization_msgs::Marker avoidance;
-        avoidance.header=marker.header; avoidance.ns="queue_wait_avoidance"; avoidance.id=1;
-        avoidance.type=visualization_msgs::Marker::LINE_STRIP;
-        avoidance.action=visualization_msgs::Marker::DELETE;
-        avoidance.pose.orientation.w=1; avoidance.scale.x=.035;
-        avoidance.color.r=1; avoidance.color.g=.6; avoidance.color.a=1;
-        if (controller&&controller->zone>=0&&controller->detour) {
-            for (const auto& segment:controller->detour->segments) {
-                geometry_msgs::Point point; point.x=segment.a.x; point.y=segment.a.y; point.z=.1;
-                avoidance.points.push_back(point);
-            }
-            auto end=controller->detour->segments.back().b;
-            geometry_msgs::Point point; point.x=end.x; point.y=end.y; point.z=.1;
-            avoidance.points.push_back(point);
-            avoidance.action=visualization_msgs::Marker::ADD;
+            if (controller->detour) marker.color.g=.6;
+            marker.action=visualization_msgs::Marker::ADD;
         }
-        detection_pub.publish(avoidance);
+        detection_pub.publish(marker);
     }
     void tick(const ros::TimerEvent&) {
         if (!controller&&!fault&&ros::WallTime::now()>=next_initialization) {
@@ -1365,13 +1516,16 @@ class Node {
         }
         queue_wait::Decision result{"CONFIG_UNAVAILABLE",true,true};
         const double now=ros::Time::now().toSec();
+        std::vector<queue_wait::Point> rejoin_trajectory;
+        const bool in_queue=!fault&&queueTarget();
         if (!fault) {
-            if (!queueTarget()) {
+            if (!in_queue) {
                 result={"NORMAL"};
                 if (entryHold()) { result.state="QUEUE_ENTRY_ALIGNMENT"; result.hold=true; }
                 if (running&&!normal_goal_sent) publishGoal();
             }
-            else if (controller) result=decision(now);
+            else if (controller)
+                result=decision(now,path_pub.getNumSubscribers()?&rejoin_trajectory:nullptr);
             if (!navigation_ready) result={"NAVIGATION_UNAVAILABLE",true,true};
             if (!running) {
                 if (controller) controller->pause();
@@ -1387,6 +1541,9 @@ class Node {
                 cmd_pub.publish(output);
             }
         }
+        if (result.state=="CURRENT_POSE_BLOCKED")
+            ROS_WARN_THROTTLE(2,"queue_wait: footprint blocked in %s",current_collision_grid.c_str());
+        recoverLocalMap(result,now);
         was_active=result.active;
         std_msgs::Bool active,held; active.data=result.active; held.data=result.hold;
         if (active.data!=published_active) { active_pub.publish(active); published_active=active.data; }
@@ -1395,7 +1552,8 @@ class Node {
             std_msgs::String state; state.data=result.state; state_pub.publish(state);
             ROS_INFO("queue_wait: %s",state.data.c_str()); previous_state=state.data;
         }
-        publishDetectionRange(ros::Time::now());
+        if (result.state!="QUEUE_REJOIN") rejoin_trajectory.clear();
+        publishVisualization(ros::Time::now(),in_queue,rejoin_trajectory);
     }
     bool release(std_srvs::Trigger::Request&,std_srvs::Trigger::Response& response) {
         if (!controller||fault||!running||front_stop) { response.message="Resume Switch Cancel and valid queue configuration first"; return true; }
@@ -1433,6 +1591,7 @@ public:
         hold_pub=nh.advertise<std_msgs::Bool>("/queue_wait/hold",1,true);
         state_pub=nh.advertise<std_msgs::String>("/queue_wait/state",1,true);
         detection_pub=nh.advertise<visualization_msgs::Marker>("/queue_wait/detection_range",10);
+        path_pub=nh.advertise<nav_msgs::Path>("/queue_wait/path",1);
         std_msgs::Bool held; held.data=true; active_pub.publish(held); hold_pub.publish(held);
         subscribers.push_back(nh.subscribe("/waypoint_manager/queue_wait/config",1,&Node::onConfig,this));
         subscribers.push_back(nh.subscribe("route",1,&Node::onRoute,this));
@@ -1451,14 +1610,13 @@ public:
         subscribers.push_back(nh.subscribe<std_msgs::Bool>("/queue_wait/front_stop",1,
             [this](const std_msgs::Bool::ConstPtr& m) { front_stop=m->data; }));
         subscribers.push_back(nh.subscribe("/waypoint_manager/waypoint_server/running",1,&Node::onRunning,this));
-        subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/move_base/local_costmap/costmap",1,
-            [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("local",m); }));
+        subscribeLocalMap();
         subscribers.push_back(nh.subscribe("/move_base/local_costmap/costmap_updates",1,&Node::onMapUpdate,this));
         subscribers.push_back(nh.subscribe<nav_msgs::OccupancyGrid>("/map_for_costmap",1,
             [this](const nav_msgs::OccupancyGrid::ConstPtr& m) { onMap("constraint",m); }));
         release_service=nh.advertiseService("/queue_wait/release",&Node::release,this);
         check_waypoint_stop_service=nh.advertiseService("/queue_wait/check_waypoint_stop",&Node::checkWaypointStop,this);
-        timer=nh.createTimer(ros::Duration(1/queue_wait::Controller::control_rate),&Node::tick,this);
+        timer=nh.createTimer(ros::Duration(queue_wait::Controller::control_period),&Node::tick,this);
     }
     ~Node() { if (queue_enabled) stop(); }
     void spin() { ros::spin(); }
