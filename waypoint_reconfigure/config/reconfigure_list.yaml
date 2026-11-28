@@ -36,9 +36,9 @@ waypoint_reconfigure_config:
      end_id: registed_joy_7d9383594237459daadf44ffe0b4b2f2
      queue_wait: true
      properties: []
-   - name: crossing_queue_tsukuba5  # ルート 161 - 164
+   - name: crossing_queue_tsukuba5  # ルート 161 - 163
      start_id: registed_joy_089290fecde94066b6c6057aa12bd43c
-     end_id: registed_joy_c2e4dd1a1d0e48a784cc77c536336ed2
+     end_id: registed_joy_fcd00715b04e49d0bd3c1947452fcffa
      queue_wait: true
      properties: []
    - name: crossing_queue_tsukuba6  # ルート 180 - 186
